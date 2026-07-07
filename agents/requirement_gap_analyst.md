@@ -19,7 +19,7 @@ Perform a unified Senior BA + QA hybrid review of requirements to ensure:
 
 ## 📥 Input
 - Requirements: `docs/requirements/`
-- Output: `reports/requirement_gap_analysis.md`
+- Output: `reports/[Tên_File_Requirement]_Req_Gap_Report.md` (bắt buộc đặt tên theo tên của file requirement)
 - Template: `templates/requirement_gap_report.md`
 
 ---

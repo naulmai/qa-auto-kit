@@ -23,9 +23,10 @@ This template defines **output format only**. All generation logic and validatio
 - Generate ONE test case per row.
 - Follow the exact column order.
 - Do not add, remove, or reorder columns.
-- Use HTML `<br>` tags for multiple test steps.
+- Use HTML `<br>` tags for multiple test steps so it renders correctly in Markdown, but ensure the descriptions are as detailed and literal as if they were written for Excel.
 - Every test case must reference exactly one primary Functional Requirement (FR ID).
 - Leave Remarks empty unless required by generation rules.
+- **CRITICAL DETAIL LEVEL**: The test cases must be EXTREMELY specific. Use exact wording for UI elements (e.g., "Top navigation bar titled 'Subscription' with back arrow"), specify exact visual states (e.g., "active blue background state", "light-blue pill badge"), and specify exact dynamic behaviors (e.g., "Prices dynamically recalculate and update across Basic and Premium cards in real-time"). Vague steps or expected results are NOT allowed.
 
 ---
 
@@ -45,11 +46,11 @@ This template defines **output format only**. All generation logic and validatio
 | **Module** | High-level business module under test. |
 | **Function** | Specific feature or function being validated. |
 | **FR ID** | Functional Requirement identifier mapped to the test case. |
-| **Test Case Description** | Clear business scenario being validated. |
+| **Test Case Description** | Clear business scenario being validated. Must be highly descriptive. |
 | **Pre-Requisite** | Required system state before executing the test. |
-| **Steps Description** | Step-by-step execution instructions. One action per step using HTML `<br>` line breaks. |
+| **Steps Description** | Step-by-step execution instructions. One action per step using HTML `<br>` line breaks. Must mention exact interaction targets. |
 | **Test Data** | Specific input values used during execution. |
-| **Expected Result** | Observable and measurable application behavior after execution. |
+| **Expected Result** | Observable and measurable application behavior after execution. Must describe exact UI/UX state mutations, copy, and layout changes. |
 | **Priority** | High / Medium / Low |
 | **Type** | Functional / Negative / Edge / UI / Regression / Security / Performance |
 | **Automation Candidate** | Yes / No |
@@ -69,7 +70,7 @@ MODULE-FUNCTION-###
 Examples
 
 ```
-SIG-WELCOME-001
+SUB-ENT-001
 
 AUTH-LOGIN-001
 
@@ -89,6 +90,7 @@ Rules
 - One action per step.
 - Every step begins with **Step X:**
 - Multiple steps use HTML `<br>`.
+- Be extremely explicit about what to click, tap, or inspect.
 
 Example
 
@@ -102,7 +104,7 @@ Step 3: Verify the Rider logo is visible.
 
 ## Test Data
 
-Always use realistic data.
+Always use realistic data. Specify exact plans, strings, or values.
 
 Examples
 
@@ -141,22 +143,20 @@ ABC
 
 ## Expected Result
 
-Expected Result SHALL describe observable system behavior.
+Expected Result SHALL describe observable system behavior, including precise UI details, copy, and transitions.
 
 ### Good Examples
 
 ```
-Splash screen is displayed immediately after application launch.
+Navigates to Subscriptions Overview; recommended plan is highlighted & scrolled into view.
 
-Welcome screen is displayed after the configured splash duration.
+Top navigation bar titled "Subscription" with back arrow. Hero shows 3D piggy-bank icon, bold primary headline, and exact subheadline. Status row shows (ⓘ) "You are currently on the Free plan".
 
-The "Get Started" button is enabled.
+Selected toggle renders with an active blue background state; inactive Monthly displays standard neutral grey background state. Annual displays embedded badge "Save 20%".
 
-Error message "Invalid Email Address" is displayed below the Email field.
+Prices dynamically recalculate and update across Basic and Premium cards in real-time without executing full screen reloads. Monthly toggle restores base prices.
 
-API returns HTTP 401 Unauthorized.
-
-Session token is removed from local storage.
+Displays plan name "Basic Plan", light-blue pill badge "Value" anchored right. Active price format is bold blue "$9.99 /mo". CTA button explicitly reads "View more & Get Basic Now".
 ```
 
 ### Bad Examples
@@ -233,9 +233,13 @@ rules/test_generation_rules.md
 
 | Test Case ID | Module | Function | FR ID | Test Case Description | Pre-Requisite | Steps Description | Test Data | Expected Result | Priority | Type | Automation Candidate |
 |---------------|--------|----------|-------|-----------------------|---------------|-------------------|-----------|-----------------|----------|------|----------------------|
-| SIG-WELCOME-001 | Splash & Welcome | Splash Screen | FR-SIG-1.1 | Verify branded splash screen is displayed when launching the application. | Application is installed.<br>User is on the device home screen. | Step 1: Launch the application.<br>Step 2: Observe the splash screen. | Device: Android 15 | The Rider logo and tagline are displayed immediately after application launch. | High | Functional | Yes |
-| SIG-WELCOME-002 | Splash & Welcome | Welcome Screen | FR-SIG-1.2 | Verify the splash screen automatically transitions to the Welcome screen after the configured duration. | Splash screen is displayed. | Step 1: Wait until the configured splash duration expires. | Splash Duration: 3 seconds | The Welcome screen is displayed automatically without user interaction. | High | Functional | Yes |
-| SIG-WELCOME-003 | Splash & Welcome | Welcome Screen | FR-SIG-1.4 | Verify tapping the "Get Started" button navigates to the Sign In screen. | Welcome screen is displayed. | Step 1: Tap the "Get Started" button. | N/A | The Sign In screen is displayed. | High | Functional | Yes |
+| SUB-ENT-001 | Subscriptions | Entry Points | FR-SUB-1.1 | Verify entry navigation from Post-trip recommendation card | User finishes a trip triggering usage rule. | Step 1: Click post-trip card.<br>Step 2: Check screen state. | Plan: Basic | Navigates to Subscriptions Overview; recommended plan is highlighted & scrolled into view. | High | Functional | Yes |
+| SUB-ENT-002 | Subscriptions | Entry Points | FR-SUB-1.1 | Verify entry navigation from Account Screen | User is on Account profile dashboard. | Step 1: Tap Subscriptions row option.<br>Step 2: Observe view redirect. | N/A | Opens Subscriptions Overview screen with standard vertical stacked layout. | High | Functional | Yes |
+| SUB-ENT-004 | Subscriptions | Entry Points | FR-SUB-1.2 | Verify navigation behavior with pre-selected Premium plan | Post-trip rule triggers a Premium plan recommendation. | Step 1: Click the Premium post-trip recommendation card.<br>Step 2: Check layout view focus. | Plan: Premium | Overview screen opens with Premium card highlighted and automatically centered in viewport. | High | Functional | Yes |
+| SUB-OVR-001 | Subscriptions | Overview | FR-SUB-2.1 | Verify screen typography layout and 3D piggy-bank asset rendering | User navigates to Subscriptions Overview screen. | Step 1: Inspect top nav bar and headline formatting text strings.<br>Step 2: Verify status row copy. | Status: Free plan user | Top navigation bar titled "Subscription" with back arrow. Hero shows 3D piggy-bank icon, bold primary headline, and exact subheadline. Status row shows (ⓘ) "You are currently on the Free plan". | High | UI | Yes |
+| SUB-OVR-002 | Subscriptions | Overview | FR-SUB-2.2 | Verify Billing Cycle Switch Monthly to Annual toggle state mutations | User is on Subscriptions Overview screen. | Step 1: Tap the "Annual" toggle selection item.<br>Step 2: Observe toggle background coloration states. | N/A | Selected toggle renders with an active blue background state; inactive Monthly displays standard neutral grey background state. Annual displays embedded badge "Save 20%". | High | UI | Yes |
+| SUB-OVR-003 | Subscriptions | Overview | FR-SUB-2.2 | Verify Dynamic Price Update Logic across product cards | User is on Subscriptions Overview screen. | Step 1: Tap "Annual" toggle container segment.<br>Step 2: Observe Basic and Premium price figures.<br>Step 3: Tap "Monthly" toggle segment. | N/A | Prices dynamically recalculate and update across Basic and Premium cards in real-time without executing full screen reloads. Monthly toggle restores base prices. | High | Functional | Yes |
+| SUB-OVR-004 | Subscriptions | Overview | FR-SUB-2.3 | Verify Basic Plan Card component layouts and copy elements | User is on Subscriptions Overview screen. | Step 1: Inspect header, pricing font, and CTA button text copy string on Basic card. | N/A | Displays plan name "Basic Plan", light-blue pill badge "Value" anchored right. Active price format is bold blue "$9.99 /mo". CTA button explicitly reads "View more & Get Basic Now". | High | UI | Yes |
 
 ---
 
