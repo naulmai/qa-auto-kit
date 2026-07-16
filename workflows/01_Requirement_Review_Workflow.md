@@ -13,7 +13,7 @@ Define the single, sequential execution path for requirement processing, UI/UX a
 graph TD
     A[Start Pipeline] --> B(requirement_gap_analyst)
     B --> C(design_auditor)
-    C --> D(edge_case_discovery)
+    C --> D(advanced_edge_case_analyzer)
     D --> E(testcase_generator)
     E --> F(coverage_analyst)
     F --> G[Generate Executive Summary]
@@ -29,8 +29,8 @@ graph TD
 - **Output**: `reports/design_audit.md`
 - **Condition**: Only runs if `docs/design/` is not empty.
 
-## Step 3: Edge Case Discovery
-- **Agent**: `agents/edge_case_discovery.md`
+## Step 3: Advanced Edge Case Discovery
+- **Agent**: `agents/advanced_edge_case_analyzer.md`
 - **Output**: `reports/edge_case_report.md`
 - **Condition**: Runs on requirements to detect adversarial risks and race conditions.
 
