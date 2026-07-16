@@ -1,2 +1,12 @@
+# Ignore Requirement Files (Original)
 docs/requirements/
 docs/requirements/*
+
+# Ignore Design Files (Original)
+docs/design/
+docs/design/*
+
+# =========================
+# ❗ Ignore ALL Current Reports
+# =========================
+reports/*
