@@ -25,23 +25,11 @@ Generating test cases without requirement analysis is prohibited.
 
 Every requirement shall be decomposed into atomic functional behaviors.
 
-Example
+**Example:**
 
-Requirement:
-
-```
-User can login using email and password.
-```
-
-Atomic Behaviors:
-
-- Enter email
-- Validate email format
-- Enter password
-- Validate password
-- Authenticate user
-- Navigate after login
-- Handle authentication failure
+| Requirement | Atomic Behaviors |
+|-------------|-----------------|
+| User can login using email and password | Enter email, Validate email format, Enter password, Validate password, Authenticate user, Navigate after login, Handle authentication failure |
 
 Never generate test cases directly from compound requirements.
 
@@ -64,7 +52,7 @@ Identify:
 
 Explicitly identify assumptions before generating test cases.
 
-Example
+**Example:**
 
 - User account already exists.
 - User has network connectivity.
@@ -78,16 +66,11 @@ Assumptions shall NOT become requirements.
 
 Identify all dependencies.
 
-Examples
-
-- Authentication Service
-- User Profile Service
-- Notification Service
-- Backend API
-- Device Permission
-- GPS
-- Camera
-- Internet Connection
+| Category | Examples |
+|----------|----------|
+| Services | Authentication Service, User Profile Service, Notification Service, Backend API |
+| Device | GPS, Camera, Internet Connection |
+| Permissions | Device Permission |
 
 Dependencies influence negative and integration test generation.
 
@@ -97,14 +80,12 @@ Dependencies influence negative and integration test generation.
 
 Identify business risks.
 
-Examples
-
-- Incorrect navigation
-- Data corruption
-- Security exposure
-- Session inconsistency
-- Payment interruption
-- Duplicate transactions
+| Risk Type | Examples |
+|-----------|----------|
+| Navigation | Incorrect navigation |
+| Data | Data corruption |
+| Security | Security exposure, Session inconsistency |
+| Financial | Payment interruption, Duplicate transactions |
 
 Higher business risk increases testing priority.
 
@@ -114,21 +95,11 @@ Higher business risk increases testing priority.
 
 Identify impacted modules.
 
-Examples
+**Example: Authentication Module**
 
-Current Module
-
-↓
-
-Authentication
-
-Potential Regression
-
-- Login
-- Registration
-- Forgot Password
-- Session Management
-- Home Page Navigation
+| Current Module | Potential Regression Impact |
+|---------------|---------------------------|
+| Authentication | Login, Registration, Forgot Password, Session Management, Home Page Navigation |
 
 Regression scope shall be included in generated test cases where applicable.
 
@@ -167,62 +138,21 @@ Generate invalid scenarios including:
 
 ## 2.3 Boundary Value Analysis (BVA)
 
-Whenever numeric or length limits exist, generate:
+Whenever numeric or length limits exist, generate test values at boundaries:
 
-- Minimum
-- Maximum
-- Just below minimum
-- Just above minimum
-
-Examples
-
-Password length
-
-8
-
-Generate
-
-7
-
-8
-
-9
-
-Maximum
-
-50
-
-Generate
-
-49
-
-50
-
-51
+| Input | Min | Min-1 | Min+1 | Max-1 | Max | Max+1 |
+|-------|-----|-------|-------|-------|-----|-------|
+| Password length (8–50) | 8 | 7 | 9 | 49 | 50 | 51 |
 
 ---
 
 ## 2.4 Equivalence Partitioning (EP)
 
-Group equivalent input ranges.
+Group equivalent input ranges. Generate one representative test for each partition.
 
-Generate one representative test for each partition.
-
-Example
-
-Age
-
-Invalid
-
-<18
-
-Valid
-
-18–65
-
-Invalid
-
->65
+| Input | Invalid (Below) | Valid | Invalid (Above) |
+|-------|-----------------|-------|-----------------|
+| Age | <18 | 18–65 | >65 |
 
 Do NOT generate redundant cases within the same partition.
 
@@ -232,39 +162,15 @@ Do NOT generate redundant cases within the same partition.
 
 Generate cases covering:
 
-Valid transition
+| Transition Type | Description |
+|----------------|-------------|
+| Valid | Normal allowed transition |
+| Invalid | Attempting disallowed transition |
+| Repeated | Performing same transition twice |
+| Interrupted | Transition cut off mid-process |
+| Recovery | Recovering from failed transition |
 
-Invalid transition
-
-Repeated transition
-
-Interrupted transition
-
-Recovery transition
-
-Example
-
-Order
-
-Pending
-
-↓
-
-Paid
-
-↓
-
-Shipped
-
-↓
-
-Delivered
-
-Attempting
-
-Cancel Delivered Order
-
-shall become Negative testcase.
+**Example:** Order: Pending → Paid → Shipped → Delivered. Attempting "Cancel Delivered Order" shall become a Negative testcase.
 
 ---
 
@@ -272,23 +178,12 @@ shall become Negative testcase.
 
 Apply when multiple business conditions determine one outcome.
 
-Example
-
-Premium User
-
-YES
-
-Coupon Valid
-
-YES
-
-Payment Success
-
-YES
-
-↓
-
-Discount Applied
+| Premium User | Coupon Valid | Payment Success | → Outcome |
+|-------------|-------------|-----------------|-----------|
+| YES | YES | YES | Discount Applied |
+| YES | NO | YES | Full Price |
+| NO | YES | YES | Discount Applied |
+| NO | NO | NO | Payment Failed |
 
 Generate all meaningful decision combinations.
 
@@ -296,21 +191,14 @@ Generate all meaningful decision combinations.
 
 ## 2.7 Role-Based Testing
 
-Generate test cases for every applicable role.
+Generate test cases for every applicable role:
 
-Examples
-
-Guest
-
-Registered User
-
-Admin
-
-Operator
-
-Driver
-
-Passenger
+- Guest
+- Registered User
+- Admin
+- Operator
+- Driver
+- Passenger
 
 Role isolation shall always be validated.
 
@@ -318,99 +206,53 @@ Role isolation shall always be validated.
 
 ## 2.8 Error Guessing
 
-Generate scenarios based on common production defects.
+Generate scenarios based on common production defects:
 
-Examples
-
-Double click
-
-Rapid tapping
-
-Network interruption
-
-Timeout
-
-Expired token
-
-Duplicate submission
-
-Browser refresh
-
-App resume
-
-Application killed
+- Double click / Rapid tapping
+- Network interruption / Timeout
+- Expired token
+- Duplicate submission
+- Browser refresh / App resume
+- Application killed
 
 ---
 
 ## 2.9 Error Handling
 
-Validate system behavior when unexpected failures occur.
+Validate system behavior when unexpected failures occur:
 
-Examples
-
-500 Internal Server Error
-
-404 Resource Missing
-
-Network disconnected
-
-Service unavailable
-
-Gateway timeout
-
-Application restart
-
-Unexpected exception
+- 500 Internal Server Error
+- 404 Resource Missing
+- Network disconnected
+- Service unavailable
+- Gateway timeout
+- Application restart
+- Unexpected exception
 
 ---
 
 ## 2.10 Security Testing
 
-Generate security-oriented test cases where applicable.
+Generate security-oriented test cases where applicable:
 
-Examples
-
-Unauthorized access
-
-Direct URL access
-
-Session hijacking
-
-Invalid token
-
-Token expiration
-
-Role escalation
-
-Input injection
-
-Sensitive data exposure
-
-Authentication bypass
+- Unauthorized access / Direct URL access
+- Session hijacking / Invalid token / Token expiration
+- Role escalation
+- Input injection
+- Sensitive data exposure
+- Authentication bypass
 
 ---
 
 ## 2.11 Performance Testing
 
-Generate lightweight performance validation cases.
+Generate lightweight performance validation cases:
 
-Examples
-
-Splash loading time
-
-Screen transition time
-
-Button responsiveness
-
-Repeated navigation
-
-API response time
-
-Resource loading
-
-Cold launch
-
-Warm launch
+- Splash loading time / Screen transition time
+- Button responsiveness
+- Repeated navigation
+- API response time / Resource loading
+- Cold launch / Warm launch
 
 ---
 
@@ -418,27 +260,11 @@ Warm launch
 
 Validate:
 
-Alignment
-
-Consistency
-
-Visibility
-
-Accessibility
-
-Typography
-
-Button state
-
-Image rendering
-
-Theme
-
-Dark Mode
-
-Landscape Mode
-
-Responsive behavior
+- Alignment, Consistency, Visibility
+- Accessibility, Typography
+- Button state, Image rendering
+- Theme / Dark Mode
+- Landscape Mode / Responsive behavior
 
 ---
 
@@ -446,17 +272,8 @@ Responsive behavior
 
 Generate regression cases whenever changes affect:
 
-Navigation
-
-Authentication
-
-Permission
-
-Business Rule
-
-Shared Component
-
-Common Service
+- Navigation / Authentication / Permission
+- Business Rule / Shared Component / Common Service
 
 Regression cases shall focus on previously working functionality.
 
@@ -488,17 +305,9 @@ Coverage is considered incomplete if any category is missing.
 
 Every testcase MUST map to at least one Requirement ID.
 
-Example
-
-Requirement
-
-FR-SIG-1.2
-
-↓
-
-TC-001
-TC-002
-TC-003
+| Requirement | Test Cases |
+|-------------|-----------|
+| FR-SIG-1.2 | TC-001, TC-002, TC-003 |
 
 Every requirement shall be traceable through generated testcases.
 
@@ -519,11 +328,8 @@ Only tightly coupled requirements may be referenced together.
 If a requirement cannot generate any executable testcase due to insufficient information:
 
 - Generate no speculative testcase.
-- Record the issue as:
-
-INSUFFICIENT REQUIREMENT
-
-and recommend clarification.
+- Record the issue as: **INSUFFICIENT REQUIREMENT**
+- Recommend clarification.
 
 ---
 
@@ -539,33 +345,15 @@ Do not allow Functional Testing to dominate the entire suite.
 
 ## Required Distribution
 
-Functional
-
->=40%
-
-Negative
-
->=15%
-
-Edge
-
->=10%
-
-UI / UX
-
->=10%
-
-Performance
-
->=10%
-
-Regression
-
->=10%
-
-Security
-
->=5%
+| Test Type | Minimum Percentage |
+|-----------|-------------------|
+| Functional | ≥40% |
+| Negative | ≥15% |
+| Edge | ≥10% |
+| UI / UX | ≥10% |
+| Performance | ≥10% |
+| Regression | ≥10% |
+| Security | ≥5% |
 
 ---
 
@@ -573,35 +361,21 @@ Security
 
 Before output:
 
-Calculate percentage for every category.
-
-If any category is below required threshold:
-
-Generate additional testcase(s).
-
-Recalculate.
-
-Repeat until all thresholds are satisfied.
+1. Calculate percentage for every category.
+2. If any category is below required threshold → Generate additional testcase(s).
+3. Recalculate.
+4. Repeat until all thresholds are satisfied.
 
 ---
 
 ## Feature Size Rules
 
-Small Feature
-
-15–25 Testcases
-
-Medium Feature
-
-Minimum 40 Testcases
-
-Large Feature
-
-60–120 Testcases
-
-Enterprise Feature
-
-Generate until complete coverage is achieved.
+| Feature Size | Test Case Count |
+|-------------|----------------|
+| Small Feature | 15–25 Testcases |
+| Medium Feature | Minimum 40 Testcases |
+| Large Feature | 60–120 Testcases |
+| Enterprise Feature | Generate until complete coverage is achieved |
 
 Never stop simply because the minimum count has been reached.
 
@@ -615,67 +389,13 @@ Priority reflects business importance rather than implementation complexity.
 
 ---
 
-## High Priority
+## Priority Assignment
 
-Assign HIGH when failure would impact:
-
-Core business flow
-
-Authentication
-
-Payment
-
-Booking
-
-Navigation
-
-Security
-
-Data integrity
-
-Session
-
-Critical user journey
-
----
-
-## Medium Priority
-
-Assign MEDIUM when failure impacts:
-
-Secondary business functions
-
-Reporting
-
-Filtering
-
-Sorting
-
-Search
-
-Notification
-
-Profile
-
-Settings
-
----
-
-## Low Priority
-
-Assign LOW when failure impacts:
-
-UI cosmetics
-
-Animations
-
-Branding
-
-Visual consistency
-
-Optional interactions
-
-Non-critical usability improvements
+| Priority | Assign When Failure Impacts |
+|----------|---------------------------|
+| **High** | Core business flow, Authentication, Payment, Booking, Navigation, Security, Data integrity, Session, Critical user journey |
+| **Medium** | Secondary business functions, Reporting, Filtering, Sorting, Search, Notification, Profile, Settings |
+| **Low** | UI cosmetics, Animations, Branding, Visual consistency, Optional interactions, Non-critical usability improvements |
 
 ---
 
@@ -693,55 +413,13 @@ Severity reflects impact of failure.
 
 ---
 
-## Critical
+## Severity Classification
 
-Failure causes:
-
-Application crash
-
-Data loss
-
-Security breach
-
-Financial loss
-
-Complete business interruption
-
-System unavailable
-
----
-
-## Major
-
-Failure causes:
-
-Primary feature unusable
-
-Incorrect business logic
-
-Navigation blocked
-
-Validation failure
-
-Incorrect workflow
-
----
-
-## Minor
-
-Failure causes:
-
-Cosmetic issue
-
-Alignment
-
-Text formatting
-
-Visual inconsistency
-
-Minor usability inconvenience
-
----
+| Severity | Failure Causes |
+|----------|---------------|
+| **Critical** | Application crash, Data loss, Security breach, Financial loss, Complete business interruption, System unavailable |
+| **Major** | Primary feature unusable, Incorrect business logic, Navigation blocked, Validation failure, Incorrect workflow |
+| **Minor** | Cosmetic issue, Alignment, Text formatting, Visual inconsistency, Minor usability inconvenience |
 
 Severity shall NOT be determined by testcase complexity.
 
@@ -755,51 +433,18 @@ Automation readiness shall be evaluated during testcase generation.
 
 ## Automation Candidate
 
-Mark YES when testcase is:
-
-Stable
-
-Repeatable
-
-Deterministic
-
-Environment independent
-
-High execution frequency
-
-Suitable for regression
-
----
-
-## Manual Candidate
-
-Mark NO when testcase requires:
-
-Visual judgement
-
-Human perception
-
-Exploratory thinking
-
-Complex hardware interaction
-
-Random behaviour
-
-Subjective usability review
+| Classification | Criteria |
+|---------------|----------|
+| **YES** (Automate) | Stable, Repeatable, Deterministic, Environment independent, High execution frequency, Suitable for regression |
+| **NO** (Manual) | Requires visual judgement, Human perception, Exploratory thinking, Complex hardware interaction, Random behaviour, Subjective usability review |
 
 ---
 
 ## Automation Ratio
 
-High Priority Testcases
-
-At least
-
-80%
-
-shall be
-
-Automation Candidate = YES
+| Test Priority | Minimum Automation Candidate |
+|--------------|------------------------------|
+| High Priority Testcases | At least 80% shall be Automation Candidate = YES |
 
 ---
 
@@ -807,17 +452,8 @@ Automation Candidate = YES
 
 Before output:
 
-Calculate:
-
-Automation Coverage %
-
-If
-
-Automation %
-
-<80%
-
-Generate or adjust testcase classification until requirement is met.
+1. Calculate Automation Coverage %.
+2. If Automation % < 80% → Generate or adjust testcase classification until requirement is met.
 
 ---
 
@@ -831,11 +467,9 @@ Duplicate testcases are prohibited.
 
 Two testcases are duplicates when they validate:
 
-Same requirement
-
-Same business behaviour
-
-Same expected outcome
+- Same requirement
+- Same business behaviour
+- Same expected outcome
 
 using only different wording or data.
 
@@ -843,15 +477,11 @@ using only different wording or data.
 
 ## Merge Rule
 
-Merge duplicate scenarios into a single optimized testcase.
-
-Never generate duplicate navigation validation.
-
-Never generate duplicate transition validation.
-
-Never generate duplicate UI rendering validation.
-
-Never generate duplicate state validation.
+- Merge duplicate scenarios into a single optimized testcase.
+- Never generate duplicate navigation validation.
+- Never generate duplicate transition validation.
+- Never generate duplicate UI rendering validation.
+- Never generate duplicate state validation.
 
 ---
 
@@ -859,11 +489,9 @@ Never generate duplicate state validation.
 
 Before output:
 
-Compare every testcase against every other testcase.
-
-Remove duplicates.
-
-Regenerate unique scenarios if necessary.
+1. Compare every testcase against every other testcase.
+2. Remove duplicates.
+3. Regenerate unique scenarios if necessary.
 
 ---
 
@@ -875,41 +503,27 @@ Each testcase shall validate ONE business objective.
 
 ## Allowed
 
-Login with valid account
-
-Password length validation
-
-Forgot password navigation
+| ✅ Atomic Test Cases |
+|---------------------|
+| Login with valid account |
+| Password length validation |
+| Forgot password navigation |
 
 ---
 
 ## Not Allowed
 
-Login
-
-+
-
-Logout
-
-+
-
-Remember Me
-
-+
-
-Session timeout
-
-in one testcase.
+| ❌ Compound Test Cases |
+|----------------------|
+| Login + Logout + Remember Me + Session timeout in one testcase |
 
 ---
 
 ## Action Rule
 
-Each Step shall perform one action.
-
-Each Expected Result shall validate one outcome.
-
-Avoid compound validations.
+- Each Step shall perform one action.
+- Each Expected Result shall validate one outcome.
+- Avoid compound validations.
 
 ---
 
@@ -919,73 +533,27 @@ Test data shall be realistic and executable.
 
 ---
 
-## Good Examples
+## Good vs Bad Examples
 
-Email
-
-test.user@example.com
-
-Password
-
-Test@12345
-
-Phone
-
-0912345678
-
-Vehicle
-
-Toyota Camry
-
-Coupon
-
-WELCOME10
-
----
-
-## Invalid Examples
-
-Valid Email
-
-Correct Password
-
-Sample User
-
-Random Data
-
-Test
-
-ABC
+| Field | ✅ Good | ❌ Bad |
+|-------|--------|--------|
+| Email | test.user@example.com | Valid Email |
+| Password | Test@12345 | Correct Password |
+| Phone | 0912345678 | Sample User |
+| Vehicle | Toyota Camry | Random Data |
+| Coupon | WELCOME10 | Test / ABC |
 
 ---
 
 ## Boundary Data
 
-Whenever limits exist:
+Whenever limits exist, generate:
 
-Generate:
-
-Minimum
-
-Maximum
-
-Below Minimum
-
-Above Maximum
-
-Invalid Format
-
-Null
-
-Whitespace
-
-Special Character
-
-Unicode
-
-Duplicate
-
-Expired
+- Minimum, Maximum
+- Below Minimum, Above Maximum
+- Invalid Format, Null, Whitespace
+- Special Character, Unicode
+- Duplicate, Expired
 
 ---
 
@@ -995,57 +563,22 @@ Expected Result shall always describe observable system behaviour.
 
 ---
 
-## Acceptable
+## Good vs Bad Examples
 
-User is redirected to the Sign In screen.
+| ✅ Acceptable | ❌ Unacceptable |
+|--------------|----------------|
+| User is redirected to the Sign In screen | Works correctly |
+| Error message "Invalid Email Address" is displayed below the Email field | Displays properly |
+| Login button becomes disabled | Successful |
+| Splash screen disappears after configured timeout | Pass |
+| Session token is invalidated | Correct behaviour |
+| Database record is created | As expected |
+| API returns HTTP 401 | No issue |
 
-Error message
-
-"Invalid Email Address"
-
-is displayed below the Email field.
-
-Login button becomes disabled.
-
-Splash screen disappears after configured timeout.
-
-Session token is invalidated.
-
-Database record is created.
-
-API returns HTTP 401.
+Expected Result shall be: Observable, Measurable, Verifiable, Deterministic, Unambiguous.
 
 ---
 
-## Unacceptable
-
-Works correctly
-
-Displays properly
-
-Successful
-
-Pass
-
-Correct behaviour
-
-As expected
-
-No issue
-
----
-
-Expected Result shall be:
-
-Observable
-
-Measurable
-
-Verifiable
-
-Deterministic
-
-Unambiguous
 # 12. Output Format Rules
 
 ## Objective
@@ -1064,40 +597,32 @@ Generate test cases in a standardized structure suitable for:
 
 Each testcase SHALL contain:
 
-- TC_ID
-- Module
-- Feature
-- Test Scenario
-- Preconditions
-- Test Steps
-- Test Data
-- Expected Result
-- Priority
-- Severity
-- Test Type
-- Requirement Reference
-- Automation Candidate
-- Remarks
+| Column | Description |
+|--------|-------------|
+| TC_ID | Unique identifier: MODULE-FUNCTION-### |
+| Module | High-level business module |
+| Feature | Specific feature under test |
+| Test Scenario | Business scenario description |
+| Preconditions | Required system state |
+| Test Steps | Step-by-step actions (one per step) |
+| Test Data | Specific input values |
+| Expected Result | Observable outcome |
+| Priority | High / Medium / Low |
+| Severity | Critical / Major / Minor |
+| Test Type | Functional / Negative / Edge / UI / Regression / Security / Performance |
+| Requirement Reference | FR/REQ/BR ID |
+| Automation Candidate | Yes / No |
+| Remarks | ASSUMPTION_BASED / KNOWN_LIMITATION / OUT_OF_SCOPE / DEPENDENCY_REQUIRED / (empty) |
 
 ---
 
 ## TC_ID Convention
 
-Format
+| Format | Examples |
+|--------|----------|
+| `[MODULE]-[FEATURE]-[NUMBER]` | SIG-WELCOME-001, AUTH-LOGIN-015, PROFILE-UPDATE-008 |
 
-[MODULE]-[FEATURE]-[NUMBER]
-
-Examples
-
-SIG-WELCOME-001
-
-AUTH-LOGIN-015
-
-PROFILE-UPDATE-008
-
-Numbers shall be sequential.
-
-Never reuse an existing TC_ID.
+Numbers shall be sequential. Never reuse an existing TC_ID.
 
 ---
 
@@ -1105,70 +630,30 @@ Never reuse an existing TC_ID.
 
 Each step SHALL contain exactly ONE user action.
 
-Good
-
-Step 1:
-Launch application
-
-Step 2:
-Tap "Get Started"
-
-Step 3:
-Enter email address
-
-Bad
-
-Launch app and login.
+| ✅ Good | ❌ Bad |
+|--------|--------|
+| Step 1: Launch application | Launch app and login |
+| Step 2: Tap "Get Started" | |
+| Step 3: Enter email address | |
 
 ---
 
 ## Step Writing Standard
 
-Every step shall start with an action verb.
+Every step shall start with an action verb:
 
-Examples
-
-Launch
-
-Navigate
-
-Tap
-
-Click
-
-Select
-
-Enter
-
-Verify
-
-Open
-
-Close
-
-Refresh
-
-Swipe
-
-Choose
+Launch, Navigate, Tap, Click, Select, Enter, Verify, Open, Close, Refresh, Swipe, Choose
 
 ---
 
 ## HTML Line Break Rule
 
-When output is intended for Excel,
+When output is intended for Excel, multiple steps inside one cell SHALL use `<br>` instead of semicolons.
 
-multiple steps inside one cell SHALL use
-
-<br>
-
-instead of semicolons.
-
-Example
-
-Step 1: Launch App<br>
-Step 2: Tap Get Started<br>
-Step 3: Verify Sign In screen
+**Example:**
+```
+Step 1: Launch App<br>Step 2: Tap Get Started<br>Step 3: Verify Sign In screen
+```
 
 ---
 
@@ -1176,17 +661,13 @@ Step 3: Verify Sign In screen
 
 Only use Remarks when necessary.
 
-Allowed values
-
-ASSUMPTION_BASED
-
-KNOWN_LIMITATION
-
-OUT_OF_SCOPE
-
-DEPENDENCY_REQUIRED
-
-Otherwise leave empty.
+| Allowed Values |
+|----------------|
+| ASSUMPTION_BASED |
+| KNOWN_LIMITATION |
+| OUT_OF_SCOPE |
+| DEPENDENCY_REQUIRED |
+| (empty) |
 
 ---
 
@@ -1202,39 +683,26 @@ The generated suite shall satisfy all quality standards.
 
 Verify:
 
-Business correctness
-
-Requirement coverage
-
-Requirement traceability
-
-Test data quality
-
-Expected Result quality
-
-Automation suitability
-
-Coverage distribution
-
-Priority consistency
-
-Severity consistency
-
-Duplicate detection
-
-Atomicity
-
-Output format
+- Business correctness
+- Requirement coverage
+- Requirement traceability
+- Test data quality
+- Expected Result quality
+- Automation suitability
+- Coverage distribution
+- Priority consistency
+- Severity consistency
+- Duplicate detection
+- Atomicity
+- Output format
 
 ---
 
 ## Review Principle
 
-Never skip review.
-
-Never output raw draft testcases.
-
-Only reviewed testcases may be returned.
+- Never skip review.
+- Never output raw draft testcases.
+- Only reviewed testcases may be returned.
 
 ---
 
@@ -1246,77 +714,57 @@ The generator MUST validate the complete suite before producing output.
 
 ## Coverage Validation
 
-✓ Every requirement has testcases.
-
-✓ Every requirement has Functional coverage.
-
-✓ Every requirement has Negative or Edge coverage.
-
-✓ Regression coverage exists where applicable.
+- ✓ Every requirement has testcases
+- ✓ Every requirement has Functional coverage
+- ✓ Every requirement has Negative or Edge coverage
+- ✓ Regression coverage exists where applicable
 
 ---
 
 ## Distribution Validation
 
-✓ Functional >= 40%
-
-✓ Negative >= 15%
-
-✓ Edge >= 10%
-
-✓ UI >= 10%
-
-✓ Performance >= 10%
-
-✓ Security >= 5%
-
-✓ Regression >= 10%
+- ✓ Functional ≥ 40%
+- ✓ Negative ≥ 15%
+- ✓ Edge ≥ 10%
+- ✓ UI ≥ 10%
+- ✓ Performance ≥ 10%
+- ✓ Security ≥ 5%
+- ✓ Regression ≥ 10%
 
 ---
 
 ## Automation Validation
 
-✓ High Priority Automation Ratio >= 80%
+- ✓ High Priority Automation Ratio ≥ 80%
 
 ---
 
 ## Duplicate Validation
 
-✓ No duplicate scenarios
-
-✓ No duplicate navigation validation
-
-✓ No duplicate state validation
-
-✓ No duplicated Expected Result
+- ✓ No duplicate scenarios
+- ✓ No duplicate navigation validation
+- ✓ No duplicate state validation
+- ✓ No duplicated Expected Result
 
 ---
 
 ## Quality Validation
 
-✓ Testcases are atomic
-
-✓ Test data is realistic
-
-✓ Expected Result is measurable
-
-✓ No vague wording
-
-✓ Traceability complete
+- ✓ Testcases are atomic
+- ✓ Test data is realistic
+- ✓ Expected Result is measurable
+- ✓ No vague wording
+- ✓ Traceability complete
 
 ---
 
 ## Output Validation
 
-✓ Correct column order
-
-✓ TC_ID unique
-
-✓ Markdown table valid
-
-✓ Steps formatted correctly
-
-✓ Remarks valid
+- ✓ Correct column order
+- ✓ TC_ID unique
+- ✓ Markdown table valid
+- ✓ Steps formatted correctly
+- ✓ Remarks valid
 
 ---
 
@@ -1328,57 +776,17 @@ Before returning the final output, perform a complete self-audit.
 
 ## Audit Sequence
 
-Step 1
-
-Requirement Coverage Audit
-
-↓
-
-Step 2
-
-Coverage Distribution Audit
-
-↓
-
-Step 3
-
-Duplicate Detection Audit
-
-↓
-
-Step 4
-
-Priority Audit
-
-↓
-
-Step 5
-
-Severity Audit
-
-↓
-
-Step 6
-
-Automation Audit
-
-↓
-
-Step 7
-
-Expected Result Audit
-
-↓
-
-Step 8
-
-Output Format Audit
-
-↓
-
-Step 9
-
-Final Approval
+| Step | Audit |
+|------|-------|
+| 1 | Requirement Coverage Audit |
+| 2 | Coverage Distribution Audit |
+| 3 | Duplicate Detection Audit |
+| 4 | Priority Audit |
+| 5 | Severity Audit |
+| 6 | Automation Audit |
+| 7 | Expected Result Audit |
+| 8 | Output Format Audit |
+| 9 | Final Approval |
 
 ---
 
@@ -1386,27 +794,12 @@ Final Approval
 
 If ANY audit fails:
 
-DO NOT produce output.
-
-Automatically:
-
-Identify failed area
-
-↓
-
-Regenerate affected testcase(s)
-
-↓
-
-Recalculate statistics
-
-↓
-
-Repeat validation
-
-↓
-
-Only return output after ALL audits pass.
+1. DO NOT produce output.
+2. Identify failed area.
+3. Regenerate affected testcase(s).
+4. Recalculate statistics.
+5. Repeat validation.
+6. Only return output after ALL audits pass.
 
 **CRITICAL RULE**: When executing the Self-Audit loop, you MUST output your internal audit reasoning inside an `<audit_trace> ... </audit_trace>` XML block before printing the final Markdown table. This ensures the loop resolves correctly.
 
@@ -1416,67 +809,17 @@ Only return output after ALL audits pass.
 
 The following Quality Gates are mandatory.
 
----
+| Gate | Check | Requirement |
+|------|-------|-------------|
+| Gate 1 | Requirement Understanding | PASS required |
+| Gate 2 | Requirement Traceability | PASS required |
+| Gate 3 | Coverage Distribution | PASS required |
+| Gate 4 | Duplicate Detection | PASS required |
+| Gate 5 | Expected Result Quality | PASS required |
+| Gate 6 | Automation Governance | PASS required |
+| Gate 7 | Output Format | PASS required |
 
-## Gate 1
-
-Requirement Understanding
-
-PASS required
-
----
-
-## Gate 2
-
-Requirement Traceability
-
-PASS required
-
----
-
-## Gate 3
-
-Coverage Distribution
-
-PASS required
-
----
-
-## Gate 4
-
-Duplicate Detection
-
-PASS required
-
----
-
-## Gate 5
-
-Expected Result Quality
-
-PASS required
-
----
-
-## Gate 6
-
-Automation Governance
-
-PASS required
-
----
-
-## Gate 7
-
-Output Format
-
-PASS required
-
----
-
-If any Quality Gate fails,
-
-generation SHALL restart from the affected stage.
+If any Quality Gate fails, generation SHALL restart from the affected stage.
 
 ---
 
@@ -1484,21 +827,14 @@ generation SHALL restart from the affected stage.
 
 The generator SHALL automatically regenerate output when:
 
-Coverage is incomplete.
-
-Duplicate testcases are detected.
-
-Automation ratio is below target.
-
-Requirement mapping is missing.
-
-Expected Result is ambiguous.
-
-Test data is unrealistic.
-
-Output format is invalid.
-
-Regression coverage is missing.
+- Coverage is incomplete.
+- Duplicate testcases are detected.
+- Automation ratio is below target.
+- Requirement mapping is missing.
+- Expected Result is ambiguous.
+- Test data is unrealistic.
+- Output format is invalid.
+- Regression coverage is missing.
 
 The regenerated output shall replace the previous version.
 
@@ -1508,57 +844,28 @@ The regenerated output shall replace the previous version.
 
 The generator SHALL:
 
-Think before generating.
-
-Generate before validating.
-
-Validate before reviewing.
-
-Review before approving.
-
-Approve before output.
+1. Think before generating.
+2. Generate before validating.
+3. Validate before reviewing.
+4. Review before approving.
+5. Approve before output.
 
 ---
 
-Generation order SHALL be:
+## Generation Order
 
-Requirement Analysis
-
-↓
-
-Requirement Decomposition
-
-↓
-
-Test Design
-
-↓
-
-Test Case Generation
-
-↓
-
-Requirement Traceability
-
-↓
-
-Coverage Validation
-
-↓
-
-Quality Validation
-
-↓
-
-Self Audit
-
-↓
-
-Final Approval
-
-↓
-
-Output
+| Step | Phase |
+|------|-------|
+| 1 | Requirement Analysis |
+| 2 | Requirement Decomposition |
+| 3 | Test Design |
+| 4 | Test Case Generation |
+| 5 | Requirement Traceability |
+| 6 | Coverage Validation |
+| 7 | Quality Validation |
+| 8 | Self Audit |
+| 9 | Final Approval |
+| 10 | Output |
 
 ---
 
@@ -1578,9 +885,22 @@ Output
 
 ## Token Limit / Large Suite Handling
 
-If the generated test suite is too large to fit in a single AI response (e.g., > 40 test cases), automatically pause at a safe boundary and output: 
-**"Part 1 completed. Type CONTINUE to generate the next batch."** 
+If the generated test suite is too large to fit in a single AI response (e.g., > 40 test cases), automatically pause at a safe boundary and output:
+**"Part 1 completed. Type CONTINUE to generate the next batch."**
 Ensure no test case is cut off in the middle of the table.
+
+---
+
+# 19. CSV & Excel Integration Standards
+
+## Objective
+Ensure the generated Markdown table can be cleanly converted to a standard CSV file without column shifting or import errors in spreadsheet software or test case managers (like Jira Xray or TestRail).
+
+## Formatting Rules
+- **No unquoted commas inside cells**: If an input cell or expected result contains commas, do not use commas directly if possible. Alternatively, ensure the converter script quotes the fields.
+- **Enforce HTML `<br>` for line breaks**: Do not use semicolons `;` or real newlines inside table cells for step separation. Use exact `<br>` tag strings to allow clean conversion.
+- **Escape double quotes**: If a test step or text string contains a double quote (`"`), it must be escaped as `""` inside the markdown cell to prevent CSV parsing issues.
+- **Strict Column Count Alignment**: The generated table must strictly maintain the 12-column layout. Adding or removing columns on specific rows is prohibited.
 
 ---
 

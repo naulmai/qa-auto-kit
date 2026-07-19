@@ -31,15 +31,15 @@ Analyze requirements and supporting documents to:
 
 ## Required Inputs
 
-- `docs/SRS.md`
+- `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/risk_analysis_report.md`
 
 ## Optional Inputs
 
 - `reports/business_rules.md`
-- `reports/gap_analysis.md`
-- `reports/coverage_report.md`
-- `reports/edge_case_report.md`
+- `reports/*_Req_Gap_Report.md` (dynamic naming from requirement_gap_analyst)
+- `reports/*_Coverage_Report.md` (dynamic naming)
+- `reports/*_Edge_Case_Report.md` (dynamic naming)
 - `docs/API.md`
 - `docs/UI.md`
 - `docs/Database.md`
@@ -53,7 +53,7 @@ Analyze requirements and supporting documents to:
 
 Generate:
 
-📄 `reports/risk_analysis.md`
+📄 `reports/[Requirement_Name]_Risk_Analysis_Report.md`
 
 Strictly follow:
 

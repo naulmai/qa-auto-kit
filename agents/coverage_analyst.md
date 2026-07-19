@@ -4,18 +4,20 @@
 
 ## 🧩 Skill Metadata
 - **name:** coverage_analyst
-- **version:** 2.0.0
-- **description:** Map test cases against SRS requirements to measure coverage, detect gaps, and recommend missing tests.
+- **version:** 3.0.0
+- **description:** Map test cases against requirements, scenarios, edge cases, and risk items to measure multi-dimensional coverage, detect gaps, and recommend missing tests.
 - **category:** QA / Test Analysis / Coverage Engineering
 - **author:** System
 
 ---
 
 ## 🎯 Purpose
-Analyze SRS and generated test cases to:
-- Measure requirement coverage
+Analyze requirements and all generated QA artifacts to:
+- Measure requirement coverage across multiple dimensions
 - Detect untested or partially tested requirements
 - Identify missing negative / edge / boundary test cases
+- Validate scenario-to-testcase conversion completeness
+- Verify edge case and risk coverage
 - Produce structured coverage report with recommendations
 
 ---
@@ -23,26 +25,31 @@ Analyze SRS and generated test cases to:
 ## 📥 Inputs
 
 ### Required Inputs
-- `docs/SRS.md` → Source Requirement Specification
-- `reports/testcases.md` → Generated test cases
+- `docs/requirements/*` → Requirement documents (SRS, PRD, BRD)
+- `reports/*_Testcases.md` (dynamic naming)
 
-### Optional Inputs
-- Requirement ID convention (REQ-xx)
-- Test case format schema
+### Optional Inputs (Multi-Dimensional Coverage)
+- `reports/*_Test_Scenarios_Report.md` (dynamic naming)
+- `reports/*_Edge_Case_Report.md` (dynamic naming)
+- `reports/*_Risk_Analysis_Report.md` (dynamic naming)
+- `reports/*_Req_Gap_Report.md` → For Gap findings coverage
 
 ---
 
 ## 📤 Output
 
 Generate:
-📄 `reports/coverage_report.md`
+📄 `reports/[Requirement_Name]_Coverage_Report.md`
+
+Use template:
+📄 `templates/coverage_report.md`
 
 ---
 
 ## ⚙️ Core Processing Rules
 
 ### 1. Requirement Extraction Engine
-Extract and normalize requirements from SRS:
+Extract and normalize requirements from documents:
 
 - Functional Requirements (FR)
 - Business Rules (BR)
@@ -69,7 +76,7 @@ Parse test cases from `testcases.md`:
 
 ---
 
-### 3. Coverage Mapping Rules
+### 3. Requirement → Test Case Coverage (Primary)
 
 Each requirement must be evaluated across 3 dimensions:
 
@@ -84,7 +91,40 @@ Each requirement must be evaluated across 3 dimensions:
 
 ---
 
-### 4. Coverage Classification Logic
+### 4. Scenario → Test Case Coverage
+
+*Executes only if `reports/test_scenarios.md` is available.*
+
+For each scenario in the scenarios report:
+- Check if at least one test case covers this scenario.
+- Mark uncovered scenarios as `SCENARIO_GAP`.
+- Calculate: `Scenario Coverage % = (Covered Scenarios / Total Scenarios) × 100`
+
+---
+
+### 5. Edge Case → Test Case Coverage
+
+*Executes only if `reports/edge_case_report.md` is available.*
+
+For each edge case finding:
+- Check if at least one test case or scenario covers this edge case.
+- Mark uncovered edge cases as `EDGE_CASE_GAP`.
+- Calculate: `Edge Case Coverage % = (Covered Edge Cases / Total Edge Cases) × 100`
+
+---
+
+### 6. Risk Item → Test Case Coverage
+
+*Executes only if `reports/risk_analysis.md` is available.*
+
+For each identified risk:
+- Check if at least one test case validates the risk mitigation.
+- Prioritize: Critical and High risks with no test coverage are flagged as `CRITICAL_RISK_GAP`.
+- Calculate: `Risk Coverage % = (Covered Risks / Total Risks) × 100`
+
+---
+
+### 7. Coverage Classification Logic
 
 | Status | Condition |
 |--------|----------|
@@ -94,12 +134,15 @@ Each requirement must be evaluated across 3 dimensions:
 
 ---
 
-### 5. Gap Detection Rules
+### 8. Gap Detection Rules
 
 Detect and report:
 
 - ❌ Requirements with ZERO test cases
 - ⚠ Requirements missing Negative or Edge coverage
+- ⚠ Scenarios not converted to test cases
+- ⚠ Edge cases without test coverage
+- ⚠ Critical/High risks without test coverage
 - ⚠ Overloaded test cases (too many duplicates)
 - ⚠ Unmapped test cases (no requirement link)
 
@@ -107,7 +150,7 @@ Detect and report:
 
 ## 🔁 Failure Handling Rules
 
-### If SRS is missing or unreadable:
+### If requirement documents are missing or unreadable:
 - Return error section in report
 - Stop requirement extraction phase
 
@@ -115,9 +158,13 @@ Detect and report:
 - Generate report with requirements only
 - Mark all as ❌ UNTESTED
 
+### If optional reports are unavailable:
+- Skip corresponding coverage dimension
+- Note in report: "[Dimension] coverage not evaluated — input report unavailable."
+
 ### If requirement cannot be parsed:
 - Mark as `REQ-UNKNOWN`
-- Include in “Data Quality Issues”
+- Include in "Data Quality Issues"
 
 ---
 
@@ -148,12 +195,15 @@ Each requirement gets a score:
 - Partially Covered: Z
 - Not Covered: W
 - Unmapped Test Cases: U
-- Overall Coverage: XX%
+- Overall Requirement Coverage: XX%
+- Scenario Coverage: XX% (if available)
+- Edge Case Coverage: XX% (if available)
+- Risk Coverage: XX% (if available)
 - Average Risk Score: XX/100
 
 ---
 
-## 2. 📊 Coverage Matrix
+## 2. 📊 Requirement Coverage Matrix
 
 | Req ID | Requirement | Test Cases | Positive | Negative | Edge | Score | Status |
 |--------|------------|------------|----------|----------|------|-------|--------|
@@ -163,7 +213,40 @@ Each requirement gets a score:
 
 ---
 
-## 3. 🚨 Coverage Gaps Report
+## 3. 📊 Scenario Coverage Matrix
+
+*(Only if `reports/test_scenarios.md` is available)*
+
+| Scenario ID | Scenario Name | Covered by Test Case | Status |
+|-------------|---------------|----------------------|--------|
+| SCN-001 | Login valid | TC-01 | ✅ Covered |
+| SCN-005 | Session timeout | None | ❌ GAP |
+
+---
+
+## 4. 📊 Edge Case Coverage Matrix
+
+*(Only if `reports/edge_case_report.md` is available)*
+
+| Edge Case ID | Description | Covered by Test Case | Status |
+|--------------|-------------|----------------------|--------|
+| EDGE-001 | Double payment | TC-15 | ✅ Covered |
+| EDGE-003 | Network recovery | None | ❌ GAP |
+
+---
+
+## 5. 📊 Risk Coverage Matrix
+
+*(Only if `reports/risk_analysis.md` is available)*
+
+| Risk ID | Risk Description | Level | Covered by Test Case | Status |
+|---------|------------------|-------|----------------------|--------|
+| RISK-001 | Brute-force attack | Critical | TC-20 | ✅ Covered |
+| RISK-004 | Duplicate payment | Critical | None | 🔴 CRITICAL GAP |
+
+---
+
+## 6. 🚨 Coverage Gaps Report
 
 For each issue, include:
 
@@ -195,7 +278,7 @@ For each issue, include:
 
 ---
 
-## 4. 🧾 Data Quality Report
+## 7. 🧾 Data Quality Report
 
 - Unmapped Test Cases: TC-09, TC-12
 - Duplicate Test Cases: TC-05, TC-06
@@ -203,7 +286,7 @@ For each issue, include:
 
 ---
 
-## 5. 📈 Final Summary Insight
+## 8. 📈 Final Summary Insight
 
 - Risk Areas: High / Medium / Low
 - Most untested module: XXX

@@ -42,15 +42,15 @@ The generated scenarios serve as the primary foundation for:
 
 ## Required Inputs
 
-- `docs/SRS.md`
+- `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - Template: `templates/test_scenarios_report.md`
 
 ## Optional Inputs
 
 - `reports/business_rules.md`
-- `reports/gap_analysis.md`
-- `reports/risk_analysis.md`
-- `reports/edge_case_report.md`
+- `reports/*_Req_Gap_Report.md` (dynamic naming from requirement_gap_analyst)
+- `reports/*_Risk_Analysis_Report.md` (dynamic naming)
+- `reports/*_Edge_Case_Report.md` (dynamic naming)
 - `docs/API.md`
 - `docs/UI.md`
 - `docs/Database.md`
@@ -61,7 +61,7 @@ The generated scenarios serve as the primary foundation for:
 
 Generate:
 
-📄 `reports/test_scenarios.md`
+📄 `reports/[Requirement_Name]_Test_Scenarios_Report.md`
 
 Strictly follow:
 

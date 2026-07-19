@@ -20,19 +20,19 @@ graph TD
 
 ## Step 1: Requirement & Gap Analysis
 - **Agent**: `agents/requirement_gap_analyst.md`
-- **Output**: `reports/requirement_gap_analysis.md`
+- **Output**: `reports/[Requirement_Name]_Req_Gap_Report.md` (dynamic naming)
 - **Objective**: Tìm ra sự mâu thuẫn, thiếu sót logic trong các tài liệu requirement.
 
 ## Step 2: Edge Case Analysis
 - **Agent**: `agents/advanced_edge_case_analyzer.md`
-- **Output**: `reports/edge_case_report.md`
+- **Output**: `reports/[Requirement_Name]_Edge_Case_Report.md` (dynamic naming)
 - **Objective**: Dò tìm các rủi ro, lỗi hóc búa, hành vi bất thường.
 
 ## Step 3: Risk Analysis
 - **Agent**: `agents/risk_analyst.md`
-- **Output**: `reports/risk_analysis.md`
+- **Output**: `reports/[Requirement_Name]_Risk_Analysis_Report.md` (dynamic naming)
 - **Objective**: Đánh giá rủi ro (Security, Performance, Business) và đưa ra ma trận rủi ro.
 
 ## Step 4: Consolidation
 - **Agent**: `agents/master_orchestrator.md`
-- **Output**: Báo cáo tổng hợp Development Readiness.
+- **Output**: Báo cáo tổng hợp `reports/[Requirement_Name]_Development_Readiness_Report.md` (dynamic naming).

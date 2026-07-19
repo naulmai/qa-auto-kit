@@ -4,9 +4,9 @@
 
 ## 🧩 Skill Metadata
 - **name:** design_auditor_skill
-- **version:** 1.0.0
+- **version:** 3.0.0
 - **category:** QA / UX Validation / Design Audit
-- **description:** Audit UI/UX design documents against SRS to detect missing states, missing components, and flow mismatches.
+- **description:** Audit UI/UX design documents against SRS to detect missing states, missing components, flow mismatches, and accessibility/responsiveness gaps.
 
 ---
 
@@ -22,10 +22,10 @@ Perform deep audit of Design artifacts (UI, UX, Wireframes) against functional r
 
 ### Required
 - `docs/requirements/*` (Primary: SRS)
-- `docs/design/*` (Primary: Design descriptions, Wireframe logic, Flow docs)
+- `docs/designs/*` (Primary: Design descriptions, Wireframe logic, Flow docs)
 
 ### Minimum Requirement
-- If `docs/design/` is empty → SKIP execution (Log: "No design documents found. Skipping Design Audit.")
+- If `docs/designs/` is empty → SKIP execution (Log: "No design documents found. Skipping Design Audit.")
 
 ---
 
@@ -47,7 +47,7 @@ Use template:
 
 ### Tasks:
 - Load all functional UI requirements from `docs/requirements/`
-- Load all design elements, screens, and components from `docs/design/`
+- Load all design elements, screens, and components from `docs/designs/`
 - Build a mapping tree: [Requirement] <---> [Design Screen/Component]
 
 ---
@@ -96,7 +96,7 @@ Detect:
 
 ## 🚨 Failure Handling Rules
 
-### If `docs/design/` is empty:
+### If `docs/designs/` is empty:
 - Output: "No design documents found to audit."
 - STOP EXECUTION of this skill.
 
@@ -153,3 +153,29 @@ Clear explanation of the UI/UX mismatch.
 - ❌ NO HALLUCINATION: Do not invent design screens that aren't provided.
 - ✔ ONLY evaluate based on the provided text descriptions of the designs.
 - ✔ Focus strictly on the intersection of UI/UX and Functional Logic.
+
+---
+
+## 5. Accessibility & Responsiveness Engine
+
+### Validation Rules:
+- Designs should support accessible interaction for users with disabilities.
+- Responsive layouts should be considered for multi-device usage.
+
+Detect:
+#### ❌ Missing Accessibility
+- UI missing alt-text for images or icons.
+- UI missing keyboard navigation support.
+- UI missing sufficient color contrast (WCAG 2.1 AA).
+- UI missing focus indicators for interactive elements.
+- UI missing screen reader labels for non-text content.
+
+#### ❌ Missing Responsiveness
+- UI missing mobile viewport adaptation.
+- UI missing tablet layout considerations.
+- UI missing breakpoint handling for critical screens.
+
+#### ❌ Missing Internationalization
+- UI missing RTL (Right-to-Left) layout support (if applicable).
+- UI missing text truncation handling for longer translations.
+- UI missing dynamic text sizing for multi-language content.

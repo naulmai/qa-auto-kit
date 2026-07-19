@@ -33,13 +33,13 @@ Primary objectives:
 
 ## Required Inputs
 
-- `docs/SRS.md`
+- `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/edge_case_report.md`
 
 ## Optional Inputs
 
 - `reports/business_rules.md`
-- `reports/risk_analysis.md`
+- `reports/*_Risk_Analysis_Report.md` (dynamic naming)
 - `docs/API.md`
 - `docs/UI.md`
 - `docs/Database.md`
@@ -51,7 +51,7 @@ Primary objectives:
 
 Generate:
 
-📄 `reports/edge_case_report.md`
+📄 `reports/[Requirement_Name]_Edge_Case_Report.md`
 
 Strictly follow:
 

@@ -3,8 +3,8 @@ docs/requirements/
 docs/requirements/*
 
 # Ignore Design Files (Original)
-docs/design/
-docs/design/*
+docs/designs/
+docs/designs/*
 
 # =========================
 # ❗ Ignore ALL Current Reports

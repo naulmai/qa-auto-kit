@@ -40,15 +40,15 @@ Unlike QA Test Cases, UAT Scripts should:
 
 ## Required Inputs
 
-- `docs/SRS.md`
+- `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/uat_scripts_report.md`
 
 ## Optional Inputs
 
 - `reports/business_rules.md`
-- `reports/test_scenarios.md`
-- `reports/risk_analysis.md`
-- `reports/coverage_report.md`
+- `reports/*_Test_Scenarios_Report.md` (dynamic naming)
+- `reports/*_Risk_Analysis_Report.md` (dynamic naming)
+- `reports/*_Coverage_Report.md` (dynamic naming)
 - `docs/UI.md`
 - `docs/User_Guide.md`
 
@@ -58,7 +58,7 @@ Unlike QA Test Cases, UAT Scripts should:
 
 Generate:
 
-📄 `reports/uat_scripts.md`
+📄 `reports/[Requirement_Name]_UAT_Scripts_Report.md`
 
 Strictly follow:
 

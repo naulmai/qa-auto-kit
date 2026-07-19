@@ -2,6 +2,17 @@
 
 ---
 
+## 📄 Document Metadata
+| Property | Details |
+|----------|---------|
+| **Date Generated** | [YYYY-MM-DD] |
+| **Analyzed Documents**| [e.g., SRS_v1, PRD_v2] |
+| **Analyzed By** | Risk Analyst Skill (v3.0.0) |
+| **Total Risks Identified** | [X] |
+| **Overall Project Risk** | [🟢 Low / 🟡 Medium / 🟠 High / 🔴 Critical] |
+
+---
+
 ## 1. 📌 Executive Summary
 
 Include:
@@ -178,3 +189,6 @@ Recommend generating:
 - Negative Test Cases
 - Regression Suite
 - Exploratory Testing Checklist
+
+---
+# End of Report

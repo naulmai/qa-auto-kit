@@ -2,7 +2,16 @@
 
 ---
 
-## Purpose
+## 📄 Document Metadata
+| Property | Details |
+|----------|---------|
+| **Date Generated** | [YYYY-MM-DD] |
+| **Target Requirements** | [e.g., Host_Listing_Management.md] |
+| **Test Suite** | [e.g., testcases.md] |
+| **Total Test Cases** | [X] |
+| **Analyzed By** | Test Case Generator Skill (v3.0.0) |
+
+---
 
 This template defines the standard output structure for generated manual test cases.
 
@@ -23,6 +32,7 @@ This template defines **output format only**. All generation logic and validatio
 - Generate ONE test case per row.
 - Follow the exact column order.
 - Do not add, remove, or reorder columns.
+- **CSV Stability Warning**: Do not modify column names or insert secondary tables (such as Metadata) inside the main test case table block. Doing so breaks the CSV export parser script.
 - Use HTML `<br>` tags for multiple test steps so it renders correctly in Markdown, but ensure the descriptions are as detailed and literal as if they were written for Excel.
 - Every test case must reference exactly one primary Functional Requirement (FR ID).
 - Leave Remarks empty unless required by generation rules.

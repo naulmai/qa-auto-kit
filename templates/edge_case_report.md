@@ -7,7 +7,7 @@
 |----------|---------|
 | **Date Generated** | [YYYY-MM-DD] |
 | **Analyzed Documents**| [e.g., PRD_v1, SRS_v2] |
-| **Analyzed By** | Edge Case Discovery Skill (v2.0.0) |
+| **Analyzed By** | Edge Case Discovery Skill (v3.0.0) |
 | **System Risk Level** | [🟢 Low / 🟡 Medium / 🟠 High / 🔴 Critical] |
 
 ---
