@@ -32,7 +32,7 @@ Perform deep audit of Design artifacts (UI, UX, Wireframes) against functional r
 ## 📤 Output
 
 Generate:
-📄 `reports/design_audit.md`
+📄 `reports/[Requirement_Name]_Design_Audit_Report.md`
 
 Use template:
 📄 `templates/design_audit.md`

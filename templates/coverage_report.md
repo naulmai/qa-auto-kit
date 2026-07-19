@@ -6,7 +6,7 @@
 | Property | Details |
 |----------|---------|
 | **Date Generated** | [YYYY-MM-DD] |
-| **Target SRS** | [e.g., SRS_v1.2.md] |
+| **Target Requirements** | [e.g., Requirement_Name.md] |
 | **Test Suite** | [e.g., testcases.md] |
 | **Overall Coverage**| **[XX]%** |
 

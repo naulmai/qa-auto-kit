@@ -6,7 +6,7 @@
 | Property | Details |
 |----------|---------|
 | **Date Generated** | [YYYY-MM-DD] |
-| **Analyzed Documents**| [e.g., PRD_v1, SRS_v2] |
+| **Target Requirements** | [e.g., Requirement_Name.md] |
 | **Analyzed By** | Edge Case Discovery Skill (v3.0.0) |
 | **System Risk Level** | [🟢 Low / 🟡 Medium / 🟠 High / 🔴 Critical] |
 

@@ -117,7 +117,7 @@ These techniques are reasoning mechanisms and MUST NOT be printed unless explici
 
 Generate the primary successful business flow.
 
-Every requirement shall contain at least one Happy Path testcase.
+Every requirement shall contain at least one Happy Path testcase, where applicable.
 
 ---
 
@@ -283,13 +283,13 @@ Regression cases shall focus on previously working functionality.
 
 ## Objective
 
-Every functional requirement shall have complete and independent test coverage. No requirement shall remain partially tested.
+No approved requirement should remain partially tested unless its limitation is explicitly documented (e.g., blocked dependency, missing requirement, or out of scope).
 
 ---
 
 ## 3.1 Minimum Coverage Criteria
 
-According to **ISTQB** and **ISO/IEC/IEEE 29119** standards, a test suite is considered to have complete coverage only when it satisfies the following dimensions:
+To align with the coverage dimensions defined by **ISTQB** and **ISO/IEC/IEEE 29119** standards, the project evaluates completeness based on the following dimensions:
 
 | Coverage Dimension | Objective & Target | Standard Criteria |
 |--------------------|---------------------|-------------------|
@@ -300,9 +300,9 @@ According to **ISTQB** and **ISO/IEC/IEEE 29119** standards, a test suite is con
 | **✅ Input Coverage** | Verification of data inputs: valid, invalid, boundary values, and equivalence classes. | Equivalence Partitioning + BVA |
 | **✅ Business Rule Coverage** | Every business rule, constraint, and conditional validation is verified. | Decision Table / Logic mapping |
 | **✅ Non-functional Coverage** | Performance, Security, Accessibility, Usability, Compatibility (if inside scope). | Security & Performance checks |
-| **✅ Regression Coverage** | A suitable regression test suite exists to protect existing features from side-effects. | Automated Regression Suite |
+| **✅ Regression Coverage** | A suitable regression test suite exists to protect existing features from side-effects. | Regression Test Suite (Automated or Manual) |
 
-Coverage is evaluated as incomplete if any required dimension fails to meet its standard criteria.
+Coverage is considered complete when all applicable coverage dimensions for the requirement have been sufficiently verified based on its scope, complexity, and risk.
 
 ---
 
@@ -338,13 +338,13 @@ If a requirement cannot generate any executable testcase due to insufficient inf
 
 ---
 
-# 4. Coverage Distribution Rules
+# 4. Coverage Distribution Rules (Internal Project Policy)
 
 ## Objective
 
 Maintain balanced testing across different testing perspectives.
 
-Do not allow Functional Testing to dominate the entire suite.
+Do not allow Functional Testing to dominate the entire suite. Note: These distribution percentages are internal Project Policies and not mandated by ISTQB/ISO standards.
 
 ---
 
@@ -373,19 +373,35 @@ Before output:
 
 ---
 
-## Feature Size Rules
+## Feature Size Planning Guidelines
 
-| Feature Size | Test Case Count |
-|-------------|----------------|
-| Small Feature | 15–25 Testcases |
-| Medium Feature | Minimum 40 Testcases |
-| Large Feature | 60–120 Testcases |
-| Enterprise Feature | Generate until complete coverage is achieved |
+The following test case counts are **planning estimates only**. They are intended to guide the expected scope of test generation and SHALL NOT be treated as mandatory limits or stopping criteria.
 
-Never stop simply because the minimum count has been reached.
+| Feature Size | Typical Planning Range |
+|--------------|------------------------|
+| Small Feature | Usually 15–25 test cases |
+| Medium Feature | Usually 40–60 test cases |
+| Large Feature | Usually 60–120 test cases |
+| Enterprise Feature | Generate until complete applicable coverage is achieved |
 
-Coverage completeness has higher priority than testcase count.
+### Generation Rules
 
+- Test generation SHALL NOT stop simply because the suggested planning range has been reached.
+- The generator SHALL continue producing additional test cases whenever required to achieve complete applicable coverage.
+- Coverage completeness SHALL always take precedence over test case count.
+- The final number of test cases shall be determined by:
+  - Requirement scope
+  - Feature complexity
+  - Business risk
+  - Number of business rules
+  - Input variations
+  - Alternative and exception flows
+  - Applicable non-functional requirements
+  - Regression impact
+
+**NOTE**
+
+The planning ranges above are estimation guidelines for workload planning and review expectations only. They are **not** quality gates, acceptance criteria, or coverage targets. A feature may legitimately require fewer or more test cases depending on its scope, complexity, and risk.
 ---
 
 # 5. Test Priority Rules
@@ -445,11 +461,11 @@ Automation readiness shall be evaluated during testcase generation.
 
 ---
 
-## Automation Ratio
+## Automation Ratio (Project Policy Goal)
 
 | Test Priority | Minimum Automation Candidate |
 |--------------|------------------------------|
-| High Priority Testcases | At least 80% shall be Automation Candidate = YES |
+| High Priority Testcases | At least 80% of applicable functional/regression cases shall be Automation Candidate = YES |
 
 ---
 
@@ -604,18 +620,18 @@ Each testcase SHALL contain:
 
 | Column | Description |
 |--------|-------------|
-| TC_ID | Unique identifier: MODULE-FUNCTION-### |
+| Test Case ID | Unique identifier: MODULE-FUNCTION-### |
 | Module | High-level business module |
-| Feature | Specific feature under test |
-| Test Scenario | Business scenario description |
-| Preconditions | Required system state |
-| Test Steps | Step-by-step actions (one per step) |
+| Function | Specific feature or function under test |
+| FR ID | Functional Requirement identifier mapped to the test case |
+| Test Case Description | Business scenario description |
+| Pre-Requisite | Required system state |
+| Steps Description | Step-by-step actions (one per step) |
 | Test Data | Specific input values |
 | Expected Result | Observable outcome |
 | Priority | High / Medium / Low |
 | Severity | Critical / Major / Minor |
-| Test Type | Functional / Negative / Edge / UI / Regression / Security / Performance |
-| Requirement Reference | FR/REQ/BR ID |
+| Type | Functional / Negative / Edge / UI / Regression / Security / Performance |
 | Automation Candidate | Yes / No |
 | Remarks | ASSUMPTION_BASED / KNOWN_LIMITATION / OUT_OF_SCOPE / DEPENDENCY_REQUIRED / (empty) |
 
@@ -720,9 +736,7 @@ The generator MUST validate the complete suite before producing output.
 ## Coverage Validation
 
 - ✓ Every requirement has testcases
-- ✓ Every requirement has Functional coverage
-- ✓ Every requirement has Negative or Edge coverage
-- ✓ Regression coverage exists where applicable
+- ✓ All applicable coverage dimensions (Functional, Risk, Scenario, Input, Business Rule, Non-functional, Regression) are satisfied based on the requirement's scope, complexity, and risk.
 
 ---
 
@@ -806,7 +820,7 @@ If ANY audit fails:
 5. Repeat validation.
 6. Only return output after ALL audits pass.
 
-**CRITICAL RULE**: When executing the Self-Audit loop, you MUST output your internal audit reasoning inside an `<audit_trace> ... </audit_trace>` XML block before printing the final Markdown table. This ensures the loop resolves correctly.
+**CRITICAL RULE**: Do not output lengthy internal audit reasoning. Perform the Self-Audit internally. If requested, output a brief `<audit_summary>` listing the Passed/Failed status of the checks before printing the final Markdown table.
 
 ---
 
@@ -832,14 +846,14 @@ If any Quality Gate fails, generation SHALL restart from the affected stage.
 
 The generator SHALL automatically regenerate output when:
 
-- Coverage is incomplete.
+- Applicable coverage dimensions are incomplete based on scope/risk.
 - Duplicate testcases are detected.
 - Automation ratio is below target.
 - Requirement mapping is missing.
 - Expected Result is ambiguous.
 - Test data is unrealistic.
 - Output format is invalid.
-- Regression coverage is missing.
+- Applicable regression coverage is missing.
 
 The regenerated output shall replace the previous version.
 
@@ -881,7 +895,7 @@ The generator SHALL:
 - Never skip validation.
 - Never skip self-audit.
 - Never output duplicate testcases.
-- Never output partially covered requirements.
+- Never output partially covered requirements unless explicitly documented.
 - Never use vague wording.
 - Always maintain end-to-end traceability.
 - Always generate deterministic and review-ready test cases.
@@ -905,7 +919,7 @@ Ensure the generated Markdown table can be cleanly converted to a standard CSV f
 - **No unquoted commas inside cells**: If an input cell or expected result contains commas, do not use commas directly if possible. Alternatively, ensure the converter script quotes the fields.
 - **Enforce HTML `<br>` for line breaks**: Do not use semicolons `;` or real newlines inside table cells for step separation. Use exact `<br>` tag strings to allow clean conversion.
 - **Escape double quotes**: If a test step or text string contains a double quote (`"`), it must be escaped as `""` inside the markdown cell to prevent CSV parsing issues.
-- **Strict Column Count Alignment**: The generated table must strictly maintain the 12-column layout. Adding or removing columns on specific rows is prohibited.
+- **Strict Column Count Alignment**: The generated table must strictly maintain the 14-column layout. Adding or removing columns on specific rows is prohibited.
 
 ---
 

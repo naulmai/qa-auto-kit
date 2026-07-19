@@ -55,8 +55,8 @@ Control the full QA pipeline execution by selecting the appropriate workflow, de
 - Execute agents **strictly in the order** defined by the selected workflow.
 - Pass each agent's output as input to the next agent in the pipeline.
 - For `requirement_gap_analyst` output: downstream agents scan `reports/*_Req_Gap_Report.md` (dynamic naming).
-- **Automated CSV Trigger**: Immediately after `testcase_generator` saves `reports/testcases.md`, the system (or orchestrator) shall automatically execute the conversion script:
-  `python scripts/md_to_csv.py reports/testcases.md reports/testcases.csv` to ensure the CSV import package is always updated.
+- **Automated CSV Trigger**: Immediately after `testcase_generator` saves `reports/[Requirement_Name]_Testcases.md`, the system (or orchestrator) shall automatically execute the conversion script:
+  `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv` to ensure the CSV import package is always updated.
 
 ### Step 4: Conditional Steps
 - `design_auditor` → **SKIP** if `docs/designs/` is empty.

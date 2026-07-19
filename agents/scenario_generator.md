@@ -293,7 +293,7 @@ Generate:
 
 Leverage findings from:
 
-`reports/edge_case_report.md`
+`reports/*_Edge_Case_Report.md`
 
 Generate scenarios for:
 
@@ -324,7 +324,7 @@ Every requirement should generate:
 
 Use:
 
-`reports/risk_analysis.md`
+`reports/*_Risk_Analysis_Report.md`
 
 when available.
 

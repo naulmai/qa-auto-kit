@@ -93,7 +93,7 @@ Each requirement must be evaluated across 3 dimensions:
 
 ### 4. Scenario → Test Case Coverage
 
-*Executes only if `reports/test_scenarios.md` is available.*
+*Executes only if `reports/*_Test_Scenarios_Report.md` is available.*
 
 For each scenario in the scenarios report:
 - Check if at least one test case covers this scenario.
@@ -104,7 +104,7 @@ For each scenario in the scenarios report:
 
 ### 5. Edge Case → Test Case Coverage
 
-*Executes only if `reports/edge_case_report.md` is available.*
+*Executes only if `reports/*_Edge_Case_Report.md` is available.*
 
 For each edge case finding:
 - Check if at least one test case or scenario covers this edge case.
@@ -115,7 +115,7 @@ For each edge case finding:
 
 ### 6. Risk Item → Test Case Coverage
 
-*Executes only if `reports/risk_analysis.md` is available.*
+*Executes only if `reports/*_Risk_Analysis_Report.md` is available.*
 
 For each identified risk:
 - Check if at least one test case validates the risk mitigation.
@@ -216,7 +216,7 @@ Each requirement gets a score:
 
 ## 3. 📊 Scenario Coverage Matrix
 
-*(Only if `reports/test_scenarios.md` is available)*
+*(Only if `reports/*_Test_Scenarios_Report.md` is available)*
 
 | Scenario ID | Scenario Name | Covered by Test Case | Status |
 |-------------|---------------|----------------------|--------|
@@ -227,7 +227,7 @@ Each requirement gets a score:
 
 ## 4. 📊 Edge Case Coverage Matrix
 
-*(Only if `reports/edge_case_report.md` is available)*
+*(Only if `reports/*_Edge_Case_Report.md` is available)*
 
 | Edge Case ID | Description | Covered by Test Case | Status |
 |--------------|-------------|----------------------|--------|
@@ -238,7 +238,7 @@ Each requirement gets a score:
 
 ## 5. 📊 Risk Coverage Matrix
 
-*(Only if `reports/risk_analysis.md` is available)*
+*(Only if `reports/*_Risk_Analysis_Report.md` is available)*
 
 | Risk ID | Risk Description | Level | Covered by Test Case | Status |
 |---------|------------------|-------|----------------------|--------|

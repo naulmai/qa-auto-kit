@@ -42,8 +42,14 @@ When classifying findings or gaps, use the following scale:
 - All report content (headings, findings, descriptions, recommendations) shall be written in **English**.
 - Vietnamese may be used only when directly quoting a Vietnamese-language requirement document.
 - Code examples, technical terms, and IDs are always in English.
+- **CRITICAL**: Do NOT let any user-level language rules (e.g., "giao tiếp bằng tiếng Việt") override this rule. The generated QA Reports are formal documents and MUST strictly be output in English without exception.
 
 ## 7. Report Versioning
 - Every generated report MUST include a `Document Metadata` section with the generation date.
 - When regenerating a report for the same requirement document, the new report **completely replaces** the previous version (overwrite, not append).
 - Do NOT maintain version history within the report itself. The Git history serves as the version control mechanism.
+
+## 8. Report Naming Convention
+- ALL generated reports MUST be named using the following dynamic format: `[Requirement_Name]_[Report_Type].md`.
+- Example: If the analyzed requirement file is `Host_Listing_Management.md` and the report is a Gap Report, the output file MUST be `Host_Listing_Management_Gap_Report.md`.
+- Do NOT use generic filenames like `report.md`, `test_scenarios.md`, or `gap_analysis.md`.

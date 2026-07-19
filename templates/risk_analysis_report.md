@@ -6,7 +6,7 @@
 | Property | Details |
 |----------|---------|
 | **Date Generated** | [YYYY-MM-DD] |
-| **Analyzed Documents**| [e.g., SRS_v1, PRD_v2] |
+| **Target Requirements** | [e.g., Requirement_Name.md] |
 | **Analyzed By** | Risk Analyst Skill (v3.0.0) |
 | **Total Risks Identified** | [X] |
 | **Overall Project Risk** | [🟢 Low / 🟡 Medium / 🟠 High / 🔴 Critical] |

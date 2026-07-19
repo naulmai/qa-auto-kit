@@ -31,7 +31,7 @@ def markdown_to_csv(md_path, csv_path):
         print(f"Error: No Markdown table found in '{md_path}'.")
         return
 
-    # Lựa chọn bảng có số lượng cột lớn nhất (thường là bảng test cases với 12 cột, bỏ qua bảng metadata chỉ có 2 cột)
+    # Lựa chọn bảng có số lượng cột lớn nhất (thường là bảng test cases với 14 cột, bỏ qua bảng metadata chỉ có 2 cột)
     target_table = None
     max_cols = 0
     for t in tables:

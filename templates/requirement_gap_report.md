@@ -6,7 +6,7 @@
 | Property | Details |
 |----------|---------|
 | **Date Generated** | [YYYY-MM-DD] |
-| **Documents Analyzed**| [e.g., PRD_v1, SRS_v2] |
+| **Target Requirements** | [e.g., Requirement_Name.md] |
 | **Analyzed By** | Requirement & Gap Analyst (v3.0.0) |
 | **Requirement Quality Score** | **[XX]%** |
 | **Overall Health** | [🟢 Healthy / 🟡 Needs Revision / 🔴 High Risk] |

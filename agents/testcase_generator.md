@@ -30,7 +30,7 @@ Generate a complete, executable, traceable, and review-ready manual test suite d
 - `reports/*_Req_Gap_Report.md` (from requirement_gap_analyst — identifies gaps to cover)
 - `reports/*_Risk_Analysis_Report.md` (from risk_analyst — drives priority assignment)
 - `reports/*_Edge_Case_Report.md` (from advanced_edge_case_analyzer — edge cases to include)
-- `reports/design_audit.md` (from design_auditor — UI-specific test cases)
+- `reports/*_Design_Audit_Report.md` (from design_auditor — UI-specific test cases)
 
 ---
 
@@ -56,10 +56,10 @@ Execute the following engines **sequentially**. No engine may be skipped.
 - Decompose compound requirements into atomic functional behaviors.
 
 ### Engine 2: Input Cross-Reference
-- If `reports/test_scenarios.md` exists → use scenarios as the primary skeleton for test case generation.
-- If `reports/risk_analysis.md` exists → use risk levels to assign priority (Critical→High, High→High, Medium→Medium, Low→Low).
-- If `reports/edge_case_report.md` exists → generate dedicated test cases for each edge case finding.
-- If `reports/design_audit.md` exists → generate UI-specific test cases for each design defect.
+- If `reports/*_Test_Scenarios_Report.md` exists → use scenarios as the primary skeleton for test case generation.
+- If `reports/*_Risk_Analysis_Report.md` exists → use risk levels to assign priority (Critical→High, High→High, Medium→Medium, Low→Low).
+- If `reports/*_Edge_Case_Report.md` exists → generate dedicated test cases for each edge case finding.
+- If `reports/*_Design_Audit_Report.md` exists → generate UI-specific test cases for each design defect.
 
 ### Engine 3: Test Design
 - Apply all test design techniques defined in `rules/test_generation_rules.md`:
@@ -93,7 +93,7 @@ Execute the following engines **sequentially**. No engine may be skipped.
 
 ### Engine 8: Self Review
 - Run the Self Audit Engine defined in `rules/test_generation_rules.md` Section 15.
-- Output audit reasoning inside `<audit_trace>` block before the final table.
+- Output a brief `<audit_summary>` block listing the Passed/Failed status of the checks before printing the final table.
 - If ANY audit step fails → regenerate affected test cases and re-validate.
 
 ### Engine 9: Output Formatting
