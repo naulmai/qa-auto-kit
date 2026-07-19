@@ -125,12 +125,13 @@ For each identified risk:
 ---
 
 ### 7. Coverage Classification Logic
+We evaluate coverage based on the 8 dimensions of **ISTQB** and **ISO/IEC/IEEE 29119**:
 
 | Status | Condition |
 |--------|----------|
-| ✅ FULL | Positive + Negative + Edge exist |
-| ⚠ PARTIAL | Only Positive OR missing one dimension |
-| ❌ NONE | No test cases mapped |
+| ✅ FULL | 100% Requirement, Functional, Risk, Scenario, Input (Valid/Invalid/Boundary), Business Rule, and Regression coverage are satisfied. |
+| ⚠ PARTIAL | Mapped positive functional tests exist, but missing one or more of: Negative, Boundary, Risk, or Business Rule coverage. |
+| ❌ NONE | No test cases are mapped to the Requirement ID. |
 
 ---
 

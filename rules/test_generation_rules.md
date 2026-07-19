@@ -279,25 +279,30 @@ Regression cases shall focus on previously working functionality.
 
 ---
 
-# 3. Requirement Coverage Rules
+# 3. Requirement Coverage Rules (ISTQB & ISO/IEC/IEEE 29119 Aligned)
 
 ## Objective
 
-Every functional requirement shall have complete and independent test coverage.
-
-No requirement shall remain partially tested.
+Every functional requirement shall have complete and independent test coverage. No requirement shall remain partially tested.
 
 ---
 
-## 3.1 Minimum Coverage Requirement
+## 3.1 Minimum Coverage Criteria
 
-Each Requirement ID (REQ / FR / BR) SHALL include:
+According to **ISTQB** and **ISO/IEC/IEEE 29119** standards, a test suite is considered to have complete coverage only when it satisfies the following dimensions:
 
-- At least one Functional testcase
-- At least one Negative OR Edge testcase
-- At least one Regression testcase (if applicable)
+| Coverage Dimension | Objective & Target | Standard Criteria |
+|--------------------|---------------------|-------------------|
+| **✅ Requirement Coverage** | All requirements/acceptance criteria have corresponding test cases (100% traceability). | Traceability Matrix (Requirement ID ➔ Test Case ID) |
+| **✅ Functional Coverage** | All functions and primary/secondary business flows are fully tested. | Happy Path, Alternative Flows |
+| **✅ Risk Coverage** | High-risk areas are prioritized, mitigation is verified, and fully tested. | Risk Register ➔ Mitigation validation |
+| **✅ Scenario Coverage** | Complete coverage of Happy Path, Alternative Flow, and Exception Flow. | Use Case/Scenario matrix |
+| **✅ Input Coverage** | Verification of data inputs: valid, invalid, boundary values, and equivalence classes. | Equivalence Partitioning + BVA |
+| **✅ Business Rule Coverage** | Every business rule, constraint, and conditional validation is verified. | Decision Table / Logic mapping |
+| **✅ Non-functional Coverage** | Performance, Security, Accessibility, Usability, Compatibility (if inside scope). | Security & Performance checks |
+| **✅ Regression Coverage** | A suitable regression test suite exists to protect existing features from side-effects. | Automated Regression Suite |
 
-Coverage is considered incomplete if any category is missing.
+Coverage is evaluated as incomplete if any required dimension fails to meet its standard criteria.
 
 ---
 
