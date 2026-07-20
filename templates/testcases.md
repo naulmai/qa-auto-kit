@@ -100,13 +100,6 @@ The following techniques MUST be listed. For each, describe what was specificall
 
 > **Rule**: ALL rules must be listed exactly as above using `✅ Applied` or `❌ Not Applied`. Do NOT omit any rule.
 
-## 📊 Coverage Summary
-
-| Coverage Metric | Status / Score |
-|-----------------|----------------|
-| **Requirement Coverage** | [e.g., 100% (All FRs covered)] |
-| **Automation Candidate Ratio** | [e.g., 85% (X out of Y test cases)] |
-| **Test Type Distribution** | Functional: [X]% <br> Negative: [X]% <br> Edge/Concurrency: [X]% <br> Security: [X]% <br> UI/UX: [X]% |
 
 ## 🧨 Edge Case Summary
 
