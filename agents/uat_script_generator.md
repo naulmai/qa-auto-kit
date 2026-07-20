@@ -207,7 +207,7 @@ Verify:
 
 # 8. Risk-based UAT Enhancement
 
-If `risk_analysis.md` is available:
+If `reports/*_Risk_Analysis_Report.md` is available:
 
 Generate additional UAT scripts for:
 

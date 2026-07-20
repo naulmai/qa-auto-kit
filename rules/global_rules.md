@@ -53,3 +53,13 @@ When classifying findings or gaps, use the following scale:
 - ALL generated reports MUST be named using the following dynamic format: `[Requirement_Name]_[Report_Type].md`.
 - Example: If the analyzed requirement file is `Host_Listing_Management.md` and the report is a Gap Report, the output file MUST be `Host_Listing_Management_Gap_Report.md`.
 - Do NOT use generic filenames like `report.md`, `test_scenarios.md`, or `gap_analysis.md`.
+
+## 9. Requirement Clarity Gate (Global)
+- Before ANY analysis or generation, ALL agents MUST assess the clarity of the provided requirement.
+- If the requirement contains **Critical-level ambiguities** that would cause fundamentally unreliable output:
+  - **PAUSE** execution immediately.
+  - Output a list of **Clarification Questions** for the user.
+  - Output a list of **Generation Blockers / Hallucination Risks** associated with proceeding.
+  - Wait for user clarification before resuming.
+- Minor ambiguities (Medium/Low severity) may be noted as findings and processing may continue.
+- This rule applies to ALL agents, not just the testcase_generator.

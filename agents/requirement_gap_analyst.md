@@ -57,3 +57,20 @@ Perform a unified Senior BA + QA hybrid review of requirements to ensure:
 - If requirement is not testable → it is incomplete.
 - If upstream feature is missing downstream → it is a gap.
 - Every business rule must have: Input, Process, Output, Failure behavior.
+
+---
+
+## ⚠️ Failure Handling
+
+### If requirement documents are missing:
+- **STOP** execution.
+- Output: "No requirement documents found in docs/requirements/."
+
+### If requirement is severely ambiguous (Critical-level ambiguity detected):
+- **PAUSE** analysis immediately.
+- Output a list of **Clarification Questions** for the user to resolve the critical ambiguities.
+- Output a list of **Generation Blockers / Hallucination Risks** associated with proceeding.
+- Wait for the user to provide clarification before resuming.
+- Minor ambiguities (Medium/Low) may be reported as findings and processing may continue.
+
+### Never invent undocumented requirements or features.

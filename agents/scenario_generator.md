@@ -441,9 +441,11 @@ Generate recommendations.
 
 ### Ambiguous Requirement
 
-- Generate scenario
-- Flag assumption
-- Lower confidence level
+- **PAUSE** generation immediately. Do NOT generate any scenarios.
+- Output a list of **Clarification Questions** targeting the specific ambiguous points.
+- Output a list of **Generation Blockers / Hallucination Risks** that would occur if proceeding without clarification.
+- Wait for the user to provide answers before resuming generation.
+- Only resume after clarification is received. If user explicitly accepts risk → generate scenarios, flag assumption, and lower confidence level.
 
 ---
 

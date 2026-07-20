@@ -100,7 +100,7 @@ Execute the following engines **sequentially**. No engine may be skipped.
 - Format output strictly following `templates/testcases.md`.
 - Use HTML `<br>` tags for multi-step cells.
 - Ensure TC_IDs are unique and sequential.
-- Apply Token Limit Handling if suite exceeds 40 test cases.
+- Apply Token Limit Handling if suite exceeds 60 test cases.
 
 ### Engine 10: Post-Generation CSV Export
 - Do **not** attempt to generate CSV text directly in the output.
@@ -123,8 +123,11 @@ Execute the following engines **sequentially**. No engine may be skipped.
 - Output: "No requirement documents found in docs/requirements/."
 
 ### If requirement is ambiguous:
-- Generate best-effort test cases.
-- Mark Remarks = `ASSUMPTION_BASED`.
+- **PAUSE** test generation immediately. Do NOT generate any test cases.
+- Output a list of **Clarification Questions** targeting the specific ambiguous points.
+- Output a list of **Generation Blockers / Hallucination Risks** that would occur if proceeding without clarification.
+- Wait for the user to provide answers before resuming generation.
+- Only resume after clarification is received. If user explicitly accepts risk → generate test cases and mark Remarks = `ASSUMPTION_BASED`.
 
 ### If design documents are unavailable:
 - Generate test cases using requirements only.

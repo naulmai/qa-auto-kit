@@ -38,65 +38,65 @@ The following techniques MUST be listed. For each, describe what was specificall
 | 4 | **Dependency Identification** | §1.4 | ✅ Applied | [Description] |
 | 5 | **High Risk Analysis** | §1.5 | ✅ Applied | [Description] |
 | 6 | **Regression Impact Analysis** | §1.6 | ❌ Not Applied | [Reason] |
-| 7 | **Happy Path** | §2.1 | ✅ Applied | [Description] |
-| 8 | **Negative Testing** | §2.2 | ✅ Applied | [Description] |
-| 9 | **Boundary Value Analysis (BVA)** | §2.3 | ✅ Applied | [Description] |
-| 10| **Equivalence Partitioning** | §2.4 | ❌ Not Applied | [Reason] |
-| 11| **State Transition Testing** | §2.5 | ✅ Applied | [Description] |
-| 12| **Decision Table Testing** | §2.6 | ❌ Not Applied | [Reason] |
-| 13| **Role-Based Testing** | §2.7 | ❌ Not Applied | [Reason] |
-| 14| **Error Guessing** | §2.8 | ✅ Applied | [Description] |
-| 15| **Error Handling** | §2.9 | ✅ Applied | [Description] |
-| 16| **Security Testing** | §2.10 | ✅ Applied | [Description] |
-| 17| **Performance Testing** | §2.11 | ❌ Not Applied | [Reason] |
-| 18| **UI / UX Validation** | §2.12 | ✅ Applied | [Description] |
-| 19| **Regression Testing** | §2.13 | ❌ Not Applied | [Reason] |
-| 20| **Context-Aware Integration** | §2.14 | ✅ Applied | [Description] |
-| 21| **Minimum Coverage Criteria** | §3.1 | ✅ Applied | [Description] |
-| 22| **Requirement Traceability** | §3.2 | ✅ Applied | [Description] |
-| 23| **Multiple Requirement Rule** | §3.3 | ✅ Applied | [Description] |
-| 24| **Missing Requirement Handling** | §3.4 | ❌ Not Applied | [Reason] |
-| 25| **Cross-Artifact Traceability** | §3.5 | ✅ Applied | [Description] |
-| 26| **Coverage Distribution Rules** | §4 | ✅ Applied | [Description] |
-| 27| **Priority Assignment** | §5.1 | ✅ Applied | [Description] |
-| 28| **Priority Consistency Rule** | §5.2 | ✅ Applied | [Description] |
-| 29| **Severity Classification** | §6.1 | ✅ Applied | [Description] |
-| 30| **Automation Candidate** | §7.1 | ✅ Applied | [Description] |
-| 31| **Automation Ratio** | §7.2 | ✅ Applied | [Description] |
-| 32| **Automation Validation** | §7.3 | ✅ Applied | [Description] |
-| 33| **Duplicate Definition** | §8.1 | ✅ Applied | [Description] |
-| 34| **Merge Rule** | §8.2 | ✅ Applied | [Description] |
-| 35| **Duplicate Self Audit** | §8.3 | ✅ Applied | [Description] |
-| 36| **Allowed Atomicity** | §9.1 | ✅ Applied | [Description] |
-| 37| **Not Allowed Atomicity** | §9.2 | ✅ Applied | [Description] |
-| 38| **Action Rule** | §9.3 | ✅ Applied | [Description] |
-| 39| **Test Data Examples** | §10.1 | ✅ Applied | [Description] |
-| 40| **Boundary Data** | §10.2 | ✅ Applied | [Description] |
-| 41| **Expected Result Standards** | §11 | ✅ Applied | [Description] |
-| 42| **Output Structure** | §12.1 | ✅ Applied | [Description] |
-| 43| **TC_ID Convention** | §12.2 | ✅ Applied | [Description] |
-| 44| **Test Step Rules** | §12.3 | ✅ Applied | [Description] |
-| 45| **Step Writing Standard** | §12.4 | ✅ Applied | [Description] |
-| 46| **HTML Line Break Rule** | §12.5a | ✅ Applied | [Description] |
-| 47| **Artifact Synchronization Rule** | §12.5b | ✅ Applied | [Description] |
-| 48| **Applied Rules Listing Standard** | §12.6 | ✅ Applied | [Description] |
-| 49| **Review Criteria** | §13.1 | ✅ Applied | [Description] |
-| 50| **Review Principle** | §13.2 | ✅ Applied | [Description] |
-| 51| **Pre-Output Coverage Validation** | §14.1 | ✅ Applied | [Description] |
-| 52| **Pre-Output Distribution Validation** | §14.2 | ✅ Applied | [Description] |
-| 53| **Pre-Output Automation Validation** | §14.3 | ✅ Applied | [Description] |
-| 54| **Pre-Output Duplicate Validation** | §14.4 | ✅ Applied | [Description] |
-| 55| **Pre-Output Quality Validation** | §14.5 | ✅ Applied | [Description] |
-| 56| **Pre-Output Format Validation** | §14.6 | ✅ Applied | [Description] |
-| 57| **Audit Sequence** | §15.1 | ✅ Applied | [Description] |
-| 58| **Failure Handling** | §15.2 | ❌ Not Applied | [Reason] |
-| 59| **Quality Gates** | §16 | ✅ Applied | [Description] |
-| 60| **AI Regeneration Rules** | §17 | ❌ Not Applied | [Reason] |
-| 61| **Generation Order** | §18.1 | ✅ Applied | [Description] |
-| 62| **Mandatory Principles** | §18.2 | ✅ Applied | [Description] |
-| 63| **Token Limit / Handling** | §18.3 | ❌ Not Applied | [Reason] |
-| 64| **CSV & Excel Formatting Rules** | §19 | ✅ Applied | [Description] |
-| 65| **Exhaustive Generation Rule** | §13 | ✅ Applied | [Description] |
+| 7 | **Requirement Clarity & Ambiguity Handling** | §1.7 | ✅ Applied | [Description] |
+| 8 | **Happy Path** | §2.1 | ✅ Applied | [Description] |
+| 9 | **Negative Testing** | §2.2 | ✅ Applied | [Description] |
+| 10| **Boundary Value Analysis (BVA)** | §2.3 | ✅ Applied | [Description] |
+| 11| **Equivalence Partitioning** | §2.4 | ❌ Not Applied | [Reason] |
+| 12| **State Transition Testing** | §2.5 | ✅ Applied | [Description] |
+| 13| **Decision Table Testing** | §2.6 | ❌ Not Applied | [Reason] |
+| 14| **Role-Based Testing** | §2.7 | ❌ Not Applied | [Reason] |
+| 15| **Error Guessing** | §2.8 | ✅ Applied | [Description] |
+| 16| **Error Handling** | §2.9 | ✅ Applied | [Description] |
+| 17| **Security Testing** | §2.10 | ✅ Applied | [Description] |
+| 18| **Performance Testing** | §2.11 | ❌ Not Applied | [Reason] |
+| 19| **UI / UX Validation** | §2.12 | ✅ Applied | [Description] |
+| 20| **Regression Testing** | §2.13 | ❌ Not Applied | [Reason] |
+| 21| **Context-Aware Integration** | §2.14 | ✅ Applied | [Description] |
+| 22| **Minimum Coverage Criteria** | §3.1 | ✅ Applied | [Description] |
+| 23| **Requirement Traceability** | §3.2 | ✅ Applied | [Description] |
+| 24| **Multiple Requirement Rule** | §3.3 | ✅ Applied | [Description] |
+| 25| **Missing Requirement Handling** | §3.4 | ❌ Not Applied | [Reason] |
+| 26| **Cross-Artifact Traceability** | §3.5 | ✅ Applied | [Description] |
+| 27| **Coverage Distribution Rules** | §4 | ✅ Applied | [Description] |
+| 28| **Priority Assignment** | §5.1 | ✅ Applied | [Description] |
+| 29| **Priority Consistency Rule** | §5.2 | ✅ Applied | [Description] |
+| 30| **Severity Classification** | §6.1 | ✅ Applied | [Description] |
+| 31| **Automation Candidate** | §7.1 | ✅ Applied | [Description] |
+| 32| **Automation Ratio** | §7.2 | ✅ Applied | [Description] |
+| 33| **Automation Validation** | §7.3 | ✅ Applied | [Description] |
+| 34| **Duplicate Definition** | §8.1 | ✅ Applied | [Description] |
+| 35| **Merge Rule** | §8.2 | ✅ Applied | [Description] |
+| 36| **Duplicate Self Audit** | §8.3 | ✅ Applied | [Description] |
+| 37| **Allowed Atomicity** | §9.1 | ✅ Applied | [Description] |
+| 38| **Not Allowed Atomicity** | §9.2 | ✅ Applied | [Description] |
+| 39| **Action Rule** | §9.3 | ✅ Applied | [Description] |
+| 40| **Test Data Examples** | §10.1 | ✅ Applied | [Description] |
+| 41| **Boundary Data** | §10.2 | ✅ Applied | [Description] |
+| 42| **Expected Result Standards** | §11 | ✅ Applied | [Description] |
+| 43| **Output Structure** | §12.1 | ✅ Applied | [Description] |
+| 44| **TC_ID Convention** | §12.2 | ✅ Applied | [Description] |
+| 45| **Test Step Rules** | §12.3 | ✅ Applied | [Description] |
+| 46| **Step Writing Standard** | §12.4 | ✅ Applied | [Description] |
+| 47| **HTML Line Break Rule** | §12.5a | ✅ Applied | [Description] |
+| 48| **Artifact Synchronization Rule** | §12.5b | ✅ Applied | [Description] |
+| 49| **Applied Rules Listing Standard** | §12.6 | ✅ Applied | [Description] |
+| 50| **Review Criteria** | §13.1 | ✅ Applied | [Description] |
+| 51| **Review Principle** | §13.2 | ✅ Applied | [Description] |
+| 52| **Pre-Output Coverage Validation** | §14.1 | ✅ Applied | [Description] |
+| 53| **Pre-Output Distribution Validation** | §14.2 | ✅ Applied | [Description] |
+| 54| **Pre-Output Automation Validation** | §14.3 | ✅ Applied | [Description] |
+| 55| **Pre-Output Duplicate Validation** | §14.4 | ✅ Applied | [Description] |
+| 56| **Pre-Output Quality Validation** | §14.5 | ✅ Applied | [Description] |
+| 57| **Pre-Output Format Validation** | §14.6 | ✅ Applied | [Description] |
+| 58| **Audit Sequence** | §15.1 | ✅ Applied | [Description] |
+| 59| **Failure Handling** | §15.2 | ❌ Not Applied | [Reason] |
+| 60| **Quality Gates** | §16 | ✅ Applied | [Description] |
+| 61| **AI Regeneration Rules** | §17 | ❌ Not Applied | [Reason] |
+| 62| **Generation Order** | §18.1 | ✅ Applied | [Description] |
+| 63| **Mandatory Principles** | §18.2 | ✅ Applied | [Description] |
+| 64| **Token Limit / Handling** | §18.3 | ❌ Not Applied | [Reason] |
+| 65| **CSV & Excel Formatting Rules** | §19 | ✅ Applied | [Description] |
 
 > **Rule**: ALL rules must be listed exactly as above using `✅ Applied` or `❌ Not Applied`. Do NOT omit any rule.
 

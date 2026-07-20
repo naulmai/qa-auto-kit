@@ -105,6 +105,18 @@ Regression scope shall be included in generated test cases where applicable.
 
 ---
 
+## 1.7 Requirement Clarity & Ambiguity Handling
+
+Before generating test cases, the AI MUST assess the clarity and completeness of the provided requirement.
+If the requirement is ambiguous, lacks critical details, or contains contradictions, the AI MUST:
+
+1. **PAUSE** test generation immediately. Do NOT generate any test cases.
+2. Output a list of **Clarification Questions** for the user to resolve the ambiguities.
+3. Output a list of **Generation Blockers / Hallucination Risks** associated with proceeding with the current unclear requirements (instead of general risk analysis).
+4. Wait for the user to provide clarification before resuming generation.
+
+---
+
 # 2. Test Design Rules
 
 The generator shall internally apply professional QA test design techniques.
@@ -395,22 +407,28 @@ Before output:
 
 ---
 
-## Feature Size Planning Guidelines
+## Feature Size Requirements (Mandatory Minimums)
 
-The following test case counts are **planning estimates only**. They are intended to guide the expected scope of test generation and SHALL NOT be treated as mandatory limits or stopping criteria.
+The following test case counts are **MANDATORY MINIMUMS**. They are intended to ensure sufficient coverage scale based on feature complexity. The generator MUST NEVER produce fewer test cases than the specified minimum for the given feature size.
 
-| Feature Size | Typical Planning Range |
-|--------------|------------------------|
-| Small Feature | Usually 15–25 test cases |
-| Medium Feature | Usually 40–60 test cases |
-| Large Feature | Usually 60–120 test cases |
-| Enterprise Feature | Generate until complete applicable coverage is achieved |
+| Feature Size | Mandatory Minimum | Typical Planning Range |
+|--------------|-------------------|------------------------|
+| Small Feature | ≥ 15 test cases   | 15–40 test cases       |
+| Medium Feature | ≥ 40 test cases   | 40–60 test cases       |
+| Major Feature | ≥ 60 test cases   | 60–120 test cases      |
+| Enterprise Feature | Generate until complete | Generate until complete applicable coverage is achieved |
 
 ### Generation Rules
 
-- Test generation SHALL NOT stop simply because the suggested planning range has been reached.
+- **Enforced Minimums**: The AI generator MUST strictly adhere to the following minimums based on feature size:
+  - **If Feature Size = Small** → Generate minimum 15 test cases.
+  - **If Feature Size = Medium** → Generate minimum 40 test cases.
+  - **If Feature Size = Major** → Generate minimum 60 test cases (aiming for 60-120).
+  - **If Feature Size = Enterprise** → Generate until complete applicable coverage is achieved.
+- If the initial generation yields fewer test cases than the minimum for the feature size, the AI MUST iterate and generate additional edge cases, negative cases, security cases, and performance cases until the minimum is met.
+- Test generation SHALL NOT stop simply because the suggested typical planning range has been reached.
 - The generator SHALL continue producing additional test cases whenever required to achieve complete applicable coverage.
-- Coverage completeness SHALL always take precedence over test case count.
+- Coverage completeness SHALL always take precedence over test case count, meaning you must exceed the minimum if necessary.
 - The final number of test cases shall be determined by:
   - Requirement scope
   - Feature complexity
@@ -423,7 +441,7 @@ The following test case counts are **planning estimates only**. They are intende
 
 **NOTE**
 
-The planning ranges above are estimation guidelines for workload planning and review expectations only. They are **not** quality gates, acceptance criteria, or coverage targets. A feature may legitimately require fewer or more test cases depending on its scope, complexity, and risk.
+The mandatory minimums above are strict quality gates. A feature cannot be considered adequately tested if it falls below these minimums.
 ---
 
 # 5. Test Priority Rules
@@ -949,7 +967,7 @@ The generator SHALL:
 
 ## Token Limit / Large Suite Handling
 
-If the generated test suite is too large to fit in a single AI response (e.g., > 40 test cases), automatically pause at a safe boundary and output:
+If the generated test suite is too large to fit in a single AI response (e.g., > 60 test cases), automatically pause at a safe boundary and output:
 **"Part 1 completed. Type CONTINUE to generate the next batch."**
 Ensure no test case is cut off in the middle of the table.
 
@@ -969,8 +987,3 @@ Ensure the generated Markdown table can be cleanly converted to a standard CSV f
 ---
 
 # End of Test Generation Rules
-## 13. Exhaustive Generation Rule
-All test case generation must be exhaustive. The agent MUST NOT artificially limit, truncate, or summarize the number of test cases to save tokens or time. If 65 cases are required to achieve 100% boundary and negative coverage, all 65 must be explicitly generated.
-
-## 12.6 Applied Rules Listing Standard
-In the 'Applied Generation Rules' section of the report, the agent MUST explicitly list ALL rules (from Section 1 to Section 19) defined in the rulebook. For each rule, state whether it was 'Applied' or 'Not Applied'. If 'Not Applied', the agent MUST provide a specific reason why it was not applicable to the current requirement scope.
