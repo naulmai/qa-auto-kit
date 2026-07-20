@@ -468,13 +468,13 @@ Severity shall NOT be determined by testcase complexity.
 
 ---
 
-# 7. Automation Governance Rules
+# 7. Automation & UAT Governance Rules
 
-Automation readiness shall be evaluated during testcase generation.
+Automation and User Acceptance Testing readiness shall be evaluated during testcase generation.
 
 ---
 
-## Automation Candidate
+## 7.1 Automation Candidate
 
 | Classification | Criteria |
 |---------------|----------|
@@ -483,20 +483,31 @@ Automation readiness shall be evaluated during testcase generation.
 
 ---
 
-## Automation Ratio (Project Policy Goal)
+## 7.2 Automation Ratio (Project Policy Goal)
 
-| Test Priority | Minimum Automation Candidate |
-|--------------|------------------------------|
-| High Priority Testcases | At least 80% of applicable functional/regression cases shall be Automation Candidate = YES |
+- **Rule**: At least **80% of HIGH priority** test cases MUST be marked as `Automation Candidate = Yes`.
+- If the ratio falls below 80% for High priority cases, adjust distribution before finalizing output.
 
 ---
 
-## Validation
+## 7.3 UAT Script Governance Rule
+
+The `UAT Script` column flags test scenarios that are highly relevant for business acceptance testing.
+
+- **Rule**: `UAT Script = Yes` when Priority = High OR Priority = Medium.
+- **Rule**: `UAT Script = No` when Priority = Low.
+
+*Note: The UAT_Script flag provides traceability for the separate `generate-uat-script` skill, which filters these cases for final customer validation.*
+
+---
+
+## 7.4 Validation
 
 Before output:
 
-1. Calculate Automation Coverage %.
-2. If Automation % < 80% → Generate or adjust testcase classification until requirement is met.
+1. Calculate Automation Coverage % for High Priority cases.
+2. If Automation % for High Priority < 80% -> Generate or adjust testcase classification until requirement is met.
+3. Validate that ALL High and Medium priority cases have `UAT Script = Yes`.
 
 ---
 

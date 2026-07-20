@@ -100,7 +100,6 @@ The following techniques MUST be listed. For each, describe what was specificall
 
 > **Rule**: ALL rules must be listed exactly as above using `✅ Applied` or `❌ Not Applied`. Do NOT omit any rule.
 
-
 ## 🧨 Edge Case Summary
 
 > This section maps edge cases from the Edge Case Report into the test suite. Each row traces an edge case finding back to its source and the test case(s) that cover it.

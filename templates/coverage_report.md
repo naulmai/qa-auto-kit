@@ -20,6 +20,7 @@
 | **Negative Path Coverage** | [XX]% | [✅ / ⚠️ / ❌] |
 | **Edge/Boundary Coverage** | [XX]% | [✅ / ⚠️ / ❌] |
 | **Automation Candidate Ratio** | [XX]% | [✅ / ⚠️ / ❌] |
+| **UAT Script Coverage** | [Count] cases | [✅ / ⚠️ / ❌] |
 | **Test Type Distribution** | Functional: [X]% <br> Negative: [X]% <br> Edge: [X]% | - |
 | **Fully Covered Requirements** | [Y] / [Total] | - |
 | **Untested Requirements** | [Z] / [Total] | - |
