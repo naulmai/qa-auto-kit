@@ -13,6 +13,141 @@
 
 ---
 
+## 🛠️ Applied Test Design Techniques
+
+The following techniques MUST be listed. For each, describe what was specifically validated:
+
+- **Happy Path:** [e.g., Validated successful end-to-end registration and login flows.]
+- **Negative Testing:** [e.g., Validated invalid credentials, duplicate registrations.]
+- **Boundary Value Analysis (BVA):** [e.g., Validated exact min/max limits for password length, OTP retry counts.]
+- **Security Testing:** [e.g., Validated brute-force protection, session hijacking, scraping prevention.]
+- **Advanced Edge Cases:** [e.g., Validated concurrent API spam, time boundary for lockout expiration, network interruptions during multi-step uploads.]
+- **UI/UX Validation:** [e.g., Validated screen rendering against design files in `docs/design/`.]
+
+> **Rule**: If the `advanced_edge_case_analyzer` agent was executed in the workflow, the `Advanced Edge Cases` bullet MUST be populated with specific findings. Do NOT omit this line.
+
+## 📐 Applied Generation Rules
+
+> This section summarizes ALL rules from `rules/test_generation_rules.md`. Each row references a specific rule section and explicitly states if it was applied (`✅ Applied`) or not (`❌ Not Applied`). If not applied, a reason MUST be provided.
+
+| # | Rule | Section | Status | Description / Reason if Not Applied |
+|---|------|---------|--------|--------------------------------------|
+| 1 | **Requirement Decomposition** | §1.1 | ✅ Applied | [Description] |
+| 2 | **Functional Component ID** | §1.2 | ✅ Applied | [Description] |
+| 3 | **Assumption Identification** | §1.3 | ✅ Applied | [Description] |
+| 4 | **Dependency Identification** | §1.4 | ✅ Applied | [Description] |
+| 5 | **High Risk Analysis** | §1.5 | ✅ Applied | [Description] |
+| 6 | **Regression Impact Analysis** | §1.6 | ❌ Not Applied | [Reason] |
+| 7 | **Happy Path** | §2.1 | ✅ Applied | [Description] |
+| 8 | **Negative Testing** | §2.2 | ✅ Applied | [Description] |
+| 9 | **Boundary Value Analysis (BVA)** | §2.3 | ✅ Applied | [Description] |
+| 10| **Equivalence Partitioning** | §2.4 | ❌ Not Applied | [Reason] |
+| 11| **State Transition Testing** | §2.5 | ✅ Applied | [Description] |
+| 12| **Decision Table Testing** | §2.6 | ❌ Not Applied | [Reason] |
+| 13| **Role-Based Testing** | §2.7 | ❌ Not Applied | [Reason] |
+| 14| **Error Guessing** | §2.8 | ✅ Applied | [Description] |
+| 15| **Error Handling** | §2.9 | ✅ Applied | [Description] |
+| 16| **Security Testing** | §2.10 | ✅ Applied | [Description] |
+| 17| **Performance Testing** | §2.11 | ❌ Not Applied | [Reason] |
+| 18| **UI / UX Validation** | §2.12 | ✅ Applied | [Description] |
+| 19| **Regression Testing** | §2.13 | ❌ Not Applied | [Reason] |
+| 20| **Context-Aware Integration** | §2.14 | ✅ Applied | [Description] |
+| 21| **Minimum Coverage Criteria** | §3.1 | ✅ Applied | [Description] |
+| 22| **Requirement Traceability** | §3.2 | ✅ Applied | [Description] |
+| 23| **Multiple Requirement Rule** | §3.3 | ✅ Applied | [Description] |
+| 24| **Missing Requirement Handling** | §3.4 | ❌ Not Applied | [Reason] |
+| 25| **Cross-Artifact Traceability** | §3.5 | ✅ Applied | [Description] |
+| 26| **Coverage Distribution Rules** | §4 | ✅ Applied | [Description] |
+| 27| **Priority Assignment** | §5.1 | ✅ Applied | [Description] |
+| 28| **Priority Consistency Rule** | §5.2 | ✅ Applied | [Description] |
+| 29| **Severity Classification** | §6.1 | ✅ Applied | [Description] |
+| 30| **Automation Candidate** | §7.1 | ✅ Applied | [Description] |
+| 31| **Automation Ratio** | §7.2 | ✅ Applied | [Description] |
+| 32| **Automation Validation** | §7.3 | ✅ Applied | [Description] |
+| 33| **Duplicate Definition** | §8.1 | ✅ Applied | [Description] |
+| 34| **Merge Rule** | §8.2 | ✅ Applied | [Description] |
+| 35| **Duplicate Self Audit** | §8.3 | ✅ Applied | [Description] |
+| 36| **Allowed Atomicity** | §9.1 | ✅ Applied | [Description] |
+| 37| **Not Allowed Atomicity** | §9.2 | ✅ Applied | [Description] |
+| 38| **Action Rule** | §9.3 | ✅ Applied | [Description] |
+| 39| **Test Data Examples** | §10.1 | ✅ Applied | [Description] |
+| 40| **Boundary Data** | §10.2 | ✅ Applied | [Description] |
+| 41| **Expected Result Standards** | §11 | ✅ Applied | [Description] |
+| 42| **Output Structure** | §12.1 | ✅ Applied | [Description] |
+| 43| **TC_ID Convention** | §12.2 | ✅ Applied | [Description] |
+| 44| **Test Step Rules** | §12.3 | ✅ Applied | [Description] |
+| 45| **Step Writing Standard** | §12.4 | ✅ Applied | [Description] |
+| 46| **HTML Line Break Rule** | §12.5a | ✅ Applied | [Description] |
+| 47| **Artifact Synchronization Rule** | §12.5b | ✅ Applied | [Description] |
+| 48| **Applied Rules Listing Standard** | §12.6 | ✅ Applied | [Description] |
+| 49| **Review Criteria** | §13.1 | ✅ Applied | [Description] |
+| 50| **Review Principle** | §13.2 | ✅ Applied | [Description] |
+| 51| **Pre-Output Coverage Validation** | §14.1 | ✅ Applied | [Description] |
+| 52| **Pre-Output Distribution Validation** | §14.2 | ✅ Applied | [Description] |
+| 53| **Pre-Output Automation Validation** | §14.3 | ✅ Applied | [Description] |
+| 54| **Pre-Output Duplicate Validation** | §14.4 | ✅ Applied | [Description] |
+| 55| **Pre-Output Quality Validation** | §14.5 | ✅ Applied | [Description] |
+| 56| **Pre-Output Format Validation** | §14.6 | ✅ Applied | [Description] |
+| 57| **Audit Sequence** | §15.1 | ✅ Applied | [Description] |
+| 58| **Failure Handling** | §15.2 | ❌ Not Applied | [Reason] |
+| 59| **Quality Gates** | §16 | ✅ Applied | [Description] |
+| 60| **AI Regeneration Rules** | §17 | ❌ Not Applied | [Reason] |
+| 61| **Generation Order** | §18.1 | ✅ Applied | [Description] |
+| 62| **Mandatory Principles** | §18.2 | ✅ Applied | [Description] |
+| 63| **Token Limit / Handling** | §18.3 | ❌ Not Applied | [Reason] |
+| 64| **CSV & Excel Formatting Rules** | §19 | ✅ Applied | [Description] |
+| 65| **Exhaustive Generation Rule** | §13 | ✅ Applied | [Description] |
+
+> **Rule**: ALL rules must be listed exactly as above using `✅ Applied` or `❌ Not Applied`. Do NOT omit any rule.
+
+## 📊 Coverage Summary
+
+| Coverage Metric | Status / Score |
+|-----------------|----------------|
+| **Requirement Coverage** | [e.g., 100% (All FRs covered)] |
+| **Automation Candidate Ratio** | [e.g., 85% (X out of Y test cases)] |
+| **Test Type Distribution** | Functional: [X]% <br> Negative: [X]% <br> Edge/Concurrency: [X]% <br> Security: [X]% <br> UI/UX: [X]% |
+
+## 🧨 Edge Case Summary
+
+> This section maps edge cases from the Edge Case Report into the test suite. Each row traces an edge case finding back to its source and the test case(s) that cover it.
+
+| Edge Case ID | Source | Description | Mapped Test Case(s) |
+|-------------|--------|-------------|---------------------|
+| [EDGE-001] | [Edge Case Report] | [e.g., Concurrent OTP API spam] | [e.g., REG-AUTH3-005] |
+| [EDGE-002] | [Edge Case Report] | [e.g., Lockout timer BVA] | [e.g., REG-AUTH1-011] |
+
+> **Rule**: If no Edge Case Report exists for this requirement, write "N/A — Edge Case Analyzer was not executed in this workflow run."
+
+## 🔥 Risk Summary
+
+> This section maps risks from the Risk Analysis Report into the test suite. Each row traces a risk finding to the test case(s) that verify its mitigation.
+
+| Risk ID | Requirement | Risk Description | Level | Mapped Test Case(s) |
+|---------|------------|------------------|-------|---------------------|
+| [RISK-001] | [FR-XXX] | [e.g., Brute-force login attacks] | [🟠 High] | [e.g., REG-AUTH1-008, REG-AUTH1-010] |
+| [RISK-002] | [FR-XXX] | [e.g., Session hijacking] | [🟠 High] | [e.g., REG-AUTH1-018, REG-AUTH1-020] |
+
+> **Rule**: If no Risk Analysis Report exists for this requirement, write "N/A — Risk Analyst was not executed in this workflow run."
+
+## ✅ Self-Review Audit
+
+> The generator MUST perform a self-review audit before finalizing the report. List all checks and their status.
+
+```
+<audit_summary>
+- [✓/✗] Requirement Coverage Audit: [Passed/Failed]
+- [✓/✗] Distribution Validation Audit: [Passed/Failed]
+- [✓/✗] Automation Validation Audit: [Passed/Failed]
+- [✓/✗] Duplicate Validation Audit: [Passed/Failed]
+- [✓/✗] Quality Validation Audit: [Passed/Failed]
+- [✓/✗] Output Format Audit: [Passed/Failed]
+</audit_summary>
+```
+
+---
+
+
 This template defines the standard output structure for generated manual test cases.
 
 The generated test suite shall be:

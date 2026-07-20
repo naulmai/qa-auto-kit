@@ -279,6 +279,16 @@ Regression cases shall focus on previously working functionality.
 
 ---
 
+## 2.14 Context-Aware Integration Testing
+
+Any reused component or shared feature (e.g., OTP Verification, Password Validation, Image Upload) MUST be tested independently within each distinct business flow or context (e.g., Sign Up vs. Forgot Password).
+
+- Do NOT merge test cases across different contexts.
+- State management, API endpoints, and routing may differ between contexts.
+- Each context requires its own set of Positive, Negative, and Boundary test cases for the shared component.
+
+---
+
 # 3. Requirement Coverage Rules (ISTQB & ISO/IEC/IEEE 29119 Aligned)
 
 ## Objective
@@ -335,6 +345,18 @@ If a requirement cannot generate any executable testcase due to insufficient inf
 - Generate no speculative testcase.
 - Record the issue as: **INSUFFICIENT REQUIREMENT**
 - Recommend clarification.
+
+---
+
+## 3.5 Cross-Artifact Traceability
+
+Test cases MUST trace back to all applicable analytical artifacts, not just Functional Requirements.
+
+Where applicable, test cases MUST map to:
+- **Risk IDs** (from Risk Analysis Report)
+- **Edge Case IDs** (from Edge Case Report)
+
+Every identified risk and edge case MUST have at least one corresponding test case to validate its mitigation or handling.
 
 ---
 
@@ -493,6 +515,9 @@ Two testcases are duplicates when they validate:
 - Same expected outcome
 
 using only different wording or data.
+
+**Crucial Context Exception**:
+If the *same* business behavior (e.g., Password complexity validation) occurs in *different* functional flows or contexts (e.g., Create Account vs. Forgot Password), they **SHALL NOT** be considered duplicates. You MUST generate separate test cases for each distinct context to ensure integration and state management are correct in both flows.
 
 ---
 
@@ -689,6 +714,15 @@ Only use Remarks when necessary.
 | OUT_OF_SCOPE |
 | DEPENDENCY_REQUIRED |
 | (empty) |
+
+---
+
+## 12.5 Artifact Synchronization Rule
+
+Any modification (addition, update, deletion) to the Testcases file MUST trigger immediate synchronization of dependent artifacts:
+
+1. **CSV Export**: The `scripts/md_to_csv.py` script MUST be re-run to keep the CSV file in sync.
+2. **Coverage Report**: The `Coverage Report` (Requirement, Scenario, Edge Case, and Risk Coverage Matrices) MUST be updated immediately to reflect the new test case counts and mappings.
 
 ---
 
@@ -924,3 +958,8 @@ Ensure the generated Markdown table can be cleanly converted to a standard CSV f
 ---
 
 # End of Test Generation Rules
+## 13. Exhaustive Generation Rule
+All test case generation must be exhaustive. The agent MUST NOT artificially limit, truncate, or summarize the number of test cases to save tokens or time. If 65 cases are required to achieve 100% boundary and negative coverage, all 65 must be explicitly generated.
+
+## 12.6 Applied Rules Listing Standard
+In the 'Applied Generation Rules' section of the report, the agent MUST explicitly list ALL rules (from Section 1 to Section 19) defined in the rulebook. For each rule, state whether it was 'Applied' or 'Not Applied'. If 'Not Applied', the agent MUST provide a specific reason why it was not applicable to the current requirement scope.
