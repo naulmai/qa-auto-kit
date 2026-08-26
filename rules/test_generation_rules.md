@@ -291,13 +291,77 @@ Regression cases shall focus on previously working functionality.
 
 ---
 
-## 2.14 Context-Aware Integration Testing
+## 2.14 Context-Aware Integration Testing (ENHANCED)
 
-Any reused component or shared feature (e.g., OTP Verification, Password Validation, Image Upload) MUST be tested independently within each distinct business flow or context (e.g., Sign Up vs. Forgot Password).
+**Principle**: Shared components tested INDEPENDENTLY in each distinct business flow context.
 
-- Do NOT merge test cases across different contexts.
-- State management, API endpoints, and routing may differ between contexts.
-- Each context requires its own set of Positive, Negative, and Boundary test cases for the shared component.
+### Examples of Context-Dependent Testing
+
+#### 1. OTP Verification (Shared Component)
+
+| Context | Different Aspects |
+|---------|------------------|
+| **Sign Up Flow** | User never logged in, OTP is registration proof |
+| **Forgot Password** | User already has account, OTP is identity verification |
+| **Login (2FA)** | User just entered credentials, OTP is 2nd factor |
+
+**Test Cases MUST Differentiate:**
+
+- TC-SU-OTP-001: "OTP field in Sign Up validates formatting"
+- TC-FP-OTP-001: "OTP field in Forgot Password validates formatting"
+- TC-LO-OTP-001: "OTP field in Login (2FA) validates formatting"
+
+These are NOT duplicates despite similar validation because:
+- API endpoints differ
+- State management differs (user authenticated vs not)
+- Error recovery flows differ
+- Navigation after success differs
+
+#### 2. Email Validation (Shared Component)
+
+| Context | Different Aspects |
+|---------|------------------|
+| **Registration** | Verify email uniqueness, send verification email |
+| **Profile Update** | Verify new email different from current, send change confirmation |
+| **Password Reset** | Verify email exists in system, send reset link |
+
+**Test Cases MUST Differentiate:**
+
+- TC-REG-EMAIL-001: "Email field validation during registration"
+- TC-PROF-EMAIL-001: "Email field validation during profile update"
+- TC-RESET-EMAIL-001: "Email field validation during password reset"
+
+#### 3. Payment Amount Validation (Shared Component)
+
+| Context | Different Aspects |
+|---------|------------------|
+| **Single Payment** | Amount validation only |
+| **Subscription** | Amount + recurring schedule validation |
+| **Refund** | Amount cannot exceed original transaction |
+
+**Test Cases MUST Differentiate:**
+
+- TC-PAY-AMT-001: "Payment amount validation for one-time payment"
+- TC-SUB-AMT-001: "Subscription amount validation with recurring schedule"
+- TC-REFUND-AMT-001: "Refund amount cannot exceed original amount"
+
+### Atomicity Rule in Context
+
+Do NOT merge contexts:
+
+❌ **BAD**: TC-SHARED-001: "Email validation works in Sign Up, Profile Update, and Password Reset"
+
+✅ **GOOD**:
+- TC-SU-EMAIL-001: "Email validation in Sign Up flow"
+- TC-PROF-EMAIL-001: "Email validation in Profile Update flow"
+- TC-RESET-EMAIL-001: "Email validation in Password Reset flow"
+
+### Traceability in Context
+
+Each context-specific TC should map to:
+- Same base Requirement (e.g., FR-EMAIL-VALIDATION)
+- Different Risk ID if risks differ by context (e.g., RISK-EMAIL-ENUMERATION vs RISK-EMAIL-EXPOSURE)
+- Different Scenario/Edge Case if applicable per context
 
 ---
 
@@ -360,19 +424,23 @@ If a requirement cannot generate any executable testcase due to insufficient inf
 
 ---
 
-## 3.5 Cross-Artifact Traceability
+## 3.5 Cross-Artifact Traceability (Conditional)
 
-Test cases MUST trace back to all applicable analytical artifacts, not just Functional Requirements.
+Test cases SHOULD trace back to all applicable artifacts:
 
-Where applicable, test cases MUST map to:
-- **Risk IDs** (from Risk Analysis Report)
-- **Edge Case IDs** (from Edge Case Report)
+**IF Risk Analysis Report Exists:**
+- Every identified risk MUST have at least one corresponding test case
 
-Every identified risk and edge case MUST have at least one corresponding test case to validate its mitigation or handling.
+**IF Edge Case Report Exists:**  
+- Every identified edge case MUST have at least one corresponding test case
+
+**IF No Reports Exist:**
+- Test case traceability limited to Functional Requirements only
+- Document limitation in output remarks
 
 ---
 
-# 4. Coverage Distribution Rules (Internal Project Policy)
+# 4.0 Test Type Classification (UPDATED)
 
 ## Objective
 
@@ -382,17 +450,48 @@ Do not allow Functional Testing to dominate the entire suite. Note: These distri
 
 ---
 
-## Required Distribution
+Each test case has:
+- **Primary Type**: The main testing dimension
+- **Secondary Tags**: Additional testing dimensions (optional)
 
-| Test Type | Minimum Percentage |
-|-----------|-------------------|
-| Functional | ≥40% |
-| Negative | ≥15% |
-| Edge | ≥10% |
-| UI / UX | ≥10% |
-| Performance | ≥10% |
-| Regression | ≥10% |
-| Security | ≥5% |
+### Primary Type = Required (Choose ONE)
+- Functional (primary business flow)
+- Negative (invalid input/error scenarios)
+- Edge (boundary/extreme values)
+- UI/UX (visual/interaction validation)
+- Performance (speed/responsiveness)
+- Regression (verify existing functionality after changes)
+- Security (authorization/authentication/data protection)
+
+### Secondary Tags = Optional
+- [Tag] Security (if security is secondary concern)
+- [Tag] Mobile Lifecycle (if app restart relevant)
+- [Tag] API (if backend validation relevant)
+- [Tag] Integration (if multi-feature workflow relevant)
+
+### Required Distribution Calculation
+
+**Only count PRIMARY TYPE** in distribution percentages:
+
+Total Test Cases = 100
+├─ Functional (Primary): ≥40%
+├─ Negative (Primary): ≥15%
+├─ Edge (Primary): ≥10%
+├─ UI (Primary): ≥10%
+├─ Performance (Primary): ≥10%
+├─ Regression (Primary): ≥10%
+└─ Security (Primary): ≥5%
+TOTAL = 100%
+
+Secondary tags don't affect distribution calculation.
+
+### Example Reclassification:
+
+TC-H-15: "Login with SQL injection payload"
+- **Primary Type**: Negative (invalid input)
+- **Secondary Tags**: [Tag] Security, [Tag] API
+
+This counts ONLY in "Negative ≥15%" requirement.
 
 ---
 
@@ -406,6 +505,29 @@ Before output:
 4. Repeat until all thresholds are satisfied.
 
 ---
+
+## Feature Size Classification Rubric
+
+Classify feature based on COMBINATION of:
+
+| Factor | Small | Medium | Major |
+|--------|-------|--------|-------|
+| Input Fields | <5 | 5-15 | >15 |
+| Business Rules | <3 | 3-8 | >8 |
+| User Roles Involved | 1 | 2-3 | 4+ |
+| Alternative Flows | 0-1 | 2-3 | 4+ |
+| API Integrations | 1 | 2-3 | 4+ |
+| Database Changes | None | 1-2 tables | 3+ tables |
+
+**Classification Rules:**
+- If 2+ factors are "Small" → Feature = Small
+- If 2+ factors are "Major" → Feature = Major
+- Otherwise → Medium
+
+**Examples:**
+- "Login" = Small (1 field, 1 rule, 1 role, 1 flow, 1 API)
+- "Payment checkout" = Major (15+ fields, 8+ rules, 3 roles, 5+ flows, 3 APIs)
+- "User profile update" = Medium (8 fields, 4 rules, 2 roles, 2 flows, 1 API)
 
 ## Feature Size Requirements (Mandatory Minimums)
 
@@ -501,10 +623,29 @@ Automation and User Acceptance Testing readiness shall be evaluated during testc
 
 ---
 
-## 7.2 Automation Ratio (Project Policy Goal)
+## 7.2 Automation Ratio Enforcement (UPDATED)
 
-- **Rule**: At least **80% of HIGH priority** test cases MUST be marked as `Automation Candidate = Yes`.
-- If the ratio falls below 80% for High priority cases, adjust distribution before finalizing output.
+- **Target**: At least 80% of HIGH priority TCs must be automation candidate
+- **Calculation**: (Automation_Candidate_Yes / Total_High_Priority) × 100
+- **Validation**: 
+  - If ratio ≥ 80% → PASS
+  - If ratio < 80% → REGENERATE
+  
+### Regeneration Strategy (if ratio < 80%):
+
+1. Identify non-automation HIGH priority cases
+2. For each: Can it be made automation-ready? (e.g., split into 2 cases?)
+3. If YES → Regenerate as automation-ready
+4. If NO → Reclass to MEDIUM priority (accept ~10-15% overhead)
+5. Recalculate ratio
+6. Repeat until ratio ≥ 80%
+
+### Example:
+- Start: 10 High priority cases, 7 auto (70%)
+- Action: Regenerate TC-H-04 as "TC-H-04 (auto)" + "TC-H-04-Manual (UI perception)"
+- Result: 11 High priority cases, 8 auto (73%)
+- Still <80% → Continue regenerating
+- Final: 10 High priority cases, 8 auto + 2 medium (80% ✓)
 
 ---
 

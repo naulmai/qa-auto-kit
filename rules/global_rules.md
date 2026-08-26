@@ -63,3 +63,9 @@ When classifying findings or gaps, use the following scale:
   - Wait for user clarification before resuming.
 - Minor ambiguities (Medium/Low severity) may be noted as findings and processing may continue.
 - This rule applies to ALL agents, not just the testcase_generator.
+
+## 10. Zero Sample Testcases Policy (Mandatory Exhaustive Generation)
+- NEVER generate sample, placeholder, or truncated demo test cases.
+- For every target module or requirement section, the AI MUST perform atomic requirement decomposition and generate 100% complete, exhaustive test cases covering Happy Path, Negative, Boundary Value Analysis, Equivalence Partitioning, State Transitions, Security, Performance, UI/UX, and Exception Fallbacks.
+- ALL test suites MUST be output simultaneously in both Markdown (`.md`) and CSV (`.csv`) formats.
+

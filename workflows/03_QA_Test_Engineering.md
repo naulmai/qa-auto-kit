@@ -17,13 +17,16 @@ graph TD
     C --> D(scenario_generator)
     D --> E(testcase_generator)
     E --> F(coverage_analyst)
-    F --> G[End Pipeline]
+    F --> F1(csv_export)
+    F1 --> G[End Pipeline]
 ```
 
-## Step 1: Requirement & Gap Analysis
+## Step 1: Requirement, Complexity & Gap Analysis
 - **Agent**: `agents/requirement_gap_analyst.md`
 - **Output**: `reports/[Requirement_Name]_Req_Gap_Report.md` (dynamic naming)
-- **Objective**: Kiểm tra chất lượng requirement, phát hiện lỗ hổng logic và mâu thuẫn trước khi bắt đầu sinh test.
+- **Objective**: 
+  1. **Đánh giá độ phức tạp (Module Complexity Tier):** Phân loại module vào Tier 1 (30-45 TCs), Tier 2 (45-65 TCs) hoặc Tier 3 (80-120+ TCs) theo `<RULE[module_complexity_evaluation]>` và xác định định mức Test Cases tối thiểu (Target Volume).
+  2. **Kiểm tra chất lượng requirement:** Phát hiện lỗ hổng logic, thiếu sót nghiệp vụ và mâu thuẫn trước khi bắt đầu sinh test.
 
 ## Step 2: Risk Analysis (Optional but Recommended)
 - **Agent**: `agents/risk_analyst.md`
@@ -42,7 +45,7 @@ graph TD
 
 ## Step 5: Test Case Generation
 - **Agent**: `agents/testcase_generator.md`
-- **Output**: `reports/[Requirement_Name]_Testcases.md`, `reports/[Requirement_Name]_Testcases.csv` (dynamic naming)
+- **Output**: `reports/[Requirement_Name]_Testcases.md` (dynamic naming)
 - **Objective**: Dựa trên các Scenarios ở trên, sinh ra các Test Cases chi tiết (gồm step-by-step, test data).
 - **Execution Rules**:
   - Khi tham chiếu hoặc validate về mặt giao diện/hình ảnh (UI/UX), bắt buộc **phải tham chiếu đến các file ảnh trong thư mục `docs/design/`**.
@@ -51,4 +54,9 @@ graph TD
 ## Step 6: Coverage Analysis
 - **Agent**: `agents/coverage_analyst.md`
 - **Output**: `reports/[Requirement_Name]_Coverage_Report.md` (dynamic naming)
-- **Objective**: Đối chiếu ngược các Test Cases vừa tạo với file Requirement gốc để đảm bảo độ bao phủ 100%.
+- **Objective**: Đối chiếu ngược các Test Cases vừa tạo với file Requirement gốc để đảm bảo độ bao phủ 100%. Nếu độ bao phủ chưa đạt 100%, hệ thống bắt buộc phải tự động quay lại Bước 5 để update thêm testcase cho đến khi nào Coverage đạt 100% tuyệt đối.
+
+## Step 7: Finalize & CSV Export (Sync)
+- **Tool/Script**: `python scripts/md_to_csv.py`
+- **Output**: `reports/[Requirement_Name]_Testcases.csv` (dynamic naming)
+- **Objective**: Chỉ thực hiện export ra file CSV MỘT LẦN DUY NHẤT sau khi Coverage Analyst đã xác nhận đạt độ bao phủ (Coverage Passed). Đảm bảo không export file rác khi coverage còn thấp.

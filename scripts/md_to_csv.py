@@ -46,15 +46,25 @@ def markdown_to_csv(md_path, csv_path):
     table_lines = [line for line in target_table if not re.match(r'^\|[\s\-\|:]+\|$', line)]
 
     rows = []
+    placeholder = "__ESCAPED_PIPE__"
     for line in table_lines:
-        # Bỏ dấu | ở đầu và cuối dòng
-        line = line.strip('|')
+        # Bỏ dấu | ở đầu và cuối dòng chính xác
+        if line.startswith('|'):
+            line = line[1:]
+        if line.endswith('|'):
+            line = line[:-1]
+        
+        # Xử lý escaped pipe \| trước khi split
+        line_safe = line.replace(r'\|', placeholder)
         
         # Split các cột bằng dấu |
-        columns = [col.strip() for col in line.split('|')]
+        columns = [col.strip().replace(placeholder, '|') for col in line_safe.split('|')]
         
         # Xử lý thẻ <br> thành newline thực tế cho file CSV/Excel
         columns = [col.replace('<br>', '\n').replace('<br/>', '\n') for col in columns]
+        
+        # Loại bỏ markdown bold/italic bọc toàn bộ chuỗi (ví dụ: **SCH-001** -> SCH-001)
+        columns = [re.sub(r'^\*\*(.*?)\*\*$', r'\1', col) for col in columns]
         
         rows.append(columns)
 
