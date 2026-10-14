@@ -29,16 +29,17 @@
 - 🔴 **[Failure Mode 1]**: [Brief explanation]
 - 🔴 **[Failure Mode 2]**: [Brief explanation]
 
----
+> **Schema Reference:** `schemas/finding.schema.md`
 
 ## 🧨 3. Edge Case Matrix
 
 *(For each edge case, repeat the block below)*
 
-### 📌 [EDGE-001]: [Short Scenario Title]
-- **Category**: [State Interruption / Concurrency / Data / Time / Logic]
-- **Severity**: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
-- **Req Traceability**: [REQ-XXX]
+### 📌 [EDGE-MODULE-001]: [Short Scenario Title]
+- **Category**: [State Interruption / Concurrency & Race / Data Extreme / Time Boundary / Logic Stress]
+- **Severity**: 🔴 Critical (P0) / 🟠 High (P1) / 🟡 Medium (P2) / 🟢 Low (P3)
+- **Status**: Open / Pending Verification / Confirmed
+- **Req Traceability**: [FR-XXX-YY]
 
 **🔍 Scenario Description:**
 > [Describe the exact adversarial action or system state]

@@ -3,6 +3,60 @@ import csv
 import re
 import os
 
+def clean_math_formatting(text):
+    if not text:
+        return text
+
+    t = text
+
+    # 1. Clean \text{...} recursively
+    while re.search(r'\\text\{([^}]+)\}', t):
+        t = re.sub(r'\\text\{([^}]+)\}', r'\1', t)
+
+    # 2. Convert LaTeX greek & math symbols to plain words / operators
+    t = re.sub(r'\(\s*\$?\\Delta\$?\s*\)', '(Delta)', t)
+    t = re.sub(r'\$\\Delta\$|\\Delta', '(Delta)', t)
+    t = re.sub(r'\(\s*\(Delta\)', '(Delta', t)
+    t = re.sub(r'\(Delta\)\s*\)', 'Delta)', t)
+
+    t = re.sub(r'\\times|\\cdot', '*', t)
+    t = re.sub(r'\\div', '/', t)
+    t = re.sub(r'\\le(q)?', '<=', t)
+    t = re.sub(r'\\ge(q)?', '>=', t)
+    t = re.sub(r'\\ne(q)?', '!=', t)
+    t = re.sub(r'\\approx', '~', t)
+    t = re.sub(r'\\pm', '+/-', t)
+    t = re.sub(r'\\min', 'min', t)
+    t = re.sub(r'\\max', 'max', t)
+    t = re.sub(r'\\left\(', '(', t)
+    t = re.sub(r'\\right\)', ')', t)
+    t = re.sub(r'\\rightarrow|\\to', '->', t)
+    t = re.sub(r'\\leftarrow', '<-', t)
+
+    # 3. Handle inline math wrapping equations (e.g. '$\$38.50 - \$30.00 = +\$8.50$' -> '$38.50 - $30.00 = +$8.50')
+    def clean_inline_math(match):
+        inner = match.group(1)
+        return inner.replace(r'\$', '$')
+
+    t = re.sub(r'(?<!\\)\$((?:\\\$|[^$])*(?:[=+\-<>\\*\/]|\\\$)(?:\\\$|[^$])*?)(?<!\\)\$', clean_inline_math, t)
+
+    # 4. Clean escaped LaTeX symbols: \$, \%, \_, \&
+    t = t.replace(r'\$', '$')
+    t = t.replace(r'\%', '%')
+    t = t.replace(r'\_', '_')
+    t = t.replace(r'\&', '&')
+
+    # 5. Clean standalone double dollars $$...$$
+    t = re.sub(r'\$\$(.*?)\$\$', r'\1', t)
+
+    # 6. Clean subscripts like S_{match} -> S_match
+    t = re.sub(r'_\{([^}]+)\}', r'_\1', t)
+
+    # 7. Clean residual math wrappers around simple numbers with symbols: e.g. $4.9 \star$ -> 4.9 ★
+    t = re.sub(r'\\star', '★', t)
+
+    return t
+
 def markdown_to_csv(md_path, csv_path):
     if not os.path.exists(md_path):
         print(f"Error: File '{md_path}' does not exist.")
@@ -65,6 +119,9 @@ def markdown_to_csv(md_path, csv_path):
         
         # Loại bỏ markdown bold/italic bọc toàn bộ chuỗi (ví dụ: **SCH-001** -> SCH-001)
         columns = [re.sub(r'^\*\*(.*?)\*\*$', r'\1', col) for col in columns]
+        
+        # Làm sạch công thức toán LaTeX sang plain text tương thích Google Sheets / Excel
+        columns = [clean_math_formatting(col) for col in columns]
         
         rows.append(columns)
 

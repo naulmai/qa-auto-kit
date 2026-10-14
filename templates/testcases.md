@@ -171,6 +171,7 @@ This template defines **output format only**. All generation logic and validatio
 - Follow the exact column order.
 - Do not add, remove, or reorder columns.
 - **CSV Stability Warning**: Do not modify column names or insert secondary tables (such as Metadata) inside the main test case table block. Doing so breaks the CSV export parser script.
+- **Plain-Text Math & Currency Rule (Anti-LaTeX)**: Do NOT use LaTeX math syntax (`$...$`, `$$...$$`, `\Delta`, `\$`, `\times`, `\le`). Always write equations and numbers in clean plain text: `Fare Delta (Delta) = $38.50 - $30.00 = +$8.50` (see `schemas/testcase.schema.md` §3.4).
 - Use HTML `<br>` tags for multiple test steps so it renders correctly in Markdown, but ensure the descriptions are as detailed and literal as if they were written for Excel.
 - Every test case must reference exactly one primary Functional Requirement (FR ID).
 - Leave Remarks empty unless required by generation rules.

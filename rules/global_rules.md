@@ -69,3 +69,11 @@ When classifying findings or gaps, use the following scale:
 - NEVER generate sample, placeholder, or truncated demo test cases.
 - For every target module or requirement section, the AI MUST perform atomic requirement decomposition and generate 100% complete, exhaustive test cases covering Happy Path, Negative, Boundary Value Analysis, Equivalence Partitioning, State Transitions, Security, Performance, UI/UX, and Exception Fallbacks.
 - ALL test suites MUST be output simultaneously in both Markdown (`.md`) and CSV (`.csv`) formats.
+
+## 11. Schema & Contract Compliance (Global Standard)
+- All analytical and generated outputs MUST strictly comply with the master contracts in `schemas/`:
+  - **Findings (Gap, Logic Anomaly, Edge Case, Risk, Design)**: Must comply with `schemas/finding.schema.md` (Format: `[TYPE]-[MODULE]-[NNN]`).
+  - **Manual Test Cases**: Must comply with `schemas/testcase.schema.md` (Exact 14 columns, action verbs, `<br>` line breaks, TC_ID: `[MODULE]-TC-[NNN]`).
+  - **UAT Acceptance Scripts**: Must comply with `schemas/uat_script.schema.md` (Format: `UAT-[MODULE]-[NNN]`, business language).
+  - **Coverage Analysis**: Must comply with `schemas/coverage.schema.md` (4 Testability states, multi-dimensional matrix, 100% Quality Gate).
+- **Single Source of Truth**: The Severity definitions in Section 3 serve as the authoritative standard across all templates and reports. Agents and templates must not invent separate severity criteria.

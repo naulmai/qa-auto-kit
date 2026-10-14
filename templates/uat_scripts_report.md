@@ -25,11 +25,13 @@
 
 ---
 
-## 📋 2. UAT Script
+> **Schema Reference:** `schemas/uat_script.schema.md`
+
+## 📋 2. UAT Scripts
 
 *(For each script, repeat the block below)*
 
-### 📌 [UAT-XXX]: [Business Process Name]
+### 📌 [UAT-MODULE-001]: [Business Process / Journey Name]
 
 | Attribute | Value |
 |-----------|-------|

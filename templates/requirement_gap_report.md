@@ -22,40 +22,51 @@
 
 ---
 
+> **Schema Reference:** `schemas/finding.schema.md`
+
 ## 🚨 2. Traceability Gaps (Cross-Document)
 *(Missing, Orphan, Partial Coverage across PRD vs SRS)*
 
 *(For each gap, repeat the block below)*
 
-### 📌 [GAP-001]: [Short Issue Title]
-- **Category**: [Missing / Orphan / Inconsistency]
-- **Severity**: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
+### 📌 [GAP-MODULE-001]: [Short Issue Title]
+- **Type**: Missing Rule / Traceability Gap / Inconsistency
+- **Severity**: 🔴 Critical (P0) / 🟠 High (P1) / 🟡 Medium (P2) / 🟢 Low (P3)
+- **Status**: Pending Verification / Confirmed / Open
 - **Docs Involved**: [Source Doc] vs [Target Doc]
+- **Location**: [Source Section] vs [Target Section]
 
 **🔍 Evidence (Source vs Target):**
-> Source: "[Quote]"
-> Target: "[Quote or NOT FOUND]"
+> Source: "[Direct quote from source document]"
+> Target: "[Quote from target document OR 'NOT FOUND in {doc}']"
 
-**❌ Impact & Recommendation:**
-[Explain impact and suggest fix]
+**⚠️ Impact:**
+[Explain the business, technical, or testing impact if this gap is unaddressed]
+
+**💡 Recommendation:**
+[Suggest clear resolution for BA/PO. Do NOT invent business rules without source evidence]
 
 ---
 
 ## 🚨 3. Requirement Quality Defects (Internal)
-*(Ambiguity, Missing Business Rules, Missing Edge Cases)*
+*(Ambiguity, Missing Business Rules, Missing Edge Cases, Contradictions)*
 
-*(For each issue, repeat the block below)*
+*(For each defect, repeat the block below)*
 
-### 📌 [REQ-001]: [Short Issue Title]
-- **Category**: [Ambiguity / Logic / Edge Case / NFR]
-- **Severity**: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
-- **Location**: [Doc Name] > [Section]
+### 📌 [GAP-MODULE-002]: [Short Issue Title]
+- **Type**: Ambiguity / Missing Rule / Contradiction / Edge Case
+- **Severity**: 🔴 Critical (P0) / 🟠 High (P1) / 🟡 Medium (P2) / 🟢 Low (P3)
+- **Status**: Pending Verification / Confirmed / Open
+- **Location**: [Doc Name] > [Section / Lines]
 
 **🔍 Evidence:**
-> "[Quote from document]"
+> "[Direct quote from document]"
 
-**❌ Defect & Recommendation:**
-[Explain why it is ambiguous or what is missing. Concrete fix suggestion.]
+**⚠️ Impact:**
+[Explain why this defect blocks design, development, or test generation]
+
+**💡 Recommendation:**
+[Concrete resolution or clarification questions for BA/PO]
 
 ---
 

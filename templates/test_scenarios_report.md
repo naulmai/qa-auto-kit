@@ -29,11 +29,11 @@
 
 ## 📋 2. Scenario Catalog
 
-| Scenario ID | Requirement | Scenario Name | Category | Priority |
-|-------------|-------------|---------------|----------|----------|
-| SCN-001 | REQ-01 | User logs in with valid credentials | Positive | P0 |
-| SCN-002 | REQ-01 | User enters wrong password | Negative | P0 |
-| SCN-003 | REQ-01 | Password exceeds max length | Boundary | P1 |
+| Scenario ID | Requirement Ref | Scenario Name | Category | Priority |
+|:---:|---|---|---|:---:|
+| `SCENARIO-MODULE-001` | `FR-XXX-01` | User logs in with valid credentials | Positive | P0 |
+| `SCENARIO-MODULE-002` | `FR-XXX-01` | User enters wrong password | Negative | P0 |
+| `SCENARIO-MODULE-003` | `FR-XXX-01` | Password exceeds max length | Boundary | P1 |
 
 ---
 
@@ -41,11 +41,11 @@
 
 *(For each scenario, repeat the block below)*
 
-### 📌 [SCN-XXX]: [Scenario Name]
+### 📌 [SCENARIO-MODULE-001]: [Scenario Name]
 
 | Attribute | Value |
-|-----------|-------|
-| **Requirement** | [REQ-XX] |
+|---|---|
+| **Requirement** | [FR-XXX-YY] |
 | **Business Rule** | [BR-XX] |
 | **Category** | [Positive / Negative / Boundary / Security / Integration / Recovery / Concurrency] |
 | **Priority** | [P0 / P1 / P2 / P3] |

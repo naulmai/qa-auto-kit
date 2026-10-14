@@ -22,17 +22,20 @@
 
 ---
 
+> **Schema Reference:** `schemas/finding.schema.md`
+
 ## 🚨 2. Design Defect Findings
 
 *(For each issue, repeat the block below)*
 
-### 📌 [DA-001]: [Short Issue Title]
+### 📌 [DES-MODULE-001]: [Short Issue Title]
 
 | Attribute | Value |
-|-----------|-------|
-| **Severity** | 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low |
-| **Issue Type** | Component / State / Flow |
-| **Screen/Module**| [e.g., Login Screen, Checkout Flow] |
+|---|---|
+| **Severity** | 🔴 Critical (P0) / 🟠 High (P1) / 🟡 Medium (P2) / 🟢 Low (P3) |
+| **Issue Type** | Missing Component / Missing UI State / Navigation Flow Mismatch |
+| **Status** | Open / Pending Verification / Confirmed |
+| **Screen/Module**| [e.g., Login Screen, Route Details Card] |
 
 **🔍 SRS Requirement (The Logic):**
 > "[Quote from SRS]"

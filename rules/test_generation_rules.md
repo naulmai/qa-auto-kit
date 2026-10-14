@@ -1124,6 +1124,20 @@ Ensure the generated Markdown table can be cleanly converted to a standard CSV f
 - **Enforce HTML `<br>` for line breaks**: Do not use semicolons `;` or real newlines inside table cells for step separation. Use exact `<br>` tag strings to allow clean conversion.
 - **Escape double quotes**: If a test step or text string contains a double quote (`"`), it must be escaped as `""` inside the markdown cell to prevent CSV parsing issues.
 - **Strict Column Count Alignment**: The generated table must strictly maintain the 14-column layout. Adding or removing columns on specific rows is prohibited.
+- **Plain-Text Math & Currency Formatting (Strictly Prohibit LaTeX)**:
+  - Do NOT use LaTeX math syntax (e.g., `$...$`, `$$...$$`, `\Delta`, `\$`, `\times`, `\le`, `\ge`, `\text{...}`) anywhere in the test case table (Description, Pre-Requisite, Steps, Test Data, Expected Result, Remarks). LaTeX syntax completely breaks and renders unreadable symbols when exported to CSV or copied into Google Sheets and Microsoft Excel.
+  - Greek & Math symbols: Convert to plain parenthesized English words: use `(Delta)` instead of `$\Delta$`.
+  - Currency: Write plain dollar signs like `$38.50` (or `VND 50,000`), NEVER escape with backslash `\$38.50`.
+  - Arithmetic operators: Use standard keyboard symbols: `=`, `+`, `-`, `*`, `<=`, `>=`, `!=`, `~`.
+  - Equations: Format as clean, readable plain-text arithmetic:
+    - ❌ Prohibited: `Fare Delta $\Delta$ calculates exactly as: $\$38.50 - \$30.00 = +\$8.50$.`
+    - ✅ Required: `Fare Delta (Delta) = $38.50 - $30.00 = +$8.50`
+    - ❌ Prohibited: `Fare Delta $\Delta \le \$0$`
+    - ✅ Required: `Fare Delta (Delta) <= $0`
+    - ❌ Prohibited: `$\text{New Total} = \text{Base} + \text{Distance}$`
+    - ✅ Required: `New Total = Base + Distance`
+    - ❌ Prohibited: `Extreme fare increase ($\Delta > \$40$ or $\Delta > 100\%$)`
+    - ✅ Required: `Extreme fare increase (Delta > $40 or Delta > 100%)`
 
 ---
 

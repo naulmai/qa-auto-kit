@@ -25,6 +25,7 @@ Input Documents → Rules & Governance → Workflow → Agents → Output Report
 | `agents/` | **Analytical QA Agents**: Chứa 10 prompt định nghĩa vai trò phân tích chuyên biệt (Gap, Logic Anomaly, Risk, Testcase, Coverage...). |
 | `workflows/` | **Orchestration**: Defines the execution pipelines for different SDLC phases (01 to 05). |
 | `rules/` | **Standards**: Global standards, requirement quality metrics, test generation rules, and reporting formats. |
+| `schemas/` | **Master Contracts**: Schemas chuẩn cho Findings (`finding.schema.md`), Test Cases 14 cột (`testcase.schema.md`), UAT (`uat_script.schema.md`), và Coverage (`coverage.schema.md`). |
 | `templates/` | **Formatting**: Reusable Markdown templates for consistent report output. |
 | `scripts/` | **Export Utilities**: Python scripts for artifact conversions (`md_to_csv.py`, `md_to_docx.py`). |
 

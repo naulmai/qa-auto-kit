@@ -13,3 +13,26 @@ docs/designs/*
 # =========================
 reports/
 reports/*
+
+# =========================
+# 🐍 Python Bytecode & Cache
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# =========================
+# 🧹 Temporary & Debug Files
+# =========================
+*.tmp
+*.temp
+*_debug.txt
+*_output.txt
+debug_output.txt
+
+# =========================
+# 💻 OS Metadata
+# =========================
+.DS_Store
+Thumbs.db

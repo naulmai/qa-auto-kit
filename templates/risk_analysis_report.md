@@ -28,13 +28,15 @@ Include:
 
 ---
 
+> **Schema Reference:** `schemas/finding.schema.md`
+
 ## 2. 📊 Risk Register
 
-| Risk ID | Requirement | Category | Probability | Impact | Score | Level | Priority |
-|----------|-------------|----------|-------------|--------|-------|--------|----------|
-|RISK-001|REQ-01 Login|Security|5|5|25|Critical|P0|
-|RISK-002|REQ-05 Payment|Business|4|5|20|Critical|P0|
-|RISK-003|REQ-09 Search|Performance|3|3|9|Medium|P2|
+| Risk ID | Requirement Ref | Category | Probability (1-5) | Impact (1-5) | Risk Score | Severity Level | Priority |
+|---|---|---|:---:|:---:|:---:|:---:|:---:|
+| `RISK-MODULE-001` | `FR-XXX-01` | Security | 5 | 5 | 25 | 🔴 Critical | P0 |
+| `RISK-MODULE-002` | `FR-XXX-05` | Financial / Business | 4 | 5 | 20 | 🔴 Critical | P0 |
+| `RISK-MODULE-003` | `FR-XXX-09` | Performance | 3 | 3 | 9 | 🟡 Medium | P2 |
 
 ---
 
@@ -43,12 +45,10 @@ Include:
 For each identified risk include:
 
 ### Risk ID
-
-RISK-001
+`RISK-MODULE-001`
 
 ### Requirement
-
-REQ-01 Login
+`FR-XXX-01 Login`
 
 ### Category
 
