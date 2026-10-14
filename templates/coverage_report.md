@@ -13,10 +13,12 @@
 | **Test Suite File** | [e.g., reports/Testcases.md] |
 | **Optional Reports Included** | Scenarios: [✅/❌] \| Edge Cases: [✅/❌] \| Risks: [✅/❌] |
 | **Analysis Duration** | [X minutes] |
-| **Analyzed By** | [QA Lead Name] |
-| **Reviewed By** | [Tech Lead Name] |
+| **Analyzed By** | Coverage Analyzer Skill v3.1.0 (AI Agent) |
+| **Reviewed By** | [Tech Lead / Human Reviewer Name] |
 
 ---
+
+> **Schema Reference:** `schemas/coverage.schema.md`
 
 ## 🎯 Executive Summary
 

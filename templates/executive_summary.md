@@ -24,6 +24,7 @@
 | Metric | Score / Count | Assessment |
 |--------|---------------|------------|
 | **Requirement Clarity** | [X] Defects | [Good / Poor] |
+| **Business Logic Anomalies** | [X] Anomalies | [Clean / Suspicious / High Risk] |
 | **Cross-Doc Traceability** | [X] Gaps | [Aligned / Mismatched] |
 | **UI/UX Design Alignment** | [X] Issues | [Aligned / Mismatched] |
 | **Test Case Coverage** | [XX]% | [High Risk / Safe] |
@@ -34,9 +35,9 @@
 ## 🛑 3. Critical Blockers (Top 3)
 *The most severe issues across ALL reports that MUST be resolved before coding begins.*
 
-1. **[Source: Req/Gap/Design] - [ID]**: [One sentence explanation of the critical impact]
-2. **[Source: Req/Gap/Design] - [ID]**: [One sentence explanation]
-3. **[Source: Req/Gap/Design] - [ID]**: [One sentence explanation]
+1. **[Source: Req/Gap/Logic/Design/Risk] - [ID]**: [One sentence explanation of the critical impact]
+2. **[Source: Req/Gap/Logic/Design/Risk] - [ID]**: [One sentence explanation]
+3. **[Source: Req/Gap/Logic/Design/Risk] - [ID]**: [One sentence explanation]
 
 ---
 

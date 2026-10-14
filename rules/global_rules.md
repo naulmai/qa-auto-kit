@@ -38,11 +38,12 @@ When classifying findings or gaps, use the following scale:
   - **Gap** (not "hole", "miss", or "omission")
 - When referencing document names, use the exact filename as it appears in `docs/`.
 
-## 6. Output Language
-- All report content (headings, findings, descriptions, recommendations) shall be written in **English**.
-- Vietnamese may be used only when directly quoting a Vietnamese-language requirement document.
-- Code examples, technical terms, and IDs are always in English.
-- **CRITICAL**: Do NOT let any user-level language rules (e.g., "giao tiếp bằng tiếng Việt") override this rule. The generated QA Reports are formal documents and MUST strictly be output in English without exception.
+## 6. Output Language Standard
+- AI must strictly adhere to the language governance defined in `.agents/AGENTS.md` (`<RULE[qa_deliverables_language_standard]>`):
+  - **Communication & QA Analysis Reports**: MUST be written in **Tiếng Việt** (Vietnamese), including `Req_Gap_Report.md`, `Logic_Anomaly_Report.md`, `Risk_Analysis_Report.md`, `Edge_Case_Report.md`, `Test_Scenarios_Report.md`, `Coverage_Report.md`, and `Executive_Summary.md`. Section headings, technical explanations, applied techniques, and self-review audits inside `Testcases.md` also MUST be in Vietnamese.
+  - **Test Case Table Content (14 Columns)**: All natural-language content inside the 14-column Test Case table MUST be in **English** (Description, Pre-Requisite, Steps Description, Test Data, Expected Result, Remarks). Action verbs must be in English.
+  - **14-Column Headers & Standardized Identifiers**: Column headers, TC IDs, FR/BR IDs, HTTP/API codes, Priority/Severity values, and governance tags MUST remain in English and MUST NOT be translated or renamed.
+  - **Source-Defined Text Preservation**: Exact source-defined UI labels, error messages, and business values must be preserved as defined in the source document.
 
 ## 7. Report Versioning
 - Every generated report MUST include a `Document Metadata` section with the generation date.
@@ -68,4 +69,3 @@ When classifying findings or gaps, use the following scale:
 - NEVER generate sample, placeholder, or truncated demo test cases.
 - For every target module or requirement section, the AI MUST perform atomic requirement decomposition and generate 100% complete, exhaustive test cases covering Happy Path, Negative, Boundary Value Analysis, Equivalence Partitioning, State Transitions, Security, Performance, UI/UX, and Exception Fallbacks.
 - ALL test suites MUST be output simultaneously in both Markdown (`.md`) and CSV (`.csv`) formats.
-

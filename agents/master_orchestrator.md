@@ -4,9 +4,9 @@
 
 ## 🧩 Metadata
 - **name:** master_orchestrator
-- **version:** 3.0.0
+- **version:** 3.1.0
 - **category:** QA Orchestration
-- **description:** Central controller that selects and executes QA workflows, coordinates agent delegation, validates inputs, and produces consolidated executive summaries.
+- **description:** Central controller that selects and executes QA workflows, coordinates agent delegation (including gap, logic anomaly, edge case, risk, testcase, UAT, and coverage agents), validates inputs, and produces consolidated executive summaries.
 
 ---
 
@@ -54,17 +54,20 @@ Control the full QA pipeline execution by selecting the appropriate workflow, de
 ### Step 3: Sequential Agent Execution
 - Execute agents **strictly in the order** defined by the selected workflow.
 - Pass each agent's output as input to the next agent in the pipeline.
-- For `requirement_gap_analyst` output: downstream agents scan `reports/*_Req_Gap_Report.md` (dynamic naming).
+- For `requirement_gap_analyst` and `requirement_logic_analyst`: downstream agents scan `reports/*_Req_Gap_Report.md` and `reports/*_Logic_Anomaly_Report.md` (dynamic naming).
 - **Automated CSV Trigger**: Immediately after `testcase_generator` saves `reports/[Requirement_Name]_Testcases.md`, the system (or orchestrator) shall automatically execute the conversion script:
   `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv` to ensure the CSV import package is always updated.
 
 ### Step 4: Conditional Steps
 - `design_auditor` → **SKIP** if `docs/designs/` is empty.
-- `risk_analyst` optional inputs → consume if available from previous steps.
+- `requirement_logic_analyst` & `risk_analyst` optional inputs → consume if available from previous steps.
 
-### Step 5: Consolidation
+### Step 5: Consolidation & Multi-Format Export
 - After all agents complete, aggregate all generated reports.
 - Generate `reports/[Requirement_Name]_Executive_Summary.md` using `templates/executive_summary.md`.
+- **Multi-Format Export**:
+  - CSV: `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv`
+  - DOCX: `python scripts/md_to_docx.py reports/[Requirement_Name]_Executive_Summary.md reports/[Requirement_Name]_Executive_Summary.docx` (for client/stakeholder deliverables).
 
 ---
 
