@@ -55,19 +55,19 @@ Control the full QA pipeline execution by selecting the appropriate workflow, de
 - Execute agents **strictly in the order** defined by the selected workflow.
 - Pass each agent's output as input to the next agent in the pipeline.
 - For `requirement_gap_analyst` and `requirement_logic_analyst`: downstream agents scan `reports/*_Req_Gap_Report.md` and `reports/*_Logic_Anomaly_Report.md` (dynamic naming).
-- **Automated CSV Trigger**: Immediately after `testcase_generator` saves `reports/[Requirement_Name]_Testcases.md`, the system (or orchestrator) shall automatically execute the conversion script:
-  `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv` to ensure the CSV import package is always updated.
+- **Coverage Gate Enforcement (No Premature CSV Export)**: TUYỆT ĐỐI KHÔNG xuất file CSV ngay sau khi `testcase_generator` hoàn thành Markdown. Bảng Test Case phải được `coverage_analyst` thẩm định và xác nhận đạt Quality Gate trước khi kích hoạt converter script.
 
 ### Step 4: Conditional Steps
 - `design_auditor` → **SKIP** if `docs/designs/` is empty.
 - `requirement_logic_analyst` & `risk_analyst` optional inputs → consume if available from previous steps.
 
-### Step 5: Consolidation & Multi-Format Export
-- After all agents complete, aggregate all generated reports.
-- Generate `reports/[Requirement_Name]_Executive_Summary.md` using `templates/executive_summary.md`.
-- **Multi-Format Export**:
-  - CSV: `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv`
-  - DOCX: `python scripts/md_to_docx.py reports/[Requirement_Name]_Executive_Summary.md reports/[Requirement_Name]_Executive_Summary.docx` (for client/stakeholder deliverables).
+### Step 5: Coverage Gate Validation, Consolidation & CSV Export
+- **Coverage Gate Verification (BẮT BUỘC TRƯỚC KHI EXPORT CSV)**:
+  - Kiểm tra `reports/[Requirement_Name]_Coverage_Report.md`:
+    - **NẾU Coverage < 100% hoặc Quality Gate FAILED:** DỪNG bước xuất CSV. Orchestrator tự động quay lại `testcase_generator` để cập nhật/bổ sung test case, sau đó chạy lại `coverage_analyst` đối soát cho đến khi đạt 100% tuyệt đối.
+    - **NẾU Coverage == 100% PASS:** Cho phép kích hoạt xuất file CSV chuẩn:
+      `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv`
+- Aggregate all generated reports into `reports/[Requirement_Name]_Executive_Summary.md` using `templates/executive_summary.md`.
 
 ---
 

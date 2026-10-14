@@ -28,8 +28,8 @@ Schema này định nghĩa cấu trúc dữ liệu chuẩn cho bảng Test Case 
 | **9** | **`Expected Result`** | String | ✅ Có | Viết bằng tiếng Anh. **Bắt buộc là Observable Outcome** (kết quả quan sát được từ phía người dùng/hệ thống). | Không viết hành động thao tác vào đây. Bảo tồn nguyên vẹn các thông báo lỗi, nhãn UI gốc trong ngoặc kép. |
 | **10**| **`Priority`** | Enum | ✅ Có | `Critical` \| `High` \| `Medium` \| `Low` | Mức độ ưu tiên thực thi trong chu kỳ test. |
 | **11**| **`Severity`** | Enum | ✅ Có | `Blocker` \| `Critical` \| `Major` \| `Minor` \| `Trivial` | Mức độ ảnh hưởng nếu test case này phát hiện lỗi. |
-| **12**| **`Type`** | Enum | ✅ Có | `Functional` \| `UI` \| `Security` \| `Performance` \| `Boundary` \| `Integration` \| `Negative` | Phân loại kỹ thuật kiểm thử của ca test. |
-| **13**| **`Automation Candidate`**| Enum | ✅ Có | `Yes` \| `No` \| `Partial` | Đánh giá tính khả thi để chuyển thành automated script. |
+| **12**| **`Type`** | Enum | ✅ Có | `Functional` \| `Negative` \| `Boundary` \| `UI` \| `Security` \| `Performance` \| `Integration` \| `Regression` | Phân loại kỹ thuật kiểm thử của ca test. |
+| **13**| **`Automation Candidate`**| Enum | ✅ Có | `Yes` \| `No` | Đánh giá tính khả thi để chuyển thành automated script (nhị phân chuẩn phục vụ đo lường tỷ lệ tự động hóa). |
 | **14**| **`Remarks`** | String | ⬜ Tuỳ chọn | Ghi chú thêm, mapping rủi ro (`RISK-RID-001`), hoặc giả định bắt buộc `[Assumption]: ...`. | Bắt buộc ghi `[Assumption]: ...` nếu expected result chưa có tài liệu xác nhận 100%. |
 
 ---

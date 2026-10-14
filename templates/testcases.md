@@ -200,11 +200,11 @@ This template defines **output format only**. All generation logic and validatio
 | **Steps Description** | Step-by-step execution instructions. One action per step using HTML `<br>` line breaks. Must mention exact interaction targets. |
 | **Test Data** | Specific input values used during execution. |
 | **Expected Result** | Observable and measurable application behavior after execution. Must describe exact UI/UX state mutations, copy, and layout changes. |
-| **Priority** | High / Medium / Low |
-| **Severity** | Critical / Major / Minor |
-| **Type** | Functional / Negative / Edge / UI / Regression / Security / Performance |
+| **Priority** | Critical / High / Medium / Low |
+| **Severity** | Blocker / Critical / Major / Minor / Trivial |
+| **Type** | Functional / Negative / Boundary / UI / Security / Performance / Integration / Regression |
 | **Automation Candidate** | Yes / No |
-| **Remarks** | ASSUMPTION_BASED / KNOWN_LIMITATION / OUT_OF_SCOPE / DEPENDENCY_REQUIRED / (empty) |
+| **Remarks** | Optional notes, risk/edge case mappings (`RISK-RID-001`), or mandatory assumption tag `[Assumption]: ...` (or empty) |
 
 ---
 
@@ -331,11 +331,24 @@ No issue.
 Allowed values
 
 ```
+Critical
 High
-
 Medium
-
 Low
+```
+
+---
+
+# Severity
+
+Allowed values
+
+```
+Blocker
+Critical
+Major
+Minor
+Trivial
 ```
 
 ---
@@ -346,18 +359,13 @@ Allowed values
 
 ```
 Functional
-
 Negative
-
-Edge
-
+Boundary
 UI
-
-Regression
-
 Security
-
 Performance
+Integration
+Regression
 ```
 
 ---

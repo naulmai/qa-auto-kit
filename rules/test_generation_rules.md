@@ -457,11 +457,12 @@ Each test case has:
 ### Primary Type = Required (Choose ONE)
 - Functional (primary business flow)
 - Negative (invalid input/error scenarios)
-- Edge (boundary/extreme values)
-- UI/UX (visual/interaction validation)
-- Performance (speed/responsiveness)
-- Regression (verify existing functionality after changes)
+- Boundary (boundary value analysis/extreme limits)
+- UI (visual/interaction validation)
 - Security (authorization/authentication/data protection)
+- Performance (speed/responsiveness)
+- Integration (cross-module/third-party API flow)
+- Regression (verify existing functionality after changes)
 
 ### Secondary Tags = Optional
 - [Tag] Security (if security is secondary concern)
@@ -576,7 +577,8 @@ Priority reflects business importance rather than implementation complexity.
 
 | Priority | Assign When Failure Impacts |
 |----------|---------------------------|
-| **High** | Core business flow, Authentication, Payment, Booking, Navigation, Security, Data integrity, Session, Critical user journey |
+| **Critical** | Complete showstopper, Core business blocker, Critical user journey broken with no workaround, Immediate release blocker |
+| **High** | Core business flow, Authentication, Payment, Booking, Navigation, Security, Data integrity, Session |
 | **Medium** | Secondary business functions, Reporting, Filtering, Sorting, Search, Notification, Profile, Settings |
 | **Low** | UI cosmetics, Animations, Branding, Visual consistency, Optional interactions, Non-critical usability improvements |
 
@@ -600,9 +602,11 @@ Severity reflects impact of failure.
 
 | Severity | Failure Causes |
 |----------|---------------|
-| **Critical** | Application crash, Data loss, Security breach, Financial loss, Complete business interruption, System unavailable |
-| **Major** | Primary feature unusable, Incorrect business logic, Navigation blocked, Validation failure, Incorrect workflow |
-| **Minor** | Cosmetic issue, Alignment, Text formatting, Visual inconsistency, Minor usability inconvenience |
+| **Blocker** | System crash, Fatal uncaught exception, Complete blockage of test execution or release, No workaround available |
+| **Critical** | Data corruption/loss, Security breach, Direct financial loss, Complete business interruption with partial workaround |
+| **Major** | Primary feature unusable, Incorrect business logic, Navigation blocked, Validation failure, Incorrect core workflow |
+| **Minor** | Secondary feature issue, Alignment, Text formatting, Visual inconsistency, Minor usability inconvenience |
+| **Trivial** | Minor cosmetic defect, Typo, Negligible visual inconsistency with zero functional impact |
 
 Severity shall NOT be determined by testcase complexity.
 

@@ -58,7 +58,7 @@ graph TD
 - **Output**: `reports/[Requirement_Name]_Testcases.md` (dynamic naming)
 - **Objective**: Dựa trên các Scenarios ở trên, sinh ra các Test Cases chi tiết (gồm step-by-step, test data, 14 cột chuẩn).
 - **Execution Rules**:
-  - Khi tham chiếu hoặc validate về mặt giao diện/hình ảnh (UI/UX), bắt buộc **phải tham chiếu đến các file ảnh trong thư mục `docs/design/`**.
+  - Khi tham chiếu hoặc validate về mặt giao diện/hình ảnh (UI/UX), bắt buộc **phải tham chiếu đến các file ảnh trong thư mục `docs/designs/`**.
   - **TUYỆT ĐỐI KHÔNG** sử dụng/tham chiếu các ảnh minh hoạ được nhúng trực tiếp bên trong file FRS (`docs/requirements/*`).
 
 ## Step 7: Coverage Analysis

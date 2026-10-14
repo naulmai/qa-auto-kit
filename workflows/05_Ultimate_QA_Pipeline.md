@@ -69,7 +69,8 @@ graph TD
 - **Template**: `templates/executive_summary.md`
 
 ## Step 10: Multi-Format Export (CSV & DOCX)
-- **CSV Export**:
+- **CSV Export (Quality Gate Enforced)**:
+  - **Precondition**: Chỉ kích hoạt sau khi Step 8 (`coverage_analyst`) xác nhận đạt **100% Quality Gate Pass**. Nếu chưa đạt, bắt buộc quay lại Step 6 cập nhật test case.
   - **Tool/Script**: `python scripts/md_to_csv.py`
   - **Command**: `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv`
   - **Output**: `reports/[Requirement_Name]_Testcases.csv`
