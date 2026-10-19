@@ -33,6 +33,7 @@ Analyze requirements and supporting documents to:
 
 - `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/risk_analysis_report.md`
+- `schemas/finding.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi sinh bất kỳ Risk/Finding nào. Xác nhận allowed values cho Risk Level, Category, Status trước khi generate.**
 
 ## Optional Inputs
 

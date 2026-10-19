@@ -42,6 +42,7 @@ Unlike QA Test Cases, UAT Scripts should:
 
 - `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/uat_scripts_report.md`
+- `schemas/uat_script.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi sinh bất kỳ UAT Script nào. Xác nhận allowed values cho Status, Priority, Pass/Fail Criteria trước khi generate.**
 
 ## Optional Inputs
 

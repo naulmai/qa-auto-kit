@@ -25,6 +25,15 @@ Analyze requirements and all generated QA artifacts to:
 
 ## 📥 Inputs
 
+### 🔴 MANDATORY Schema Pre-Load (Phải thực hiện TRƯỚC khi phân tích bất kỳ artifact nào)
+
+| Schema File | Mục đích |
+|---|---|
+| `schemas/coverage.schema.md` | Xác nhận metrics format, Coverage Status enum values, tỷ lệ tính coverage trước khi generate report |
+| `schemas/testcase.schema.md` | Xác nhận 14-column format, Type/Priority/Severity allowed values để validate test cases khi đọc vào |
+
+**Quy trình:** Đọc cả 2 file schema bằng `view_file` → nạp vào context → chỉ sau đó mới bắt đầu scan artifacts.
+
 ### Input File Discovery Rules (CRITICAL)
 
 #### **1. Requirement Documents Discovery**

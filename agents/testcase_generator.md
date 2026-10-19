@@ -21,9 +21,11 @@ Generate a complete, executable, traceable, and review-ready manual test suite d
 
 ### Required
 - `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
+- `schemas/testcase.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi generate bất kỳ test case nào**
 
 ### Secondary
 - `docs/designs/*` (UI Flow, Wireframes, Design descriptions)
+- `templates/testcases.md` (Output format template)
 
 ### Optional (Cross-Reference Inputs)
 - `reports/*_Test_Scenarios_Report.md` (from scenario_generator)
@@ -181,6 +183,28 @@ Always include regression test when modifying accessible features:
 - TC: "After updating login button color to new branding, verify new color maintains 4.5:1 contrast with background"
 
 ### Engine 4: Test Case Generation (Atomic Granularity)
+
+#### 🔴 STEP 0 — Schema Pre-Load (BẮT BUỘC TRƯỚC KHI GENERATE)
+Trước khi viết bất kỳ dòng test case nào, AI BẮT BUỘC thực hiện:
+1. Đọc `schemas/testcase.schema.md` — xác nhận Enum allowed values cho 4 cột quan trọng:
+
+   | Cột | Allowed Values (theo schema) |
+   |---|---|
+   | **Priority** | `Critical` \| `High` \| `Medium` \| `Low` |
+   | **Severity** | `Blocker` \| `Critical` \| `Major` \| `Minor` \| `Trivial` |
+   | **Type** | `Functional` \| `Negative` \| `Boundary` \| `UI` \| `Security` \| `Performance` \| `Integration` \| `Regression` |
+   | **Automation Candidate** | `Yes` \| `No` (chỉ 2 giá trị — không có `Partial`) |
+
+2. Kiểm tra của 2 quy tắc định dạng bắt buộc từ schema:
+   - **Steps Description**: Phải bắt đầu bằng `Step 1:`, `Step 2:`, ... (không được dùng `1.`, `2.`, ...)
+   - **Anti-LaTeX**: Không được dùng `$...$`, `\Delta`, `\$` trong bất kỳ ô nào.
+
+3. Nếu bất kỳ giá trị nào không có trong schema → **TỰ ĐỘNG MAP** về giá trị gần đúng nhất trong schema:
+   - `UI / UX`, `State Transition`, `Decision Table`, `Concurrency` → `Functional`
+   - `Resilience`, `Race Condition` → `Integration`
+   - `Partial` (Automation) → `No`
+
+#### Sau khi Schema Pre-Load hoàn tất, tiếp tục:
 - Generate test cases following the exact output structure defined in `templates/testcases.md`.
 - **Atomic Rule (CRITICAL):** Each test case validates ONE single behavior or UI element. 
   - **UI Elements:** MUST NOT group multiple UI elements (e.g., Banner, Map, Icon, Arrow, Button) into one testcase. You MUST create 1 separate TC for EACH UI element or state change.

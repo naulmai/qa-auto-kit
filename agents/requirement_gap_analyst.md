@@ -21,6 +21,7 @@ Perform a unified Senior BA + QA hybrid review of requirements to ensure:
 - Requirements: `docs/requirements/`
 - Output: `reports/[Requirement_Name]_Req_Gap_Report.md` (must be named dynamically based on the requirement filename)
 - Template: `templates/requirement_gap_report.md`
+- `schemas/finding.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi sinh bất kỳ Gap/Finding nào. Xác nhận allowed values cho Severity, Status, Category của finding trước khi generate.**
 
 ---
 

@@ -24,6 +24,22 @@ Trước khi thực hiện bất kỳ phân tích, đánh giá Gap hay sinh Test
 - **IF yêu cầu đầu ra cần file template hoặc CSV conversion:** Kiểm tra sự tồn tại của `templates/testcases.md` và `scripts/md_to_csv.py`.
 - **IF không yêu cầu artifact dự án (Ví dụ: Trả lời Markdown thuần):** Đánh dấu `Artifact Readiness: N/A` kèm lý do.
 
+### 3. 🔴 MANDATORY Schema Pre-Load (CRITICAL — KHÔNG ĐƯỢC BỎ QUA):
+Trước khi bất kỳ agent nào sinh Test Case, AI BẮT BUỘC phải **đọc và nạp toàn bộ nội dung** các file schema sau:
+
+| File Schema | Áp dụng khi | Hành động bắt buộc |
+|---|---|---|
+| `schemas/testcase.schema.md` | Luôn luôn — khi sinh Test Case | Đọc toàn bộ file. Nạp vào context. Xác nhận 14 cột, allowed values của Priority/Severity/Type/Automation Candidate trước khi generate. |
+| `schemas/coverage.schema.md` | Khi chạy Coverage Analysis | Đọc toàn bộ file. Nạp vào context trước khi tính coverage. |
+| `schemas/finding.schema.md` | Khi sinh Gap Report, Risk Report, Edge Case Report | Đọc toàn bộ file. Nạp vào context. |
+| `schemas/uat_script.schema.md` | Khi sinh UAT Script | Đọc toàn bộ file. Nạp vào context. |
+
+**Quy trình bắt buộc:**
+1. Dùng `view_file` hoặc `read_file` để đọc file schema tương ứng.
+2. Xác nhận các Enum values hợp lệ (không tự suy diễn).
+3. Chỉ được phép dùng các giá trị đã được định nghĩa trong schema — **TUYỆT ĐỐI KHÔNG ĐƯỢC DÙNG GIÁ TRỊ NGOÀI SCHEMA**.
+4. Nếu file schema không tồn tại → DỪNG LẠI và báo cáo cho USER.
+
 **Hành động khi Fail Gate:** DỪNG LẠI NGAY LẬP TỨC ➔ Liệt kê chi tiết lỗi đầu vào ➔ Chờ chỉ định từ USER.
 </RULE[input_document_integrity]>
 
