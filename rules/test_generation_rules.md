@@ -846,6 +846,16 @@ Numbers shall be sequential. Never reuse an existing TC_ID.
 
 ---
 
+## Pre-Requisite Standards
+
+Pre-Requisites represent the initial system state, account status, and test data preconditions that MUST exist BEFORE test execution begins.
+
+- Write as declarative condition statements (e.g., `User is logged into application.<br>User has no active subscription.`).
+- Multiple preconditions shall be separated by `<br>`.
+- **CRITICAL RESTRICTION:** STRICTLY FORBIDDEN to number actions as `Step 1:`, `Step 2:` in the `Pre-Requisite` column. The `Step X:` format is STRICTLY RESERVED for `Steps Description`. Pre-Requisites describe initial state preconditions (State/Precondition), NOT user action steps.
+
+---
+
 ## Test Step Rules
 
 Each step SHALL contain exactly ONE user action.
@@ -1142,6 +1152,39 @@ Ensure the generated Markdown table can be cleanly converted to a standard CSV f
     - ✅ Required: `New Total = Base + Distance`
     - ❌ Prohibited: `Extreme fare increase ($\Delta > \$40$ or $\Delta > 100\%$)`
     - ✅ Required: `Extreme fare increase (Delta > $40 or Delta > 100%)`
+
+---
+
+# 20. Enterprise Quality Gates: 5-Pillar Coverage & Black-Box Manual Standards
+
+## 20.1 The 5-Pillar Functional Coverage Gate
+For any module involving workflows, state transitions, transactions, or asynchronous/scheduled lifecycles, the test suite MUST satisfy all 5 functional pillars:
+1. **Pillar 1: UI & Interactive Form Flow:** Screen layouts, component states, input boundary validations (BVA/EP), empty states, loading skeletons, disabled/enabled states.
+2. **Pillar 2: Full Permutation Matrix:** 100% permutations across all user roles, state combinations, plan/option configurations, and selection pairs. Sample-only testing is strictly prohibited.
+3. **Pillar 3: Time-based & Event-driven Lifecycle (T0 vs T1):** 
+   - **T0 (Action/Schedule Phase):** Immediate user action, pending status indicators, schedule tag displays, zero unexpected immediate charge for deferred actions, audit trail generation.
+   - **T1 (Execution/Maturity Phase):** Batch/Cron worker execution on the exact scheduled date, state transition execution, updating active status badges, unlocking new rights/privileges, revoking previous privileges.
+4. **Pillar 4: System, Network & Third-Party Exceptions:** Third-party gateway errors, authentication/OTP failures, insufficient funds/quota, connection drops, timeout handling, retry/dunning policies, fallback recovery.
+5. **Pillar 5: Dedicated Communication Loop:** Push notifications, In-App notification center, transactional emails, SMS alerts, and deep-link routing.
+
+## 20.2 Global Requirement Cross-Referencing Requirement
+- AI generators are strictly forbidden from reading only an isolated requirement chapter or module section.
+- Prior to scenario generation, the generator MUST scan the entire requirement document across 5 universal cross-cutting categories:
+  1. *Communication & Alerts:* `Email`, `Notification`, `Push`, `SMS`, `In-App`, `Alert`, `Template`, `Deep-link`.
+  2. *Background & Scheduled Lifecycle:* `Cron`, `Worker`, `Batch`, `Job`, `Schedule`, `Queue`, `Timer`, `Sync`, `Grace Period`, `Expiration`, `Effective Date`.
+  3. *Transactions & External Integrations:* `Payment`, `Gateway`, `Checkout`, `Refund`, `Invoice`, `Billing`, `Webhook`, `Third-party`.
+  4. *Security & Access Control:* `Auth`, `Role`, `Permission`, `Token`, `Session`, `OTP`, `MFA`.
+  5. *Global Appendices & Error Handlers:* `Appendix`, `System Limits`, `Error Codes`, `Glossary`.
+- Any email template, notification, or batch schedule relevant to the module MUST be extracted and transformed into dedicated test cases.
+
+## 20.3 Strict Black-Box Manual QA Vocabulary Blacklist
+In manual functional test cases, steps and expected results must only contain actions observable and executable by a manual QA tester holding a physical device:
+- **Forbidden backend terms:** `webhook`, `event listener`, `event bus`, `event payload`, `trigger event`, `evt_*`, `internal queue`, `message broker`, `POST /api/`, `GET /api/`, `payload`, `HTTP 200`, `200 OK`, `status code 4xx/5xx`, `json response`, `REST endpoint`, `cURL`, `database`, `table`, `column`, `row`, `SQL query`, `SELECT`, `UPDATE WHERE`, `foreign key`, `primary key`, `schema migration`, `cache key`, internal variable/class/method names.
+- **Mandatory black-box terms:** `Mobile app screen`, `Payment/Auth webview`, `Push notification banner`, `In-app notification center`, `Email inbox`, `Transaction receipt`, `Profile/Settings view`, `Status badge`.
+
+## 20.4 Communication & Lifecycle First-Class Citizen Standard
+- Never bury email or push notifications as secondary assertions inside button-click test cases.
+- Every transactional/state event MUST have dedicated test cases (`*-NOT-*`) validating email subject, sender name, dynamic placeholders (`{{user_name}}`, `{{item_name}}`, `{{amount}}`, `{{effective_date}}`, `{{reference_id}}`), OS notification states (Foreground, Background, Killed), and deep-link navigation.
 
 ---
 

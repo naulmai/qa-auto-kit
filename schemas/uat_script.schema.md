@@ -1,78 +1,78 @@
 # 📐 Master UAT Script Schema (v1.0.0)
-> **Trạng thái:** Active Standard | **Áp dụng cho:** `uat_script_generator`, `templates/uat_scripts_report.md`
+> **Status:** Active Standard | **Applicable to:** `uat_script_generator`, `templates/uat_scripts_report.md`
 
 ---
 
-## 1. 🎯 Mục Đích & Triết Lý Thiết Kế
-Schema này quy định cấu trúc chuẩn cho các kịch bản nghiệm thu người dùng cuối (User Acceptance Test - UAT).
+## 1. 🎯 Purpose & Design Philosophy
+This schema specifies the standardized structure for User Acceptance Test (UAT) scripts.
 
-Khác với Test Case kỹ thuật (Manual Test Case) vốn đi sâu vào từng trường nhập liệu, mã trạng thái và điều kiện biên, **UAT Scripts được thiết kế dành riêng cho Khách hàng (Client), Chủ sở hữu sản phẩm (Product Owner - PO) và Người dùng doanh nghiệp (Business Users)**.
+Unlike technical Manual Test Cases that delve into specific input fields, technical status codes, and boundary conditions, **UAT Scripts are designed specifically for Clients, Product Owners (PO), and Business Users**.
 
-### Triết lý cốt lõi:
-1. **Ngôn ngữ kinh doanh (Business Language):** Dễ hiểu, không chứa thuật ngữ kỹ thuật chuyên sâu (như HTTP status code, database table, regex).
-2. **Luồng trải nghiệm trọn vẹn (End-to-End User Journeys):** Đánh giá theo hành trình người dùng thực tế từ lúc bắt đầu đến khi đạt được mục tiêu kinh doanh.
-3. **Xác thực giá trị (Value Validation):** Trọng tâm kiểm tra hệ thống có mang lại giá trị kỳ vọng không (ví dụ: tiền đã về tài khoản, thông báo xác nhận đã gửi, cuốc xe kết thúc an toàn).
+### Core Philosophy:
+1. **Business Language:** Plain, intuitive phrasing without deep technical jargon (e.g., avoiding HTTP status codes, database table names, regex).
+2. **End-to-End User Journeys:** Validates realistic user journeys from initiation to business objective fulfillment.
+3. **Value Validation:** Focuses on whether the system delivers expected business value (e.g., funds settled in account, confirmation notification received, ride completed safely).
 
 ---
 
-## 2. 🆔 Chuẩn Định Dạng UAT Script ID
-UAT Script ID bắt buộc tuân theo quy tắc:
+## 2. 🆔 UAT Script ID Specification
+UAT Script IDs MUST follow the format:
 $$\text{UAT-[MODULE]-[NNN]}$$
-- **`[MODULE]`**: Mã module nghiệp vụ 3-4 chữ cái (Ví dụ: `RID` = Rider, `DRV` = Driver, `FIN` = Financial, `PAY` = Payment).
-- **`[NNN]`**: Số thứ tự gồm 3 chữ số bắt đầu từ `001` (Ví dụ: `UAT-RID-001`, `UAT-FIN-005`).
+- **`[MODULE]`**: 3–4 letter uppercase business module code (e.g., `RID` = Rider, `DRV` = Driver, `FIN` = Financial, `PAY` = Payment).
+- **`[NNN]`**: 3-digit sequential number starting from `001` (e.g., `UAT-RID-001`, `UAT-FIN-005`).
 
 ---
 
-## 3. 📋 Bảng Đặc Tả Thuộc Tính (Field Specification)
+## 3. 📋 Field Specification
 
-| Tên trường (Field) | Kiểu dữ liệu | Bắt buộc | Ràng buộc giá trị | Mô tả & Hướng dẫn |
+| Field Name | Data Type | Mandatory | Value Constraints | Description & Instructions |
 |---|:---:|:---:|---|---|
-| **`uat_id`** | String | ✅ Có | Regex: `^UAT-[A-Z0-9]{2,6}-\d{3}$` | Mã định danh duy nhất của kịch bản nghiệm thu. |
-| **`title`** | String | ✅ Có | 15 – 120 ký tự | Tên kịch bản nghiệm thu phản ánh mục tiêu người dùng. |
-| **`user_role`** | String | ✅ Có | `Rider` \| `Driver` \| `Host` \| `Admin` \| `Fleet Manager` | Vai trò người dùng thực hiện kịch bản. |
-| **`user_story`** | String | ✅ Có | Cấu trúc: `Là [ai], tôi muốn [làm gì], để [đạt được gì]` | Khung câu chuyện người dùng mô tả bối cảnh kinh doanh. |
-| **`pre_condition`**| String | ✅ Có | Trạng thái ban đầu dễ hiểu | Bối cảnh cần thiết trước khi bắt đầu (ví dụ: "Tài khoản có số dư 500.000 VNĐ"). |
-| **`steps`** | String | ✅ Có | Chuỗi các hành động thực tế tuần tự, ngăn cách bằng `<br>` | Các bước người dùng thực hiện (Ví dụ: `Bước 1: Mở app...<br>Bước 2: Chọn đổi điểm đến...`). |
-| **`test_data`** | String | ⬜ Tuỳ chọn | Dữ liệu mẫu thực tế | Dữ liệu kiểm thử dễ hiểu (tên đường phố, số tiền cụ thể). |
-| **`expected_outcome`**| String | ✅ Có | Kết quả kinh doanh quan sát được | Kết quả nghiệp vụ rõ ràng (giao diện, email xác nhận, trừ tiền chính xác). |
-| **`acceptance_criteria`**| String | ✅ Có | Tham chiếu mục tiêu trong PRD/SRS | Tiêu chí nghiệm thu cốt lõi được thoả mãn. |
-| **`risk_ref`** | String | ⬜ Tuỳ chọn | `RISK-[MODULE]-[NNN]` | Rủi ro kinh doanh tương ứng được kịch bản này kiểm chứng. |
-| **`verdict`** | Enum | ✅ Có | `Pass` \| `Fail` \| `Conditional Pass` \| `Not Executed` | Kết luận nghiệm thu của đại diện kinh doanh/khách hàng. |
+| **`uat_id`** | String | ✅ Yes | Regex: `^UAT-[A-Z0-9]{2,6}-\d{3}$` | Unique identifier for the UAT scenario. |
+| **`title`** | String | ✅ Yes | 15 – 120 characters | Scenario title reflecting the user's business objective. |
+| **`user_role`** | String | ✅ Yes | `Rider` \| `Driver` \| `Host` \| `Admin` \| `Fleet Manager` | User role executing the scenario. |
+| **`user_story`** | String | ✅ Yes | Structure: `As a [who], I want to [do what], so that [achieve what]` | User story framework describing the business context. |
+| **`pre_condition`**| String | ✅ Yes | Intuitive initial state | Business prerequisites prior to execution (e.g., "Account has a balance of $50.00"). |
+| **`steps`** | String | ✅ Yes | Sequential user action steps, separated by `<br>` | Step-by-step user actions (e.g., `Step 1: Open app...<br>Step 2: Select destination change...`). |
+| **`test_data`** | String | ⬜ Optional | Concrete business data | Realistic, easy-to-understand test data (street names, concrete amounts). |
+| **`expected_outcome`**| String | ✅ Yes | Observable business outcome | Visible business results (UI state, email notification, accurate balance debit). |
+| **`acceptance_criteria`**| String | ✅ Yes | Reference to PRD/SRS criteria | Core business acceptance criteria verified by this scenario. |
+| **`risk_ref`** | String | ⬜ Optional | `RISK-[MODULE]-[NNN]` | Corresponding business risk validated by this scenario. |
+| **`verdict`** | Enum | ✅ Yes | `Pass` \| `Fail` \| `Conditional Pass` \| `Not Executed` | Final UAT sign-off decision by client / business reviewer. |
 
 ---
 
-## 4. 📝 Định Dạng Trình Bày Chuẩn Trong Báo Cáo
+## 4. 📝 Standard Markdown Representation in Reports
 
-### A. Định dạng Khối Chi Tiết Kịch Bản (Detailed Journey Block):
+### A. Detailed Journey Block Format:
 ```markdown
-### 📌 [UAT-RID-001]: Rider đổi điểm đến trong khi đang di chuyển và hoàn tất thanh toán cước mới
-- **Vai trò (User Role)**: Rider (Hành khách)
-- **User Story**: Là một hành khách đang ngồi trên xe, tôi muốn đổi điểm trả khách sang một địa chỉ mới để phù hợp với kế hoạch đột xuất của mình.
-- **Điều kiện ban đầu (Pre-conditions)**: Cuốc xe đang ở trạng thái di chuyển (In Trip), tài xế đã đón khách, chưa đến gần điểm trả khách ban đầu (>500m).
-- **Rủi ro kiểm chứng (Risk Ref)**: `RISK-RID-002` (Không tự ý đổi lộ trình nếu chưa xác thực thanh toán tiền tăng thêm).
+### 📌 [UAT-RID-001]: Rider modifies destination during active ride and completes payment for new fare
+- **User Role**: Rider
+- **User Story**: As a rider currently in a vehicle, I want to change my drop-off destination to a new address to accommodate an unexpected change of plans.
+- **Pre-conditions**: Ride is in active `In Trip` status, driver has picked up rider, drop-off location is not within proximity lock distance (>500m).
+- **Risk Ref**: `RISK-RID-002` (System must not reroute trip without successful pre-authorization of fare Delta).
 
-**📋 Các bước thực hiện (Business Steps):**
-1. Mở màn hình theo dõi lộ trình trực tiếp của cuốc xe đang chạy.
-2. Nhấn vào biểu tượng cây bút chì (✏️) bên cạnh ô điểm đến "DROP OFF".
-3. Nhập và chọn địa chỉ điểm đến mới (Cách xa hơn điểm ban đầu 3km).
-4. Quan sát màn hình xác nhận: kiểm tra giờ đến mới (Absolute ETA), tiền cước cũ, tiền chênh lệch tăng thêm (+25.000đ), tổng cước mới.
-5. Nhấn nút "Gửi yêu cầu" (Send Request).
+**📋 Business Steps:**
+1. Open active live tracking screen for current ongoing trip.
+2. Tap the edit pencil icon (✏️) adjacent to the "DROP OFF" destination field.
+3. Search and select the new destination address (3km further than original drop-off).
+4. Review confirmation modal: verify new Absolute ETA, old fare, fare increase Delta (+$5.00), and new total fare.
+5. Tap "Send Request" button.
 
-**🎯 Kết quả mong đợi (Expected Business Outcome):**
-- Ứng dụng hiển thị thông báo "Điểm đến đã được cập nhật thành công".
-- Lộ trình trên bản đồ tự động vẽ lại đường đi mới về phía điểm đến mới.
-- Ứng dụng của tài xế nhận thông báo cập nhật lộ trình đồng bộ và tự động điều hướng sang cung đường mới.
-- Thẻ tín dụng của hành khách tạm giữ (pre-authorization) đúng số tiền chênh lệch 25.000đ mà không phát sinh thêm bất kỳ phụ phí bất thường nào.
+**🎯 Expected Business Outcome:**
+- Application displays confirmation message "Destination updated successfully".
+- Map route polyline automatically redraws towards the new destination.
+- Driver application receives synchronized route update notification and automatically reroutes GPS navigation.
+- Rider's credit card pre-authorizes exactly the +$5.00 Delta without any unexpected duplicate charges.
 
-**🏁 Kết luận nghiệm thu (Sign-off):** [ ] Pass  [ ] Fail  [ ] Conditional Pass
-- **Người nghiệm thu (Reviewer)**: _______________________   **Ngày**: ____/____/2026
+**🏁 UAT Sign-off:** [ ] Pass  [ ] Fail  [ ] Conditional Pass
+- **Reviewer**: _______________________   **Date**: ____/____/2026
 ```
 
-### B. Định dạng Bảng Kịch Bản Tóm Tắt (UAT Summary Table):
+### B. UAT Summary Table Format:
 ```markdown
-| UAT ID | Kịch bản nghiệm thu | Vai trò | Trọng tâm kiểm thử | Tiêu chí thành công | Kết quả |
+| UAT ID | Scenario Title | Role | Test Focus | Acceptance Criteria | Verdict |
 |---|---|---|---|---|:---:|
-| `UAT-RID-001` | Đổi điểm đến giữa chuyến hợp lệ | Rider | Luồng tăng cước tiêu chuẩn | Lộ trình và cước mới đồng bộ cả khách và tài xế | Pass |
-| `UAT-RID-002` | Thẻ hết tiền khi đổi điểm đến | Rider | Xử lý lỗi thẻ từ chối | Giữ nguyên lộ trình cũ, thông báo rõ ràng cho khách | Pass |
-| `UAT-RID-003` | Tài xế từ chối vì lý do an toàn | Driver | Van an toàn của tài xế | Chốt cước theo cự ly thực tế, không phạt tài xế | Pass |
+| `UAT-RID-001` | Valid mid-trip destination change | Rider | Standard fare increase flow | Synchronized route & fare across rider and driver | Pass |
+| `UAT-RID-002` | Card declined during destination change | Rider | Payment pre-authorization failure | Preserves original route with clear error prompt | Pass |
+| `UAT-RID-003` | Driver rejects modification for safety | Driver | Driver safety override valve | Closes fare at actual distance without driver penalty | Pass |
 ```

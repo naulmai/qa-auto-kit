@@ -35,7 +35,7 @@ Primary objectives:
 
 - `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
 - `templates/edge_case_report.md`
-- `schemas/finding.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi sinh bất kỳ Edge Case Finding nào. Xác nhận allowed values cho Severity, Likelihood, Impact trước khi generate.**
+- `schemas/finding.schema.md` — **🔴 MANDATORY: Must read and load into context before generating any Edge Case Findings. Confirm allowed values for Severity, Likelihood, and Impact prior to generation.**
 
 ## Optional Inputs
 

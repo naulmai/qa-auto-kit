@@ -55,17 +55,17 @@ Control the full QA pipeline execution by selecting the appropriate workflow, de
 - Execute agents **strictly in the order** defined by the selected workflow.
 - Pass each agent's output as input to the next agent in the pipeline.
 - For `requirement_gap_analyst` and `requirement_logic_analyst`: downstream agents scan `reports/*_Req_Gap_Report.md` and `reports/*_Logic_Anomaly_Report.md` (dynamic naming).
-- **Coverage Gate Enforcement (No Premature CSV Export)**: TUYỆT ĐỐI KHÔNG xuất file CSV ngay sau khi `testcase_generator` hoàn thành Markdown. Bảng Test Case phải được `coverage_analyst` thẩm định và xác nhận đạt Quality Gate trước khi kích hoạt converter script.
+- **Coverage Gate Enforcement (No Premature CSV Export)**: STRICTLY PROHIBITED to export CSV immediately after `testcase_generator` finishes Markdown generation. The Test Case table MUST be audited and confirmed by `coverage_analyst` to meet the Quality Gate before activating the converter script.
 
 ### Step 4: Conditional Steps
 - `design_auditor` → **SKIP** if `docs/designs/` is empty.
 - `requirement_logic_analyst` & `risk_analyst` optional inputs → consume if available from previous steps.
 
 ### Step 5: Coverage Gate Validation, Consolidation & CSV Export
-- **Coverage Gate Verification (BẮT BUỘC TRƯỚC KHI EXPORT CSV)**:
-  - Kiểm tra `reports/[Requirement_Name]_Coverage_Report.md`:
-    - **NẾU Coverage < 100% hoặc Quality Gate FAILED:** DỪNG bước xuất CSV. Orchestrator tự động quay lại `testcase_generator` để cập nhật/bổ sung test case, sau đó chạy lại `coverage_analyst` đối soát cho đến khi đạt 100% tuyệt đối.
-    - **NẾU Coverage == 100% PASS:** Cho phép kích hoạt xuất file CSV chuẩn:
+- **Coverage Gate Verification (MANDATORY BEFORE CSV EXPORT)**:
+  - Check `reports/[Requirement_Name]_Coverage_Report.md`:
+    - **IF Coverage < 100% or Quality Gate FAILED:** HALT CSV export. The Orchestrator automatically routes back to `testcase_generator` to update and supplement test cases, then reruns `coverage_analyst` until reaching an absolute 100%.
+    - **IF Coverage == 100% PASS:** Authorize execution of standardized CSV export:
       `python scripts/md_to_csv.py reports/[Requirement_Name]_Testcases.md reports/[Requirement_Name]_Testcases.csv`
 - Aggregate all generated reports into `reports/[Requirement_Name]_Executive_Summary.md` using `templates/executive_summary.md`.
 

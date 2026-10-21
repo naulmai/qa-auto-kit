@@ -36,3 +36,10 @@ debug_output.txt
 # =========================
 .DS_Store
 Thumbs.db
+
+# =========================
+# 📝 Project Specific Notes
+# =========================
+docs/PROJECT_NOTES.md
+docs/project_notes.md
+

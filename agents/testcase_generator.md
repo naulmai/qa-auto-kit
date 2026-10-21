@@ -21,7 +21,7 @@ Generate a complete, executable, traceable, and review-ready manual test suite d
 
 ### Required
 - `docs/requirements/*` (SRS, PRD, BRD, or any requirement document)
-- `schemas/testcase.schema.md` — **🔴 MANDATORY: Phải đọc và nạp vào context trước khi generate bất kỳ test case nào**
+- `schemas/testcase.schema.md` — **🔴 MANDATORY: Must read and load into context before generating any test cases**
 
 ### Secondary
 - `docs/designs/*` (UI Flow, Wireframes, Design descriptions)
@@ -52,6 +52,13 @@ Execute the following engines **sequentially**. No engine may be skipped.
 
 ### Engine 1: Requirement Analysis & QnA
 - Read all documents from `docs/requirements/*`.
+- **[Global Requirement Cross-Referencing - MANDATORY]**: Do NOT read only an isolated module section. Cross-functional specifications (Email/SMS templates, Push notifications, Cron/Batch schedules, Payment/Billing policies, Shared error codes, Role matrices) often reside in global appendices or general system chapters. The generator MUST scan the ENTIRE requirement document across 5 universal cross-cutting categories:
+  1. *Communication & Alerts:* `Email`, `Notification`, `Push`, `SMS`, `In-App`, `Alert`, `Template`, `Deep-link`.
+  2. *Background & Scheduled Lifecycle:* `Cron`, `Worker`, `Batch`, `Job`, `Schedule`, `Queue`, `Timer`, `Sync`, `Grace Period`, `Expiration`, `Effective Date`.
+  3. *Transactions & External Integrations:* `Payment`, `Gateway`, `Checkout`, `Refund`, `Invoice`, `Billing`, `Webhook`, `Third-party`.
+  4. *Security & Access Control:* `Auth`, `Role`, `Permission`, `Token`, `Session`, `OTP`, `MFA`.
+  5. *Global Appendices & Error Handlers:* `Appendix`, `System Limits`, `Error Codes`, `Glossary`.
+  Extract all cross-cutting business rules, templates, and triggers relevant to the module under test.
 - Identify functional requirements, business rules, constraints, user roles.
 - Decompose compound requirements into atomic functional behaviors.
 - **[Feature Size Evaluation Matrix]**: You MUST explicitly count and list the 6 Feature Size factors (Input Fields, Business Rules, User Roles, Alternative Flows, APIs, DB Changes) as defined in `test_generation_rules.md`. Apply the evaluation rubric (e.g., if 2+ factors are Major -> Major -> minimum 60 test cases) and print this matrix before generation.
@@ -65,6 +72,13 @@ Execute the following engines **sequentially**. No engine may be skipped.
 
 ### Engine 3: Test Design, Field-Level Validation, and NFRs
 - Apply core design techniques: Happy Path, Negative Testing, BVA, Equivalence Partitioning, Decision Table, State Transition.
+- **[Mandatory 5-Pillar Coverage Gate]**: For any module with workflows, state transitions, transactions, or asynchronous lifecycles, enforce all 5 pillars:
+  1. *Pillar 1: UI & Interactive Form Flow* (Screen layouts, component states, field validations BVA/EP, empty/loading/disabled/active states).
+  2. *Pillar 2: Full Permutation Matrix* (100% permutations across all user roles, state combinations, plan/tier options, and selection variants. Sample-only testing is strictly prohibited).
+  3. *Pillar 3: Time-based & Event-driven Lifecycle (T0 vs T1)* (T0: Action/Schedule phase - immediate feedback, pending status, audit trail; T1: Execution/Maturity phase - scheduled date arrival, batch execution, state activation, granting new permissions, revoking previous privileges).
+  4. *Pillar 4: System, Network & Third-Party Exceptions* (Gateway/API errors, authentication/OTP failures, network interruption, timeout, retry/dunning policies, fallback mechanisms).
+  5. *Pillar 5: Dedicated Communication Loop* (Push notification, in-app notification center, transactional email/SMS, deep-link navigation back to the exact relevant screen).
+- **[Dedicated Communication TCs]**: Emails and Notifications MUST NOT be trailing sentences in Expected Results. Every trigger event MUST have dedicated `*-NOT-*` test cases.
 
 ### Field-Level Validation Checklist (CRITICAL)
 Scan all input fields on the form/UI and generate specific validation TCs for each type:
@@ -125,11 +139,11 @@ Scan all input fields on the form/UI and generate specific validation TCs for ea
 - Reorder validation
 - Boundary values (0, 1, max, max+1)
 
-### Scenarios Chuyên Sâu & NFRs (Mandatory Checklist)
+### Deep Scenarios & NFRs (Mandatory Checklist)
 - **Mobile Lifecycle:** Backgrounding, Force Stop (Kill App), Restart App, Session Logout.
-- **API & Backend:** Cấu trúc Payload (thiếu trường, sai data type, Boundary NULL/999), Mock HTTP 500, Mock API Timeout.
+- **API & Backend:** Payload structure (missing fields, wrong data type, Boundary NULL/999), Mock HTTP 500, Mock API Timeout.
 - **Hardware & Permission (CRITICAL):** GPS Off, Location Permission Revoked during runtime, Fake GPS (Mock Location apps), Approximate Location (Android 12+), Poor GPS Accuracy.
-- **Race Condition & Network:** Đứt mạng giữa chừng, Double Submit liên tiếp.
+- **Race Condition & Network:** Mid-action network disconnection, Rapid double submission.
 
 ### Engine 3 Add-On: Accessibility & Localization (ENHANCED)
 
@@ -184,27 +198,28 @@ Always include regression test when modifying accessible features:
 
 ### Engine 4: Test Case Generation (Atomic Granularity)
 
-#### 🔴 STEP 0 — Schema Pre-Load (BẮT BUỘC TRƯỚC KHI GENERATE)
-Trước khi viết bất kỳ dòng test case nào, AI BẮT BUỘC thực hiện:
-1. Đọc `schemas/testcase.schema.md` — xác nhận Enum allowed values cho 4 cột quan trọng:
+#### 🔴 STEP 0 — Schema Pre-Load (MANDATORY BEFORE GENERATION)
+Before writing any test case row, AI MUST execute:
+1. Read `schemas/testcase.schema.md` — confirm Enum allowed values for the 4 critical columns:
 
-   | Cột | Allowed Values (theo schema) |
+   | Column | Allowed Values (per schema) |
    |---|---|
    | **Priority** | `Critical` \| `High` \| `Medium` \| `Low` |
    | **Severity** | `Blocker` \| `Critical` \| `Major` \| `Minor` \| `Trivial` |
    | **Type** | `Functional` \| `Negative` \| `Boundary` \| `UI` \| `Security` \| `Performance` \| `Integration` \| `Regression` |
-   | **Automation Candidate** | `Yes` \| `No` (chỉ 2 giá trị — không có `Partial`) |
+   | **Automation Candidate** | `Yes` \| `No` (strictly 2 binary values — NO `Partial`) |
 
-2. Kiểm tra của 2 quy tắc định dạng bắt buộc từ schema:
-   - **Steps Description**: Phải bắt đầu bằng `Step 1:`, `Step 2:`, ... (không được dùng `1.`, `2.`, ...)
-   - **Anti-LaTeX**: Không được dùng `$...$`, `\Delta`, `\$` trong bất kỳ ô nào.
+2. Verify mandatory formatting rules from schema:
+   - **Steps Description**: Must start with `Step 1:`, `Step 2:`, ... (do not use `1.`, `2.`, ...)
+   - **Pre-Requisite**: MUST consist only of declarative state precondition statements, strictly **NO `Step 1:`, `Step 2:` prefixes**. The `Step X:` prefix is STRICTLY RESERVED for the `Steps Description` column.
+   - **Anti-LaTeX**: Strictly forbidden to use `$...$`, `\Delta`, `\$` in any cell.
 
-3. Nếu bất kỳ giá trị nào không có trong schema → **TỰ ĐỘNG MAP** về giá trị gần đúng nhất trong schema:
+3. If any value is not in the schema → **AUTOMATICALLY MAP** to the closest valid schema value:
    - `UI / UX`, `State Transition`, `Decision Table`, `Concurrency` → `Functional`
    - `Resilience`, `Race Condition` → `Integration`
    - `Partial` (Automation) → `No`
 
-#### Sau khi Schema Pre-Load hoàn tất, tiếp tục:
+#### Once Schema Pre-Load is complete, proceed with:
 - Generate test cases following the exact output structure defined in `templates/testcases.md`.
 - **Atomic Rule (CRITICAL):** Each test case validates ONE single behavior or UI element. 
   - **UI Elements:** MUST NOT group multiple UI elements (e.g., Banner, Map, Icon, Arrow, Button) into one testcase. You MUST create 1 separate TC for EACH UI element or state change.
@@ -227,7 +242,7 @@ Trước khi viết bất kỳ dòng test case nào, AI BẮT BUỘC thực hi�
 
 ### Engine 8: AI Self Review & Quality Gate
 - Run the Self Audit Engine defined in `rules/test_generation_rules.md` Section 15.
-- **Score 8 Quality Criteria (STRICT ENFORCEMENT):** 
+- **Score 11 Quality Criteria (STRICT ENFORCEMENT):** 
   1. Unique TC ID. 
   2. 1-to-1 Step-Expected Matching. 
   3. Concrete Test Data. 
@@ -236,6 +251,9 @@ Trước khi viết bất kỳ dòng test case nào, AI BẮT BUỘC thực hi�
   6. **Atomic Granularity Check:** Are any UI actions or validations grouped together? (e.g. testing 2 buttons in 1 case). If YES → FAIL.
   7. **NFR Coverage Check:** Does the suite contain explicit Security, Performance, and UI/UX test cases? If NO → FAIL.
   8. **Deep Tech Check:** Does the suite contain at least 1 case for API Error (e.g. HTTP 500/Timeout) and 1 case for Mobile Lifecycle (Kill/Background)? If NO → FAIL.
+  9. **Strict Black-Box Vocabulary Check:** Are there any internal backend/implementation terms (`webhook`, `event payload`, `evt_*`, `POST /api/`, `HTTP 200`, `database`, `table`, `column`, `SQL query`, internal variable names, etc.) in manual functional test cases? If YES → FAIL and rewrite strictly to user-facing observable actions.
+  10. **5-Pillar Coverage Check:** Does the suite cover all 5 pillars (UI Flow, Permutation Matrix, T0 vs T1 Lifecycle, Exception Handling, Communication Loop) where applicable? If NO → FAIL.
+  11. **Communication First-Class Check:** Are all transactional notifications, messages, and emails tested with dedicated `*-NOT-*` test cases including deep-link and dynamic placeholders? If NO → FAIL.
 - Output a brief `<audit_summary>` block. If ANY check fails → regenerate affected test cases.
 
 ### Engine 9: Output Formatting
@@ -259,14 +277,17 @@ Trước khi viết bất kỳ dòng test case nào, AI BẮT BUỘC thực hi�
 
 ---
 
-## 🛑 Anti-Patterns (NGHIÊM CẤM)
+## 🛑 Anti-Patterns (STRICTLY PROHIBITED)
 
-- ❌ Sinh test data chung chung / placeholder (phải dùng data cụ thể).
-- ❌ Chỉ có Happy Path, thiếu Negative/Boundary/Edge cases.
-- ❌ Gộp validation nhiều trường vào 1 test case → mỗi trường phải có TC validation riêng.
-- ❌ Gộp chung việc kiểm tra nhiều UI elements (ví dụ: Banner, Map, Icon) vào 1 test case → mỗi UI component hoặc tương tác phải có 1 TC độc lập (Atomic).
-- ❌ Bỏ qua API validation (HTTP 500, Timeout, Payload Boundary).
-- ❌ Bỏ qua Mobile Lifecycle (Kill App, Background).
+- ❌ Generating generic test data / placeholders (must use concrete, realistic data).
+- ❌ Generating only Happy Path, omitting Negative/Boundary/Edge cases.
+- ❌ Grouping validation of multiple fields into a single test case → each field must have its own atomic TC.
+- ❌ Grouping multiple UI elements (e.g., Banner, Map, Icon) into 1 test case → each UI component or interaction must have an independent atomic TC.
+- ❌ Using backend/whitebox terminology (`webhook`, `event bus`, `POST /api/`, `HTTP 200`, `database`, `table`, `SQL query`) in manual functional test cases.
+- ❌ Skipping the effective timestamp T1 (Effective Date / Scheduled Execution arrival) for scheduled or deferred transactions/states.
+- ❌ Grouping email/notification verification as a secondary phrase in Expected Result instead of creating dedicated test cases (`*-NOT-*`).
+- ❌ Skipping API validation (HTTP 500, Timeout, Payload Boundary).
+- ❌ Skipping Mobile Lifecycle (Kill App, Backgrounding).
 
 ---
 

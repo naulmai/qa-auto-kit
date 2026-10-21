@@ -189,12 +189,34 @@ AI BẮT BUỘC phải xác định và công bố rõ ràng **Requirement Sourc
 
 ### Bắt buộc công bố Metadata ở đầu mỗi Báo cáo / Testcases:
 ```markdown
-- **Requirement Source-of-Truth:** `docs/requirements/Arc Share - Software Requirement Specification.md`
-- **Requirement Module/Section:** `Host Financial Management (FR-ACS-FIN)`
-- **Document Version/Date:** `v1.2 (Active)`
+- **Requirement Source-of-Truth:** `docs/requirements/[Requirement_Document_Name].md`
+- **Requirement Module/Section:** `[Module_Name] ([Module_ID])`
+- **Document Version/Date:** `vX.Y (Active)`
 - **Integrity Status:** `VERIFIED & UNTRUNCATED`
 ```
 </RULE[requirement_source_of_truth]>
+
+# 🔍 Global Requirement Cross-Referencing & Anti-Local Scoping Rule (CRITICAL)
+<RULE[global_frs_cross_referencing]>
+AI TUYỆT ĐỐI KHÔNG ĐƯỢC chỉ đọc cục bộ một phân đoạn Requirement được chỉ định mà bỏ qua ngữ cảnh toàn cục (Global Context) của tài liệu:
+
+### 1. Nguy cơ Đọc Cục bộ (Local Scoping Blindspot):
+Trong các tài liệu đặc tả nghiệp vụ lớn (>1.000 dòng), các quy định liên quan đến: Mẫu Email (Email Templates), Thông báo đẩy (Push Notifications), Cơ chế Cron/Worker, Lịch chuyển trạng thái định kỳ, Chính sách ân hạn (Grace Period), Điều khoản thanh toán, hoặc Bảng mã lỗi chung thường được đặt tại **Phụ lục toàn cục (Global Appendices)** hoặc nằm rải rác ở các chương chung. Nếu chỉ đọc đúng section của module, AI CHẮC CHẮN sẽ bỏ sót các luồng kiểm thử quan trọng.
+
+### 2. Hành động bắt buộc trước khi thiết kế kịch bản (Mandatory Global Grep):
+Trước khi phân tích Gap hoặc sinh Test Cases, AI BẮT BUỘC phải thực hiện tìm kiếm toàn văn trên toàn bộ file Requirement theo 5 nhóm từ khóa phổ quát:
+1. *Truyền thông & Thông báo:* `Email`, `Notification`, `Push`, `SMS`, `In-App`, `Alert`, `Template`, `Deep-link`.
+2. *Tác vụ chạy ngầm & Vòng đời:* `Cron`, `Worker`, `Batch`, `Job`, `Schedule`, `Queue`, `Timer`, `Sync`, `Grace Period`, `Expiration`, `Effective Date`.
+3. *Giao dịch & Tích hợp cổng bên ngoài:* `Payment`, `Gateway`, `Checkout`, `Refund`, `Invoice`, `Billing`, `Webhook`, `Third-party`.
+4. *Bảo mật & Phân quyền:* `Auth`, `Role`, `Permission`, `Token`, `Session`, `OTP`, `MFA`.
+5. *Phụ lục & Quy tắc toàn cục:* `Appendix`, `System Limits`, `Error Codes`, `Glossary`.
+
+- **Bắt buộc trích xuất:**
+  - Mẫu Email (Email Template): Subject, Sender, Branding, Dynamic Field Placeholders (ví dụ `{{user_name}}`, `{{effective_date}}`, `{{amount}}`).
+  - Kịch bản Push Notification: Tiêu đề, Nội dung, Icon/Badge, Trạng thái App (Foreground, Background, Killed).
+  - Quy tắc Deep-link: Khi người dùng bấm vào Notification hoặc Email link thì ứng dụng mở màn hình nào.
+- Nếu phát hiện Requirement có nhắc đến Email/Notification liên quan đến module ➔ **BẮT BUỘC chuyển thành Test Cases độc lập**, cấm bỏ qua hoặc ghi chú qua loa.
+</RULE[global_frs_cross_referencing]>
 
 # 🧭 Core Governance Principle: Unknown ≠ Not Applicable (CRITICAL)
 <RULE[unknown_not_equal_not_applicable]>
@@ -356,6 +378,46 @@ Target Volume là con số định hướng để chống làm ẩu. **Bộ Test
 4. **Không Spam Test Case:** Tuyệt đối không sinh test case trùng lặp na ná nhau chỉ để đối phó số lượng.
 </RULE[module_complexity_and_completeness]>
 
+# 🏛️ Mandatory 5-Pillar Functional Coverage Gate (CRITICAL)
+<RULE[mandatory_five_pillar_coverage_gate]>
+Đối với bất kỳ module nào có quy trình nghiệp vụ (Workflows), chuyển đổi trạng thái (State Transitions), giao dịch (Transactions), hoặc vòng đời theo lịch hẹn/chạy ngầm (Scheduled/Lifecycle), bộ Test Cases BẮT BUỘC phải vượt qua **Cổng Kiểm Thử Ngũ Trụ (5-Pillar Gate)**. Tuyệt đối không được phép thiếu bất kỳ trụ nào:
+
+| Trụ Kiểm Thử (Pillar) | Nội Dung Bắt Buộc Phải Có | Tiêu Chí Kiểm Tra (Pass/Fail) |
+|---|---|---|
+| **Trụ 1: Giao diện & Luồng Biểu mẫu (UI & Form Flow)** | Mọi màn hình, form nhập liệu, validation biên (BVA/EP), trạng thái rỗng (empty state), loading skeleton, disabling nút khi đang xử lý | Phải có TCs kiểm tra giao diện, field validation và UX states |
+| **Trụ 2: Ma trận Hoán vị Đầy đủ (Full Permutation Matrix)** | 100% các cặp hoán vị giữa các vai trò người dùng (Roles), trạng thái (States), gói dịch vụ/cấu hình (Options/Tiers), hoặc chu kỳ (Cycles). Tuyệt đối cấm chỉ kiểm thử 1-2 case mẫu đại diện | Phải test 100% các ô trong ma trận hoán vị |
+| **Trụ 3: Vòng đời Theo Thời Gian (Time-based & Event-driven Lifecycle: T0 vs T1)** | Phân định rạch ròi 2 mốc thời gian:<br>• **T0 (Action/Schedule Phase):** Thời điểm kích hoạt lệnh (Pending, hiển thị tag lịch hẹn, ghi nhận audit trail, phản hồi tức thời).<br>• **T1 (Execution/Maturity Phase):** Thời điểm lịch hẹn/batch worker đến hạn (Kích hoạt thay đổi chính thức, cập nhật trạng thái mới, cấp quyền/quyền lợi mới, thu hồi quyền/quyền lợi cũ). | BẮT BUỘC phải có test case kiểm tra hành vi hệ thống và quyền lợi người dùng TẠI THỜI ĐIỂM HIỆU LỰC (T1) |
+| **Trụ 4: Ngoại lệ Hệ thống, Mạng & Tích hợp (System, Network & Third-Party Exceptions)** | Lỗi xác thực OTP/MFA; Lỗi cổng thanh toán/dịch vụ bên thứ ba (bị từ chối, timeout, thẻ không hợp lệ); Mất kết nối mạng giữa chừng; Cơ chế thử lại (Retry / Dunning / Fallback) | Phải có TCs mô phỏng toàn bộ các tình huống ngoại lệ và khôi phục dịch vụ |
+| **Trụ 5: Vòng lặp Truyền thông Khép kín (Communication Loop)** | Push Notification, In-App Notification Center, Transactional Email, SMS, Deep-link navigation | Phải có TCs kiểm tra toàn bộ các kênh truyền thông khi có sự kiện phát sinh |
+
+### Chế tài Gate:
+Nếu bất kỳ Pillar nào trong 5 Pillar trên có 0 Test Cases trong khi module có nghiệp vụ tương ứng ➔ **Đánh giá FAILED GATE ngay lập tức**. Bộ Test Case không được phép xuất CSV hay bàn giao cho USER.
+</RULE[mandatory_five_pillar_coverage_gate]>
+
+# ✉️ Dedicated Communication & Lifecycle First-Class Citizen Rule
+<RULE[communication_and_lifecycle_first_class_citizen]>
+Thông báo (Push/In-App Notifications) và Thư điện tử/Tin nhắn giao dịch (Transactional Emails/SMS) là **Thành phần Hạng Nhất (First-Class Citizens)** của trải nghiệm người dùng:
+
+### 1. CẤM Xử lý Hời hợt (Anti-Secondary-Assertion):
+- **TUYỆT ĐỐI CẤM:** Chỉ ghi kèm 1 dòng phụ trong cột Expected Result của test case bấm nút (Ví dụ: ❌ *"User clicks Submit and receives confirmation email"*).
+- **Lý do:** Cách viết này bỏ qua toàn bộ việc kiểm tra tiêu đề, nội dung placeholder động, định dạng HTML, deep-link và trạng thái ứng dụng.
+
+### 2. Bắt buộc tách thành Test Cases độc lập (Dedicated Communication TCs):
+Mỗi sự kiện giao dịch (Khởi tạo thành công, Lên lịch hành động, Đến ngày hiệu lực, Thất bại nghiệp vụ, Nhắc nhở hạn, Hủy bỏ) **BẮT BUỘC PHẢI CÓ TEST CASE ĐỘC LẬP** (ví dụ tiền tố `*-NOT-*`):
+- **Email/SMS Validation:**
+  - Kiểm tra Sender Name và From Address (ví dụ: địa chỉ email hệ thống theo cấu hình dự án).
+  - Kiểm tra Subject Line chuẩn theo tài liệu Requirement.
+  - Kiểm tra các Placeholder động (`{{user_name}}`, `{{item_name}}`, `{{amount}}`, `{{effective_date}}`, `{{reference_id}}`).
+  - Kiểm tra nút Call-to-Action (CTA) và Deep-link dẫn về đúng màn hình chi tiết trong app.
+- **Push Notification Validation:**
+  - Kiểm tra hiển thị banner/thanh thông báo của OS (iOS Notification Center / Android Notification Shade).
+  - Kiểm tra hoạt động khi App ở 3 trạng thái: **Foreground** (Banner in-app), **Background** (OS notification), **Killed/Terminated** (OS notification).
+  - Kiểm tra Deep-link: Chạm vào push notification mở đúng màn hình chi tiết tương ứng, không bị đưa về trang chủ (Home).
+- **In-App Notification Center:**
+  - Kiểm tra badge đếm số lượng thông báo chưa đọc (+1 unread count).
+  - Kiểm tra bản ghi thông báo lưu trong tab Notifications / Hoạt động.
+</RULE[communication_and_lifecycle_first_class_citizen]>
+
 
 # ==============================================================================
 # 🚗 LEVEL 2 — DOMAIN CONTEXT STRATIFICATION (RIDE-HAILING)
@@ -485,6 +547,10 @@ Khi sinh Test Cases, AI BẮT BUỘC phải dùng cấu trúc bảng 14 cột th
 ### 14 Cột bắt buộc:
 1. `Test Case ID` | 2. `Module` | 3. `Function` | 4. `FR ID` | 5. `Test Case Description` | 6. `Pre-Requisite` | 7. `Steps Description` | 8. `Test Data` | 9. `Expected Result` | 10. `Priority` | 11. `Severity` | 12. `Type` | 13. `Automation Candidate` | 14. `Remarks`
 
+### Quy chuẩn nội dung cột Pre-Requisite vs Steps Description (CRITICAL):
+- **Pre-Requisite (Cột 6):** BẮT BUỘC chỉ chứa các phát biểu trạng thái/tiền điều kiện ban đầu (Declarative State / Precondition Statements, ví dụ: `User is logged into app.<br>User has no active subscription.`). **TUYỆT ĐỐI KHÔNG đánh số thứ tự hành động `Step 1:`, `Step 2:` trong cột Pre-Requisite.**
+- **Steps Description (Cột 7):** BẮT BUỘC bắt đầu mỗi bước bằng English Action Verb và đánh số tuần tự theo định dạng `Step 1: [Action Verb]...<br>Step 2: [Action Verb]...<br>Step 3: ...`. Cấm dùng newline thực tế.
+
 ### Các section bắt buộc trong file Testcases.md:
 - 🛠️ Applied Test Design Techniques (kèm Primary/Supplementary mapping & N/A justification)
 - 📐 Applied Quality Gate Checklist
@@ -565,6 +631,28 @@ AI BẮT BUỘC sử dụng **ngôn ngữ chuyên môn của QA / QC và nghiệ
 ## ⚡ Ngoại lệ API Testing Context:
 Thuật ngữ kỹ thuật chuyên sâu CHỈ ĐƯỢC KÍCH HOẠT khi USER **yêu cầu rõ ràng về API Testing** hoặc sử dụng ngữ cảnh API cụ thể (`API test case`, `test endpoint`, `API contract`, `Postman`, `curl`, `payload validation`). Tuyệt đối không tự ý chuyển sang ngôn ngữ Dev chỉ vì tính năng đó có API backend.
 </RULE[qa_qc_terminology_and_api_exception]>
+
+# 🚫 Strict Black-Box Manual QA Vocabulary Blacklist Rule (CRITICAL)
+<RULE[blackbox_manual_qa_vocabulary_blacklist]>
+Toàn bộ Test Cases trong Manual Functional Test Suite BẮT BUỘC phải được viết từ **góc nhìn Hộp đen (Black-box Manual QA Tester & End-User)**:
+
+### 1. Nguyên tắc Khả thi Thủ công (Manual Feasibility):
+Mọi hành động trong `Steps Description` và `Expected Result` phải là thao tác mà một QA Tester cầm thiết bị vật lý trên tay CÓ THỂ TỰ TAY THỰC HIỆN hoặc TỰ MẮT NHÌN THẤY trên màn hình ứng dụng, thanh thông báo của hệ điều hành hoặc hộp thư email.
+
+### 2. Danh mục Từ ngữ Kỹ thuật Bị Cấm (Strict White-Box Blacklist):
+Tuyệt đối KHÔNG xuất hiện các thuật ngữ sau trong bảng test case manual (trừ khi là bộ test chuyên biệt cho API theo yêu cầu rõ ràng của USER):
+
+| Nhóm bị cấm | Từ khóa bị cấm (Blacklisted Words) | Thuật ngữ chuẩn Black-box thay thế |
+|---|---|---|
+| **Webhook & Event** | `webhook`, `event listener`, `event bus`, `event payload`, `trigger event`, `evt_*`, `internal queue`, `message broker` | *"Sau khi hệ thống / dịch vụ bên thứ ba xử lý thành công"*, *"Hệ thống cập nhật trạng thái tự động"* |
+| **API & Network Code**| `POST /api/...`, `GET /api/...`, `payload`, `HTTP 200`, `200 OK`, `status code 4xx/5xx`, `json response`, `REST endpoint`, `cURL` | *"Màn hình ứng dụng hiển thị..."*, *"Hệ thống thông báo lỗi..."*, *"Ứng dụng phản hồi..."* |
+| **Database & Storage** | `database`, `table`, `column`, `row`, `SQL query`, `SELECT`, `UPDATE WHERE`, `foreign key`, `primary key`, `schema migration`, `cache key`, `is_active = true` | *"Hồ sơ tài khoản lưu trạng thái mới"*, *"Mục Lịch sử / Thông tin hiển thị trạng thái..."* |
+| **Internal Variables**| Tên biến code, tên hàm backend, state store keys (`Redux`, `Pinia`), internal IDs | *"Dữ liệu người dùng đã lưu"*, *"Thông tin tính toán hiển thị trên màn hình xác nhận"* |
+
+### 3. Quy chuẩn viết thao tác của Tester:
+- ✅ **Đúng:** *"Tap the confirmation button. Observe the confirmation modal displaying the effective date matching the scheduled lifecycle."*
+- ❌ **Sai:** *"Trigger background webhook with payload {status: 'active'} and verify DB table updates status column."*
+</RULE[blackbox_manual_qa_vocabulary_blacklist]>
 
 # ✍️ Action-Verb Steps & Contextual Atomic Expected Result Standard Rule
 <RULE[test_step_and_expected_result_standards]>
