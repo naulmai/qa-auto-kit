@@ -1,1035 +1,280 @@
-# ⚠️ Requirement Logic Anomaly Analysis Skill
+# 🔍 Requirement Logic & Reality Analyst
 
 ---
 
 ## 🧩 Skill Metadata
-
-- **name:** requirement_logic_analyst
+- **name:** requirement_logic_reality_analyst
 - **version:** 1.0.0
-- **description:** Analyze software requirements to detect logical anomalies, contradictions, unreasonable business behavior, impossible state transitions, missing rules, ambiguous logic, and behaviors that conflict with normal real-world expectations.
-- **category:** QA / Requirement Engineering / Business Logic Analysis
-- **author:** System
+- **category:** QA / Requirement Engineering / Business Logic & Flow Validation
+- **description:** Rebuilds the flows described in requirements, then challenges them on four layers: can each step happen (feasibility), do the steps fit together (coherence), is the underlying logic sound (calculation, time, concurrency, permission, data), and does it match real-world logic and comparable market apps (realism). Produces evidence-based findings, BA/PO clarification questions, and QA challenge scenarios.
+- **use when:** the user asks whether requirements or happy flows make sense, are realistic, are logically complete end to end, or how they compare with other apps.
+- **do NOT use when:** the user wants a document audit (template conformance, cross-document traceability) or ordinary test-case generation. Those belong to other skills.
+- **merged from:** `requirement_logic_anomaly_analysis` v1.0.0 (deep logic checks, QA scenarios) + `requirement_reality_check` v1.0.0 (flow reconstruction, prerequisite tracing, market benchmark).
+
+> **Primary stance:** do not ask "can this be implemented or tested?" Ask **"does this make sense, and would it survive contact with real users?"**
 
 ---
 
-# 🎯 Purpose
+## 🎯 The Four Layers
 
-Analyze requirements and supporting documents to:
-
-- Detect logically unreasonable requirements
-- Identify contradictions between requirements
-- Challenge business logic
-- Detect impossible or suspicious state transitions
-- Identify missing rules and conditions
-- Detect ambiguous behavior
-- Identify abnormal user/system behavior
-- Detect calculation and boundary logic issues
-- Identify real-world plausibility problems
-- Detect hidden assumptions
-- Identify scenarios that may cause incorrect implementation
-- Generate clarification questions for BA/PO
-- Recommend QA challenge scenarios
-
-The primary objective is:
-
-> **Do not simply verify whether the requirement is implementable. Challenge whether the requirement makes sense.**
+| Layer | Question | Example |
+|---|---|---|
+| **L1 Feasibility** | Does each step have everything it needs, produced earlier? | "Pay" exists, but nothing ever adds items to the order |
+| **L2 Coherence** | Do steps fit together in order, state, actor, and data? | Refund allowed on an order that was never paid |
+| **L3 Logic soundness** | Do rules, values, and timing hold up under challenge? | Reminder "30 days before expiry" for a card that expires in 10 days |
+| **L4 Realism** | Does it match real-world logic and market conventions? | No confirmation before an irreversible transfer |
 
 ---
 
-# 📥 Inputs
+## 📥 Inputs & Paths (relative to project root)
 
-## Required Inputs
+| Item | Path | If missing |
+|---|---|---|
+| Requirements (PRD, BRD, SRS, stories, acceptance criteria) | `docs/requirements/` | **STOP** |
+| Report template | `templates/logic_reality_report.md` | Use the built-in format below |
+| Finding schema | `schemas/finding.schema.md` | If present, read it FIRST and use only its allowed values; if absent, use this file's values and say so |
+| Optional context | `reports/business_rules.md`, `docs/API.md`, `docs/UI.md`, `docs/Database.md`, `docs/System_Architecture.md`, existing test cases | Continue; lower confidence where context would have helped |
+| Optional benchmark evidence (screenshots, competitor flows) | `docs/benchmarks/` | Continue; evidence mode drops to Convention |
+| Optional reference apps | user message or `docs/benchmarks/apps.md` | Select automatically (Phase 5) |
+| Optional upstream reports (e.g. `*_Req_Gap_Report.md`) | `reports/` | Use to avoid duplicating findings |
 
-- `docs/requirements/*` (SRS, PRD, BRD, User Stories, Acceptance Criteria)
-- `templates/requirement_logic_anomaly_report.md` (or standard report template)
-
-## Optional Inputs
-
-- `reports/business_rules.md`
-- `reports/*_Req_Gap_Report.md`
-- `reports/*_Edge_Case_Report.md`
-- `docs/API.md`
-- `docs/UI.md`
-- `docs/Database.md`
-- `docs/System_Architecture.md`
-- Existing Test Cases
-- Existing Product Documentation
+**Output:** `reports/<Name>_Logic_Reality_Report.md`. Never overwrite; append `_v2`, `_v3`. `<Name>` = shared feature name, else the main document's filename.
 
 ---
 
-# 📤 Output
+## ⚙️ Pipeline (execute in order)
 
-Generate:
+### Phase 1: Understand
+From the documents only, extract: product category, actors/roles, target market/region, platform, money/data/goods involved, modules covered, and per requirement: ID, statement, trigger, preconditions, action, expected result, business rules, constraints, data, state changes, dependencies, exceptions, external systems.
+Ask first: *"What is this requirement actually trying to achieve?"* If category or market is unclear, add it to the clarification list; do not guess.
 
-📄 `reports/[Requirement_Name]_Logic_Anomaly_Report.md`
+### Phase 2: Reconstruct flows
+List every happy flow as ordered steps. If the documents give no order, derive it from dependencies and mark `Derived – verify`. Also list the alternative, failure, cancel, and retry flows the documents define.
 
-The report must identify:
+| # | Actor | Action | Needs (inputs / state / permission) | Produces (data / state) | Source (file + ID) |
+|---|---|---|---|---|---|
 
-- Logical anomalies
-- Business logic issues
-- Contradictions
-- Missing rules
-- Ambiguities
-- Invalid state transitions
-- Calculation issues
-- Time/date issues
-- Data consistency issues
-- Concurrency issues
-- Permission issues
-- Real-world plausibility issues
+### Phase 3: Flow integrity (L1 + L2)
 
----
+**3.1 Prerequisite Ledger (backward trace).** For every "Needs": *who creates this, in which step?*
 
-# ⚙️ Core Processing Rules
+| Step | Needs | Produced by | Status |
+|---|---|---|---|
+| | | | Produced-in-flow / In-other-doc (cite) / Out-of-scope (declared) / **NOT FOUND** |
 
----
+`NOT FOUND` → `FLOW_GAP`.
 
-## 1. Requirement Understanding
+**3.2 Consumption (forward trace).** Is every "Produces" used or finalized later? Created-but-never-closed objects → `DEAD_END_FLOW`.
 
-Analyze every requirement before judging it.
+**3.3 Entry and exit.** How does the actor reach step 1 (login, navigation, trigger)? Does the flow end in a defined terminal state with user feedback and updates to related data?
 
-Extract:
+**3.4 Order and state.** Draw each state machine (defined or implied). Detect: invalid, impossible, missing, duplicate, or conflicting transitions; reversible terminal states; missing cancel, fail, retry, or expiry paths. A reopened terminal state (e.g. `COMPLETED → IN_PROGRESS`) is `STATE_ISSUE` unless the documents give a business reason.
 
-- Requirement ID
-- Requirement statement
-- User role
-- Trigger
-- Preconditions
-- Action
-- Expected result
-- Business rules
-- Constraints
-- Data involved
-- State changes
-- Dependencies
-- Exceptions
-- External systems
+**3.5 Preconditions and postconditions.** For each action: `Precondition → Action → Postcondition`. Detect missing, impossible, or contradictory preconditions (action allowed without the required state, data, permission, or after expiry) and results that do not follow (related data or status not updated, notification not triggered, UI and backend states disagree, undefined side effects).
 
-Do not immediately assume that the requirement is correct.
+**3.6 Continuity.** Same actor and authentication throughout? Do amounts, currency, item lists, and identifiers stay consistent step to step?
 
-First determine:
+**3.7 Negative paths.** For every decisive condition ask "what if it is false or the opposite happens?" (payment fails, times out, succeeds but booking fails, callback duplicated, user retries). Undefined or contradictory outcomes → `MISSING_PATH`.
 
-> *"What is this requirement actually trying to achieve?"*
+### Phase 4: Deep logic checks (L3)
+Apply each check only where the requirement contains that kind of logic. Raise a finding only when the issue can materially change system behavior.
 
----
+| Check | What to challenge | Category |
+|---|---|---|
+| **Contradiction** | Direct (A: cancel anytime / B: no cancel after driver arrives) and indirect (expired cards rejected + recurring charge uses saved card). Compare requirements individually AND combined | `CONTRADICTION` |
+| **Missing rules** | Validation, boundary, timeout, retry, rollback, duplicate handling, permission, ownership, notification, audit, concurrency; only those that change behavior | `MISSING_RULE` |
+| **Ambiguity** | Phrases with ≥ 2 reasonable readings ("shortly after", "valid user", "active subscription", "retry automatically"). Give original text, interpretations, why it matters, question | `AMBIGUITY` |
+| **Boundary and values** | Min/max, zero, negative, decimal, empty/null, below/at/above boundary (MIN−1, MIN, MIN+1, MAX−1, MAX, MAX+1), huge values, multiple requests that together exceed a limit | `BOUNDARY_RISK` |
+| **Time and date** | Expiry, scheduling, time zones, day/month/year edges, DST, timeouts, retry intervals, past/future dates, notification already sent, missing date | `TIME_DATE_RISK` |
+| **Calculation** | Inputs, formula in plain language, order of operations, zero/min/max/decimal/negative, rounding, units, currency, tax and fee ordering | `CALCULATION_RISK` |
+| **Concurrency** | Double submit, cancel during payment, accept vs cancel, two admins editing, duplicate callbacks, retried API calls → duplicate transaction, lost update, wrong final state | `CONCURRENCY_RISK` |
+| **Data consistency** | Trace `action → API → DB → event → notification → UI`; can any layer disagree (payment SUCCESS but UI FAILED, trip COMPLETED but payment PENDING)? Who owns the source of truth? | `DATA_INCONSISTENCY` |
+| **Permission** | Who may act, who owns the resource, what scope, what happens after a role change, can another user reach it | `PERMISSION_RISK` |
+| **Implausible value** | Values or rules that cannot work in practice | `IMPLAUSIBLE_VALUE` |
 
-## 2. Logic Challenge
+### Phase 5: Market and real-world benchmark (L4)
 
-For every requirement, challenge the logic from multiple perspectives.
+**5.1 Reference set (3–5 apps).** Same category and market where possible, plus at most one global leader. User-named apps first. State why each was chosen. Never compare across unrelated categories.
 
-Ask:
+**5.2 Evidence mode (declare per finding).**
 
-- Does this behavior make sense?
-- Is the sequence logical?
-- Can this state actually occur?
-- Can this action happen under the specified condition?
-- What happens immediately before this action?
-- What happens immediately after this action?
-- Can the opposite situation occur?
-- Can two rules conflict?
-- Can the requirement produce an impossible state?
-- Would a normal user reasonably expect this behavior?
-- Would the business process normally work this way?
+| Mode | Meaning | Max confidence |
+|---|---|---|
+| **Verified** | Checked via web search, official docs, or `docs/benchmarks/`; source and date recorded | High |
+| **Convention** | Widely established pattern, described generically without naming a specific app's behavior | Medium |
+| **Recollection** | Unverified memory of a specific app | Low; may only be phrased as a question, never as fact |
 
-Do not create an anomaly simply because the behavior is unusual.
+If web search is available, verify before asserting anything about a specific app. Always record the check date.
 
-A finding must have a concrete logical reason.
+**5.3 Convention strength.** `UNIVERSAL` (almost all reference apps), `COMMON` (most), `DIFFERENTIATOR` (varies widely). **Only UNIVERSAL and COMMON can raise findings; DIFFERENTIATOR never does.**
 
----
+**5.4 Deviation types → `MARKET_DEVIATION`:**
+`MISSING_STANDARD_STEP` · `REVERSED_ORDER` · `UNUSUAL_RESTRICTION` · `UNUSUAL_PERMISSIVENESS` · `MISSING_SAFEGUARD` (confirmation, undo window, duplicate-submit guard, re-authentication for money movement) · `MISSING_FEEDBACK` (status, notification, receipt) · `EXPECTATION_MISMATCH`.
 
-## 3. Business Logic Anomaly Detection
+**5.5 Real-world plausibility** (not market-specific): physical, financial, legal, operational, and time constraints → `REAL_WORLD_MISMATCH`. Flag only with a concrete reason, never merely because something is uncommon.
 
-Identify behaviors that appear inconsistent with normal business logic.
+**5.6 Wording rule.** *"Differs from common market practice; confirm it is intentional."* Never "is wrong". Always include a possible valid reason and end with a question. Severity follows impact of the deviation, not how many apps differ.
 
-Examples:
+### Phase 6: Challenge questions and QA scenarios
+- For every meaningful finding write **one specific question** for BA/PO.
+  - ❌ "Is this correct?"
+  - ✅ "If the rider cancels after the driver arrives, does the driver become available immediately or stay tied to the cancelled trip?"
+- Generate **challenge scenarios** that prove or disprove the suspicion. Prioritize: boundaries, invalid transitions, contradictory conditions, concurrent actions, failures, retries, expiry, duplicates, partial success, data inconsistency. Skip happy-path cases unless needed to explain the issue.
 
-- Allowing an order to be cancelled after it is completed
-- Allowing payment reversal after settlement without defining a refund process
-- Allowing a user to access a resource after ownership is removed
-- Allowing a driver to continue a cancelled trip
-- Allowing an expired subscription to receive benefits indefinitely
-- Allowing duplicate financial transactions
-
-For each finding explain:
-
-- What is unusual
-- Why it may be logically incorrect
-- What condition causes the problem
-- What clarification is required
+### Phase 7: Consolidate
+Merge duplicates (same root cause across layers → one finding, list "Also affects"). Drop speculative findings with no evidence and no clear consequence. Order by severity, then by position in the flow (earlier steps block later ones). Respect upstream reports to avoid repeating known findings.
 
 ---
 
-## 4. State Transition Analysis
-
-Identify all states defined or implied by the requirement.
-
-Example:
-
-```text
-REQUESTED
-    ↓
-ACCEPTED
-    ↓
-IN_PROGRESS
-    ↓
-COMPLETED
-```
-
-Check every transition.
-
-Detect:
-
-- Invalid transition
-- Missing transition
-- Impossible transition
-- Reversible terminal state
-- Duplicate transition
-- Missing cancellation path
-- Missing failure path
-- Missing retry path
-- Conflicting transitions
-
-Example:
-
-```text
-COMPLETED
-    ↓
-IN_PROGRESS
-```
-
-Flag as:
-
-`INVALID_STATE_TRANSITION`
-
-unless the requirement explicitly defines a valid business reason.
+## 🧠 Heuristics (use throughout)
+1. **Why?** If no reasonable business explanation exists, investigate.
+2. **Who creates it?** Every input must come from somewhere.
+3. **What if the opposite happens?** Success↔failure, active↔inactive, before↔after, allowed↔denied, exists↔absent.
+4. **What happens next?** Action → result → next state → related data → notification → user expectation.
+5. **Can this state actually exist?**
+6. **Can these two rules both be true?**
+7. **What happens twice?** Double tap, duplicate request or callback, retry loop.
+8. **What happens at the boundary?**
+9. **Would a normal user of a comparable app expect this?**
 
 ---
 
-## 5. Preconditions Analysis
+## 🧾 Finding Rules (apply to ALL findings)
 
-For every action determine:
-
-```text
-Precondition
-    ↓
-Action
-    ↓
-Postcondition
-```
-
-Detect:
-
-- Missing precondition
-- Impossible precondition
-- Contradictory precondition
-- Action allowed without required state
-- Action allowed without required data
-- Action allowed after expiration
-- Action allowed without permission
-
-Example:
-
-- **Requirement:** User can cancel a trip.
-- **Challenge:**
-  - Can the user cancel before driver acceptance?
-  - After driver arrival?
-  - After trip start?
-  - After trip completion?
+1. **Evidence required:** file + section/ID + short quote (≤ 15 words) or "absent from <scope>". No evidence → no finding.
+2. **Never invent requirements or expected behavior.** State what is missing or odd and ask. Suggested content goes in a line labeled `Proposed – needs BA/PO confirmation`.
+3. **Status:**
+   - `Confirmed`: the documents themselves create the problem.
+   - `Potential`: depends on something undocumented (e.g. the step may live in another module).
+   - `Needs clarification`: documents are insufficient; mark `INSUFFICIENT_INFORMATION` and state exactly what is needed.
+4. **Scope awareness:** if documents cover only part of the product, a missing upstream/downstream step is `Potential`, unless the documents claim end-to-end coverage.
+5. **Confidence:** High / Medium / Low. For Low, state the assumption, the missing information, why it was flagged, and the clarification needed. Benchmark findings are capped by evidence mode.
+6. **ID format:** `LR-001`, `LR-002`, … per report.
+7. **Quality over quantity.** Do not flag every unspecified detail, uncommon behavior, or meaningless edge case.
 
 ---
 
-## 6. Postcondition Analysis
+## 🏷 Finding Categories
 
-Verify that the result of an action logically follows from the action.
+| Category | Layer | Meaning |
+|---|---|---|
+| `FLOW_GAP` | L1 | A step lacks something it needs, or an expected step is missing |
+| `DEAD_END_FLOW` | L1 | Flow or object never reaches a defined end |
+| `FLOW_ORDER_ISSUE` | L2 | Steps in an impossible or unreasonable order |
+| `STATE_ISSUE` | L2 | Invalid, missing, or reversible-terminal state transition |
+| `CONTINUITY_ISSUE` | L2 | Actor, data, or amounts inconsistent across steps |
+| `MISSING_PATH` | L2 | Failure, opposite, cancel, retry, or partial-success path undefined |
+| `CONTRADICTION` | L2/L3 | Rules conflict, directly or in combination |
+| `MISSING_RULE` | L3 | Rule needed to complete the behavior is absent |
+| `AMBIGUITY` | L3 | Multiple reasonable interpretations |
+| `BOUNDARY_RISK` | L3 | Limit or edge value behaves unexpectedly |
+| `TIME_DATE_RISK` | L3 | Time or date logic fails at some edge |
+| `CALCULATION_RISK` | L3 | Formula, rounding, unit, or ordering problem |
+| `CONCURRENCY_RISK` | L3 | Simultaneous actions produce a wrong state |
+| `DATA_INCONSISTENCY` | L3 | Layers or systems can disagree |
+| `PERMISSION_RISK` | L3 | Authorization, ownership, or role problem |
+| `IMPLAUSIBLE_VALUE` | L3/L4 | Value or rule cannot work in practice |
+| `MARKET_DEVIATION` | L4 | Differs from UNIVERSAL/COMMON market practice (with sub-type) |
+| `REAL_WORLD_MISMATCH` | L4 | Conflicts with physical, financial, legal, or operational reality |
 
-Detect:
-
-- Incorrect result
-- Missing result
-- Conflicting result
-- Side effect not defined
-- Related data not updated
-- Related status not updated
-- Notification not triggered
-- UI state inconsistent with backend state
-
-Example:
-
-```text
-Payment = SUCCESS
-Booking = FAILED
-```
-
-Ask:
-
-- Should payment be refunded?
-- Should booking remain pending?
-- Which system owns the final state?
+If `schemas/finding.schema.md` exists, map these onto its allowed Category values and emit nothing outside the schema.
 
 ---
 
-## 7. Contradiction Detection
+## 🚦 Severity
 
-Compare requirements against each other.
-
-### Direct Contradiction
-
-- **Requirement A:** User can cancel anytime.
-- **Requirement B:** Cancellation is unavailable after driver arrival.
-
-These rules cannot both be universally true.
-
-### Indirect Contradiction
-
-Each requirement appears valid individually but produces an inconsistent system behavior when combined.
-
-Example:
-
-- **Rule A:** Expired cards cannot be used.
-- **Rule B:** Recurring subscriptions automatically charge the saved card.
-- **Scenario:** Card expires before the recurring charge.
-
-Flag as:
-
-`INDIRECT_CONTRADICTION`
-
----
-
-## 8. Missing Rule Detection
-
-Identify rules required to make the behavior logically complete.
-
-Check:
-
-- Missing validation
-- Missing boundary
-- Missing timeout
-- Missing retry
-- Missing cancellation
-- Missing rollback
-- Missing failure handling
-- Missing duplicate handling
-- Missing permission rule
-- Missing notification rule
-- Missing audit rule
-- Missing ownership rule
-- Missing concurrency rule
-
-Do not mark every unspecified detail as a defect. Only identify missing rules that can materially change system behavior.
-
----
-
-## 9. Ambiguity Detection
-
-Detect statements that can reasonably be interpreted in multiple ways.
-
-Examples:
-
-- *"Shortly after"*
-- *"Within a reasonable time"*
-- *"Near the location"*
-- *"Valid user"*
-- *"Active subscription"*
-- *"Recently created"*
-- *"Send notification before expiration"*
-- *"Retry automatically"*
-
-For each ambiguity provide:
-
-- Original statement
-- Possible interpretations
-- Why interpretation matters
-- Clarification question
-
----
-
-## 10. Boundary & Value Logic
-
-Challenge all numeric and categorical values.
-
-Test:
-
-- Minimum
-- Maximum
-- Zero
-- Negative
-- Decimal
-- Empty
-- Null
-- Just below boundary
-- Exact boundary
-- Just above boundary
-- Extremely large value
-
-Example:
-
-- **Maximum recipients = 16,000**
-- **Challenge:**
-  - 15,999
-  - 16,000
-  - 16,001
-  - Duplicate recipients
-  - Empty recipient list
-  - Multiple requests totaling > 16,000
-
----
-
-## 11. Time & Date Logic
-
-Analyze:
-
-- Expiration
-- Scheduling
-- Time zones
-- Day boundaries
-- Month boundaries
-- Year boundaries
-- Daylight saving time
-- Countdown
-- Retry interval
-- Timeout
-- Future dates
-- Past dates
-
-Example:
-
-- **Requirement:** Send notification 30 days before card expiration.
-- **Challenge:**
-  - Exactly 30 days
-  - 29 days
-  - 31 days
-  - Expired card
-  - Missing expiration date
-  - Different user timezone
-  - Notification already sent
-
----
-
-## 12. Calculation Logic Analysis
-
-For every calculation:
-
-1. Identify inputs.
-2. Rewrite the formula in plain language.
-3. Validate the sequence of operations.
-4. Test normal values.
-5. Test zero.
-6. Test minimum.
-7. Test maximum.
-8. Test decimal values.
-9. Test rounding.
-10. Test negative values where applicable.
-11. Check units.
-12. Check currency.
-13. Check tax/fee ordering.
-
-Example:
-
-$$\text{Total Price} = \text{Base Fare} + (\text{Base Fare} \times \text{Multiplier})$$
-
-Challenge:
-
-- Multiplier = 0
-- Multiplier = 1
-- Multiplier < 1
-- Multiplier > 1
-- Negative multiplier
-- Decimal multiplier
-- Rounding
-- Tax calculation
-- Currency conversion
-
----
-
-## 13. Negative Logic Analysis
-
-For every positive rule ask:
-
-> *"What happens when this condition is false?"*
-
-Example:
-
-$$\text{IF payment succeeds} \rightarrow \text{confirm booking}$$
-
-Challenge:
-
-- Payment fails
-- Payment times out
-- Payment succeeds but booking fails
-- Booking succeeds but payment callback fails
-- Payment callback is duplicated
-- User retries payment
-
-Identify undefined or contradictory behavior.
-
----
-
-## 14. Concurrency & Race Condition Analysis
-
-Identify actions that can happen simultaneously.
-
-Examples:
-
-- User submits twice
-- User cancels while payment is processing
-- Driver accepts while rider cancels
-- Admin disables a feature while user is using it
-- Two admins update the same record
-- Multiple callbacks arrive
-- API request is retried
-
-Detect:
-
-- Duplicate transaction
-- Conflicting status
-- Lost update
-- Double processing
-- Incorrect final state
-
----
-
-## 15. Data Consistency Analysis
-
-Trace related data across systems:
-
-```text
-User Action
-    ↓
-API
-    ↓
-Database
-    ↓
-Event
-    ↓
-Notification
-    ↓
-UI
-```
-
-Check whether each layer can disagree.
-
-Examples:
-
-- $\text{Payment} = \text{SUCCESS} \iff \text{UI} = \text{FAILED}$
-- $\text{Trip} = \text{COMPLETED} \iff \text{Payment} = \text{PENDING}$
-- $\text{Notification} = \text{SENT} \iff \text{Provider} = \text{FAILED}$
-
-Identify the source-of-truth issue.
-
----
-
-## 16. Permission Logic Analysis
-
-Check:
-
-- Who can perform the action?
-- Who owns the resource?
-- What role is required?
-- What scope applies?
-- What happens after permission changes?
-- Can another user access the same resource?
-
-Detect:
-
-- Missing authorization
-- Incorrect ownership
-- Cross-user access
-- Permission/state conflict
-- Role mismatch
-
----
-
-## 17. Real-World Plausibility Analysis
-
-Temporarily ignore implementation details.
-
-Ask:
-
-> *"Would this behavior make sense in a normal real-world process?"*
-
-Check:
-
-- User expectations
-- Business operations
-- Physical constraints
-- Financial behavior
-- Time constraints
-- Operational workflow
-- Industry-standard expectations
-
-Do not flag something merely because it is uncommon. Flag only when there is a concrete logical concern.
-
----
-
-## 18. Requirement Interaction Analysis
-
-Analyze requirements both:
-
-- **Individually**
-- **Collectively**
-
-Check whether combining requirements creates:
-
-- Contradiction
-- Impossible workflow
-- Conflicting states
-- Duplicate actions
-- Data inconsistency
-- Unexpected side effects
-
----
-
-## 19. Anomaly Classification
-
-Every finding must use one standardized category:
-
-- `LOGIC_ANOMALY`
-- `BUSINESS_RULE_ISSUE`
-- `CONTRADICTION`
-- `AMBIGUITY`
-- `MISSING_RULE`
-- `MISSING_EDGE_CASE`
-- `INVALID_STATE_TRANSITION`
-- `DATA_INCONSISTENCY`
-- `CALCULATION_RISK`
-- `TIME_DATE_RISK`
-- `CONCURRENCY_RISK`
-- `PERMISSION_RISK`
-- `API_LOGIC_RISK`
-- `UX_LOGIC_RISK`
-- `REAL_WORLD_PLAUSIBILITY`
-
----
-
-## 20. Severity Classification
-
-### 🔴 Critical
-The requirement may cause:
-- Financial loss
-- Data corruption
-- Security/privacy exposure
-- Impossible system state
-- Major business failure
-
-### 🟠 High
-The requirement may cause:
-- Incorrect business outcome
-- Major functional failure
-- Significant user impact
-- Serious workflow inconsistency
-
-### 🟡 Medium
-The requirement contains:
-- Important ambiguity
-- Missing business rule
-- Potential edge-case defect
-- State inconsistency
-
-### 🟢 Low
-The requirement contains:
-- Minor ambiguity
-- Terminology inconsistency
-- Minor UX concern
-- Clarification that has limited impact
-
----
-
-## 21. Confidence Assessment
-
-Each finding must include:
-
-| Confidence | Meaning |
+| Level | Could cause |
 |---|---|
-| **High** | Clearly supported by requirement/documentation |
-| **Medium** | Strong indication but some information is missing |
-| **Low** | Possible issue based mainly on inference |
+| 🔴 **Critical** | Financial loss, data corruption, security/privacy exposure, a core flow that cannot complete, impossible system state |
+| 🟠 **High** | Wrong business outcome, major functional failure, serious workflow inconsistency |
+| 🟡 **Medium** | Meaningful missing rule/path, notable market deviation, likely confusion or edge-case defect |
+| 🟢 **Low** | Minor ambiguity, terminology or UX concern, limited-impact clarification |
 
-For **Low** confidence findings explain:
-
-- Assumption
-- Missing information
-- Why the issue was flagged
-- What clarification is required
+No overall quality score; report counts only.
 
 ---
 
-## 22. Evidence-Based Analysis
+## 📤 Report Format (`reports/<Name>_Logic_Reality_Report.md`)
 
-Never invent undocumented business rules.
+1. **Executive Summary:** product category and market (as understood), documents analyzed, requirements analyzed vs total, flows reconstructed, reference apps and evidence modes, counts by severity and by status (Confirmed / Potential / Needs clarification), coverage limits.
+2. **Flow Reconstruction:** table per flow (Phase 2), marking `Derived – verify`.
+3. **Prerequisite Ledger:** table (3.1), `NOT FOUND` rows highlighted.
+4. **State Transition Analysis:** each state machine as `Current state → Action → Resulting state`, with suspicious transitions flagged.
+5. **Findings Register:**
 
-Separate findings into:
+| ID | Category | Layer | Flow step / REQ | Severity | Status | Confidence | Summary |
+|---|---|---|---|---|---|---|---|
 
-- **Confirmed:** The requirement explicitly creates the problem.
-- **Potential:** The requirement may create the problem depending on another rule.
-- **Ambiguous:** The requirement does not provide enough information.
-
-Use evidence from:
-
-- Requirement
-- Business rule
-- Acceptance criteria
-- API specification
-- UI specification
-- Existing workflow
-
----
-
-## 23. QA Challenge Question Generation
-
-For every meaningful anomaly generate a specific question for BA/PO.
-
-Questions must be specific:
-
-- ❌ *Bad:* "Is this correct?"
-- ✅ *Good:* "If the rider cancels after the driver arrives, should the driver immediately become available for a new trip, or remain associated with the cancelled trip?"
-
----
-
-## 24. QA Challenge Scenario Generation
-
-Generate scenarios specifically designed to challenge suspicious logic.
-
-Prioritize:
-
-- Boundary conditions
-- Invalid transitions
-- Contradictory conditions
-- Concurrent actions
-- Failure scenarios
-- Retry scenarios
-- Expiration
-- Duplicate requests
-- Partial success
-- Data inconsistency
-
-Do not generate normal happy-path test cases unless needed to explain the anomaly.
-
----
-
-# 🚨 Automatic Anomaly Detection Rules
-
-Always check for:
-
-- Requirement contradicts another requirement
-- Action contradicts current state
-- Terminal state can be reopened without explanation
-- Cancellation does not actually terminate the process
-- Expired entity remains usable
-- Deleted entity remains active
-- Failed transaction produces success state
-- Successful transaction produces failed state
-- Duplicate request can create duplicate transaction
-- Missing rollback after partial failure
-- Missing timeout
-- Missing retry behavior
-- Missing boundary
-- Missing authorization
-- Missing ownership validation
-- Missing concurrency handling
-- Calculation produces impossible value
-- Negative or zero value produces unreasonable result
-- Time condition creates impossible schedule
-- Notification can be repeatedly triggered unintentionally
-- Requirement creates inconsistent UI/API/DB state
-- Two valid requirements create an impossible combined workflow
-
----
-
-# 🧠 Anomaly Detection Heuristics
-
-Use these mental models during analysis:
-
-### 1. "Why?"
-Ask why the system should behave this way.
-If no reasonable business explanation exists $\rightarrow$ investigate further.
-
-### 2. "What if the opposite happens?"
-Invert the condition:
-- $\text{Success} \rightarrow \text{Failure}$
-- $\text{Active} \rightarrow \text{Inactive}$
-- $\text{Valid} \rightarrow \text{Invalid}$
-- $\text{Before} \rightarrow \text{After}$
-- $\text{Allowed} \rightarrow \text{Denied}$
-- $\text{Exists} \rightarrow \text{Does not exist}$
-
-### 3. "What happens next?"
-Trace the consequence:
-
-```text
-Action
-  ↓
-Immediate result
-  ↓
-Next state
-  ↓
-Related data
-  ↓
-Notification
-  ↓
-User expectation
-```
-
-### 4. "Can this actually happen?"
-Validate whether the required state can realistically exist.
-
-### 5. "Can these two rules both be true?"
-Compare related requirements to detect direct or indirect contradictions.
-
-### 6. "What happens twice?"
-Test:
-- Double click / Double tap
-- Duplicate request
-- Duplicate callback
-- Duplicate record
-- Retry loops
-
-### 7. "What happens at the boundary?"
-Check:
-- $\text{MIN} - 1, \text{MIN}, \text{MIN} + 1$
-- $\text{MAX} - 1, \text{MAX}, \text{MAX} + 1$
-
----
-
-# 📊 Output Format (Strict Template)
-
-Follow this structure when producing `reports/[Requirement_Name]_Logic_Anomaly_Report.md`:
-
----
-
-## 1. 📌 Executive Summary
-
-Include:
-
-- Total Requirements
-- Requirements Analyzed
-- Total Anomalies
-- Critical Anomalies
-- High Anomalies
-- Medium Anomalies
-- Low Anomalies
-- Confirmed Issues
-- Potential Issues
-- Ambiguities
-
-> **Note:** Do NOT provide an overall quality score.
-
----
-
-## 2. 🚨 Anomaly Register
-
-| ID | Requirement | Type | Severity | Confidence | Finding |
-|---|---|---|:---:|:---:|---|
-| **ANOM-001** | REQ-01 | LOGIC_ANOMALY | High | High | Cancelled trip remains active |
-
----
-
-## 3. 🔍 Detailed Anomaly Assessment
-
-For every anomaly include:
-
-### 📌 [ANOM-XXX]: [Short Anomaly Title]
-
-- **Requirement:** Original requirement text or citation.
-- **Type:** `LOGIC_ANOMALY` / `CONTRADICTION` / `INVALID_STATE_TRANSITION` / etc.
-- **Severity:** 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
-- **Confidence:** High / Medium / Low
-- **Finding:** Describe what appears abnormal.
-- **Why It Is Suspicious:** Explain the logical reasoning.
-- **Expected Logic:** Describe the logically expected behavior without inventing undocumented business rules.
-- **Possible Consequence:** Explain what could happen if the requirement is implemented as written.
-- **Example Scenario:** Provide a concrete scenario.
-- **Clarification Question:** Provide a question for BA/PO.
-- **Recommended QA Challenge:** Provide the scenario QA should test.
-
----
-
-## 4. 🔄 State Transition Analysis
-
-Provide:
-
-```text
-Current State
-      ↓
-Action
-      ↓
-Expected State
-```
-
-Then identify suspicious transitions.
-
-Example:
-
-```text
-COMPLETED
-    ↓
-Cancel
-    ↓
-CANCELLED
-```
-
-If another requirement allows:
-
-```text
-CANCELLED
-    ↓
-IN_PROGRESS
-```
-
-flag the transition for review.
-
----
-
-## 5. ⚠️ Contradiction Report
+6. **Finding Details** (one block per finding):
+   - **Title**
+   - **Evidence:** source and short quote
+   - **What looks wrong:** the concrete logical reason
+   - **Expected logic:** what would logically hold, without inventing business rules
+   - **Market / real-world reference:** apps or convention, strength, evidence mode, source and date if Verified (benchmark findings only)
+   - **Possible valid reason:** why the team may have done this on purpose
+   - **Consequence if implemented as written**
+   - **Example scenario**
+   - **Clarification question**
+   - **QA challenge:** scenario to test
+   - **Proposed – needs confirmation** (optional)
+7. **Contradiction Report:**
 
 | ID | Requirement A | Requirement B | Conflict | Impact |
 |---|---|---|---|---|
-| **CONT-001** | [Req A text/quote] | [Req B text/quote] | [Why they conflict] | [Business/System impact] |
 
-> Only report genuine or plausible contradictions.
+8. **Market Benchmark Table:**
 
----
+| Flow step | REQ | Common practice | Reference apps | Strength | Evidence mode | Deviation | Question |
+|---|---|---|---|---|---|---|---|
 
-## 6. ❓ Ambiguity Report
+9. **QA Challenge Scenarios:**
 
-| ID | Requirement | Ambiguity | Possible Interpretations | Clarification |
-|---|---|---|---|---|
-| **AMB-001** | [Requirement text] | [Ambiguous phrase] | [Interpretation 1 vs 2] | [Question for BA] |
-
----
-
-## 7. 🧩 Missing Rule Report
-
-| ID | Area | Missing Rule | Why It Matters | BA/PO Question |
-|---|---|---|---|---|
-| **MISS-001** | [Feature area] | [Unspecified rule] | [Why missing rule breaks flow] | [Question to clarify] |
-
----
-
-## 8. 🧪 QA Challenge Scenarios
-
-Provide the highest-value scenarios that can validate the identified logical concerns.
-
-| ID | Scenario | Why It Matters | Expected Clarification |
+| ID | Scenario | Why it matters | Needs clarification from BA/PO |
 |---|---|---|---|
-| **CHAL-001** | [Scenario description] | [Risk or failure mode exposed] | [What BA/PO must confirm] |
+
+10. **Clarification Questions:** all questions grouped by flow step, deduplicated, numbered.
+11. **Assumptions & Limitations:** what was derived, what could not be verified, what lives outside the documents, which context files were missing.
+12. **Final Grouping:** Confirmed Anomalies · Potential Anomalies · Ambiguities · Flows/Requirements With No Significant Issue (challenged, nothing meaningful found).
 
 ---
 
-## 9. 🧠 Assumptions & Evidence
+## ⚠️ Failure Handling
 
-List:
-
-- Explicit requirement evidence
-- Supporting documentation
-- Assumptions
-- Missing information
-- Confidence limitations
-
-> Never present an assumption as a confirmed requirement.
-
----
-
-## 10. 📋 Final Findings
-
-Group findings into:
-
-- **Confirmed Anomalies:** Requirements that contain a clear logical problem.
-- **Potential Anomalies:** Requirements that may be problematic depending on missing rules.
-- **Ambiguities:** Requirements that require clarification before implementation.
-- **No Significant Anomaly:** Requirements that were challenged but no meaningful logical issue was identified.
+- **No requirement documents** → STOP. Output: `No requirement documents found in docs/requirements/.`
+- **Requirement cannot be parsed** → mark that requirement `UNKNOWN` with the reason and continue with the rest.
+- **Flow cannot be reconstructed** → mark `INSUFFICIENT_INFORMATION`, state exactly what is needed, continue with analyzable flows.
+- **Business rules unavailable** → continue with lower confidence and explicit assumptions.
+- **Product category or market unclear** → ask once, in one batch. If no answer is possible, run L1–L3 plus `REAL_WORLD_MISMATCH`, skip market benchmarking, and say why.
+- **Web search unavailable** → Convention mode only; never state a specific app's behavior as fact.
+- **Conflicting requirements** → do not choose which is correct; show both sides with evidence and ask.
+- **Unreadable or unsupported files** → list under Skipped Inputs with the reason.
+- **Long documents** → process section by section; report coverage so nothing is skipped silently.
+- **Non-interactive run** → never wait for answers; finish with all questions listed and affected findings marked `Needs clarification`.
 
 ---
 
-# 🔁 Failure Handling Rules
-
-### If requirement cannot be parsed:
-- Stop analysis for that requirement.
-- Mark as `UNKNOWN`.
-- Explain the reason.
-
-### If business rules are unavailable:
-- Continue analysis.
-- Reduce confidence.
-- Clearly identify assumptions.
-
-### If requirements contradict each other:
-- Do not choose which requirement is correct.
-- Report the contradiction.
-- Show the conflicting evidence.
-- Generate clarification questions.
-
-### If information is insufficient:
-- Do not invent the missing rule.
-- Mark: `INSUFFICIENT_INFORMATION`.
-- Then explain exactly what information is required.
-
----
-
-# 🎯 Core Agent Behavior
-
-The agent must behave like a QA engineer asking:
-
-> **"What is wrong with this requirement?"**
-
-rather than:
-
-> *"How can I test this requirement?"*
-
-The agent should actively challenge:
-
-```text
-Business Logic
-      ↓
-State Logic
-      ↓
-Data Logic
-      ↓
-Time Logic
-      ↓
-Calculation Logic
-      ↓
-Permission Logic
-      ↓
-Concurrency Logic
-      ↓
-Real-World Logic
-      ↓
-Requirement Interactions
-```
-
-The objective is to discover problems before development begins.
-
----
-
-# 🚫 Anti-Patterns
+## 🚫 Anti-Patterns
 
 The agent must NOT:
-
-- Assume undocumented business rules
-- Invent expected behavior
-- Treat every missing detail as a defect
-- Generate meaningless edge cases
-- Flag uncommon behavior without evidence
-- Rewrite the requirement silently
-- Decide which conflicting requirement is correct
-- Hide uncertainty
-- Generate large numbers of low-value findings
-
-> **Quality of findings is more important than quantity.**
+- Invent requirements, business rules, or expected behavior.
+- Treat market practice as a requirement.
+- State what a specific app does without verification.
+- Flag DIFFERENTIATOR or merely uncommon behavior.
+- Treat every missing detail as a defect.
+- Treat a missing step as confirmed when it may live in another module.
+- Pick a winner between contradicting requirements, or silently rewrite a requirement.
+- Hide uncertainty.
+- Produce many low-value findings to look thorough.
 
 ---
 
-# ✅ Success Criteria
+## ✅ Success Criteria
 
-The analysis is successful when it can identify:
-
-1. Requirements that do not make logical sense.
-2. Requirements that contradict each other.
-3. Requirements that create impossible state transitions.
-4. Requirements that are technically possible but operationally unreasonable.
-5. Missing rules that can materially change system behavior.
-6. Ambiguities that can cause different implementations.
-7. Boundary conditions that can produce unexpected results.
-8. Failure scenarios that can create inconsistent states.
-9. Questions that BA/PO must answer before development.
-10. High-value QA scenarios that can prove or disprove the suspected anomaly.
+The skill works when it reliably:
+1. Finds steps that cannot happen because something they need is never created (e.g. payment with no way to add items).
+2. Finds flows or objects that never reach a defined end.
+3. Finds impossible orders, states, and contradictory combinations.
+4. Finds rules that break at boundaries, times, calculations, concurrency, or permissions.
+5. Finds behavior real users of comparable apps would find surprising, with sourced, appropriately hedged evidence.
+6. Separates confirmed defects from questions the team must answer.
+7. Gives BA/PO specific questions and QA high-value challenge scenarios before development starts.

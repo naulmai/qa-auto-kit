@@ -596,6 +596,31 @@ Mối quan hệ giữa Requirement và Test Case phải đảm bảo truy vết 
 - **Unmapped Active Requirements:** `0`
 </RULE[bidirectional_traceability_and_orphan_control]>
 
+# 🎯 Exact-Match Coverage Mapping & Automated Reconciliation Rule (CRITICAL)
+<RULE[coverage_exact_matching_and_reconciliation]>
+Để loại bỏ triệt để hiện tượng đếm trùng (Double Counting), gán ảo (Phantom Mapping) và tính nhầm độ bao phủ:
+
+### 1. Single Source of Truth cho Requirement Coverage:
+- Cột `FR ID` trong bảng 14 cột Test Case Table (`testcases.md` / `testcases.csv`) là **nguồn sự thật duy nhất** để tính Requirement Coverage Matrix.
+- Một Test Case CHỈ ĐƯỢC PHÉP xuất hiện tại dòng `FR ID` trong Coverage Report nếu cột `FR ID` của Test Case đó khớp chính xác với mã FR đó.
+
+### 2. Nghiêm cấm gom dải theo tiền tố (No Prefix-Range Heuristic):
+- Tuyệt đối KHÔNG ĐƯỢC nhìn thấy tiền tố (ví dụ: `SUB-CYC`) rồi viết gộp `SUB-CYC-001 đến SUB-CYC-006` vào một FR (`FR-SUB-07`), trừ khi đã kiểm chứng 100% các dòng trong dải đó đều có cột `FR ID` là `FR-SUB-07`.
+
+### 3. Nghiêm cấm gán ảo gián tiếp (No Indirect / Phantom Traceability):
+- Tuyệt đối KHÔNG ĐƯỢC lấy testcase từ `Risk_Analysis_Report` hoặc `Edge_Case_Report` để gán đại diện cho một FR trong Coverage Report nếu cột `FR ID` của testcase đó đang trỏ sang FR khác.
+
+### 4. Quy tắc bảo toàn tổng số (Total Testcase Invariant):
+- Mỗi Test Case chỉ được tính cho 1 Primary FR ID duy nhất trong Requirement Coverage Matrix.
+- Tổng số Test Case phân bổ trong ma trận phải bằng chính xác tổng số Test Case có trong Test Suite:
+  $$\sum (\text{Unique Test Cases trong từng dòng FR}) \equiv \text{Tổng số Test Cases trong Test Suite}$$
+
+### 5. Kiểm tra tự động bắt buộc (Mandatory Linter Execution):
+- Trước khi chốt báo cáo, AI BẮT BUỘC phải thực thi script kiểm toán:
+  `python scripts/verify_traceability.py reports/<Module_Folder>`
+- Nếu script báo cáo bất kỳ lỗi `[MISMATCH]`, `[GHOST TC]`, `[DOUBLE COUNTING]`, hoặc `[UNMAPPED TC]` ➔ AI BẮT BUỘC phải sửa chữa và chạy lại cho đến khi đạt `0 Errors`.
+</RULE[coverage_exact_matching_and_reconciliation]>
+
 # 🚦 Severity, Priority & Automation Candidate Governance Rule
 <RULE[severity_priority_automation_standards]>
 AI BẮT BUỘC phải tuân thủ chuẩn phân loại khách quan:

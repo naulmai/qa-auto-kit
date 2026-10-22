@@ -292,49 +292,18 @@ OPTIONAL FIELDS:
 #### Mapping Strategy:
 
 ```
-MAPPING ALGORITHM (HIERARCHICAL):
+MAPPING ALGORITHM (STRICT SPECIFICATION FOR 14-COLUMN TESTCASES):
 
-PHASE 1: EXACT ID MATCH
-- If TC contains explicit reference: "REQ-01", "FR-02", "BR-03"
-→ Mark as 100% match
-→ Link TC → Requirement
+PHASE 1: EXACT COLUMN 4 (FR ID) MATCH — MANDATORY SINGLE SOURCE OF TRUTH
+- For 14-column test case suites, Column 4 (`FR ID`) is the EXCLUSIVE Single Source of Truth.
+- A test case TC-XXX belongs to FR-YYY IF AND ONLY IF `TC.FR_ID == FR-YYY`.
+- Strict Prohibition: NEVER use prefix-range heuristics (e.g. `SUB-CYC-001 đến SUB-CYC-006` assumed to be all FR-SUB-07). Every individual test case ID in a range MUST be expanded and verified against its own Column 4 `FR ID`.
+- Strict Prohibition: NEVER perform secondary reverse-mapping from Risk Report or Edge Case Report to "borrow" a test case for an FR ID if that testcase's Column 4 declares a different FR ID (prevents Phantom Mapping).
+- Double Counting Prevention: A test case can ONLY be mapped to ONE primary FR in the Requirement Coverage Matrix. Total unique mapped test cases MUST equal the total count in the CSV.
 
-PHASE 2: KEYWORD-BASED FUZZY MATCHING (if no exact match)
-
-Step 2a: Extract keywords from Requirement:
-  Requirement: "System must validate email format per RFC 5322"
-  KEY VERBS: [validate]
-  KEY NOUNS: [email, format, RFC5322]
-  KEY CONTEXT: [email-validation]
-
-Step 2b: Extract keywords from Test Case:
-  Test Case: "Verify email field accepts valid email addresses"
-  KEY VERBS: [verify, accepts]
-  KEY NOUNS: [email, valid, addresses]
-  KEY CONTEXT: [email-validation]
-
-Step 2c: Calculate Similarity Score:
-  - Exact noun match (email): +30 points
-  - Related verb (validate ≈ verify): +20 points
-  - Context match (email-validation): +40 points
-  - SCORE = 90/100
-
-MATCHING RULES:
-- Score ≥ 85% → DEFINITE MATCH (auto-link)
-- Score 70-84% → PROBABLE MATCH (link + flag for review)
-- Score 50-69% → POSSIBLE MATCH (log but don't auto-link)
-- Score < 50% → NO MATCH (mark as UNMAPPED)
-
-PHASE 3: UNMAPPED TEST CASE HANDLING
-- If still no match → Mark as UNMAPPED
-- Log reason: "No matching requirement found"
-- Include in "Data Quality Issues" section
-- Question: "Is this test orphaned? Should it be deleted or requirement created?"
-
-PHASE 4: MANUAL OVERRIDE CAPABILITY
-- If user provides mapping hints/aliases:
-  "ALIAS: REQ-01 = Login_Feature, User_Auth"
-→ Use aliases to improve matching accuracy
+PHASE 2: LEGACY / UNSTRUCTURED DOCUMENTS ONLY (Fuzzy Matching Fallback)
+- ONLY apply keyword fuzzy matching if the testcase file is legacy text/unstructured AND completely lacks an explicit `FR ID` column.
+- If Column 4 (`FR ID`) exists, PHASE 2 FUZZY MATCHING IS STRICTLY DISABLED.
 ```
 
 ---
